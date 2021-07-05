@@ -1,5 +1,7 @@
 package io.deeplay.reversi.chip;
 
+import java.util.Objects;
+
 public class Chip {
     Color color;
 
@@ -19,8 +21,21 @@ public class Chip {
         if (color == Color.BLACK) {
             color = Color.WHITE;
         }
-        else {
+        else if (color == Color.WHITE) {
             color = Color.BLACK;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chip chip = (Chip) o;
+        return color == chip.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color);
     }
 }

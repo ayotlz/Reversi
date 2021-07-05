@@ -30,9 +30,13 @@ public class Board {
         return board;
     }
 
-//    public void makeTurn(int x, int y) {
-//
-//    }
+    public void makeTurn(int x, int y) {
+
+    }
+
+    public Color getColor(int x, int y) {
+        return board[x][y].getColor();
+    }
 
 //    private List[] findNeighborhood(int x, int y) {
 //
