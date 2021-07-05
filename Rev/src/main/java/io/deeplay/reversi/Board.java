@@ -1,25 +1,36 @@
 package io.deeplay.reversi;
 
+import io.deeplay.reversi.chip.Chip;
+import io.deeplay.reversi.chip.Color;
+
 public class Board {
-    private int board[][];
-    private int turnOrder;
+    private Chip board[][];
+    private Color turnOrder;
+
 
     public Board() {
-        board = new int[8][8];
-        board[3][3] = -1;
-        board[3][4] = 1;
-        board[4][3] = -1;
-        board[4][4] = 1;
-        turnOrder = 1;
+        board = new Chip[8][8];
+
+        for (Chip[] chips : board) {
+            for (int j = 0; j < board.length; j++) {
+                chips[j] = new Chip(Color.NEUTRAL);
+            }
+        }
+
+        board[3][3] = new Chip(Color.WHITE);
+        board[3][4] = new Chip(Color.BLACK);
+        board[4][3] = new Chip(Color.BLACK);
+        board[4][4] = new Chip(Color.WHITE);
+        turnOrder = Color.BLACK;
     }
 
-    public int[][] getBoard() {
+    public Chip[][] getBoard() {
         return board;
     }
 
-    public void makeTurn(int x, int y) {
-        board[x][y] = turnOrder;
-    }
+//    public void makeTurn(int x, int y) {
+//
+//    }
 
 //    private int[][] findNeighborhood(int x, int y) {
 //
