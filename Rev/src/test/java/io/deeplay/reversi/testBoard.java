@@ -45,4 +45,12 @@ public class testBoard {
         Board board = new Board();
         board.makeTurn(9, 9);
     }
+
+//    @Test
+//    public void testst() {
+//        Handler handler = new Handler();
+//        Board board = new Board();
+//
+//        handler.makeStep(board, );
+//    }
 }

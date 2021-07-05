@@ -4,14 +4,14 @@ import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
-    private Chip board[][];
-    private Color turnOrder;
-
+    private final Chip board[][];
+    private final int size = 8;
 
     public Board() {
-        board = new Chip[8][8];
+        board = new Chip[size][size];
 
         for (Chip[] chips : board) {
             for (int j = 0; j < board.length; j++) {
@@ -23,7 +23,6 @@ public class Board {
         board[3][4] = new Chip(Color.BLACK);
         board[4][3] = new Chip(Color.BLACK);
         board[4][4] = new Chip(Color.WHITE);
-        turnOrder = Color.BLACK;
     }
 
     public Chip[][] getBoard() {
@@ -43,32 +42,23 @@ public class Board {
 //        return listOfNeighborhood;
 //    }
 
-    private ArrayList<Cell> findWhiteOrBlackChips() {
-            ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
-            Cell elem = new Cell(0, 0);
-        if (turnOrder == Color.BLACK) {
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                        if (Color.WHITE == board[i][j].getColor()) {
-                            elem.setX(i);
-                            elem.setY(j);
-                            listOfWhiteOrBlackChips.add(elem);
-                        }
-                    }
-            }
-        }
-        else {
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                    if (Color.BLACK == board[i][j].getColor()) {
-                        elem.setX(i);
-                        elem.setY(j);
-                        listOfWhiteOrBlackChips.add(elem);
-                    }
+    private List<Cell> findWhiteOrBlackChips() {
+        ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
+        Cell elem = new Cell(0, 0);
+        final Color findColor = turnOrder.reverseColor();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (findColor == board[i][j].getColor()) {
+                    elem.setX(i);
+                    elem.setY(j);
+                    listOfWhiteOrBlackChips.add(elem);
                 }
             }
         }
+
+
         return listOfWhiteOrBlackChips;
+
     }
 //
 //    private int score(int x, int y) {
