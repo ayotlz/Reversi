@@ -3,6 +3,8 @@ package io.deeplay.reversi;
 import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 
+import java.util.ArrayList;
+
 public class Board {
     private Chip board[][];
     private Color turnOrder;
@@ -32,17 +34,38 @@ public class Board {
 //
 //    }
 
-//    private int[][] findNeighborhood(int x, int y) {
+//    private List[] findNeighborhood(int x, int y) {
 //
+//        return listOfNeighborhood;
 //    }
-//
-//    private int[][] findBlackChips() {
-//
-//    }
-//
-//    private int[][] findWhiteChips() {
-//
-//    }
+
+    private ArrayList<Coordinate> findWhiteOrBlackChips() {
+            ArrayList<Coordinate> listOfWhiteOrBlackChips = new ArrayList<>();
+            Coordinate elem = new Coordinate(0, 0);
+        if (turnOrder == Color.BLACK) {
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                        if (Color.WHITE == board[i][j].getColor()) {
+                            elem.setX(i);
+                            elem.setY(j);
+                            listOfWhiteOrBlackChips.add(elem);
+                        }
+                    }
+            }
+        }
+        else {
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                    if (Color.BLACK == board[i][j].getColor()) {
+                        elem.setX(i);
+                        elem.setY(j);
+                        listOfWhiteOrBlackChips.add(elem);
+                    }
+                }
+            }
+        }
+        return listOfWhiteOrBlackChips;
+    }
 //
 //    private int score(int x, int y) {
 //
