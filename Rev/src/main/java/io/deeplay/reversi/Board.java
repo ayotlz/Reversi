@@ -43,9 +43,9 @@ public class Board {
 //        return listOfNeighborhood;
 //    }
 
-    private ArrayList<Coordinate> findWhiteOrBlackChips() {
-            ArrayList<Coordinate> listOfWhiteOrBlackChips = new ArrayList<>();
-            Coordinate elem = new Coordinate(0, 0);
+    private ArrayList<Cell> findWhiteOrBlackChips() {
+            ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
+            Cell elem = new Cell(0, 0);
         if (turnOrder == Color.BLACK) {
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board.length; j++) {
