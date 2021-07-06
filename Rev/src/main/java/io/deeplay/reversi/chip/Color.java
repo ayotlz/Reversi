@@ -6,7 +6,6 @@ public enum Color {
     public Color reverseColor(){
         if(this == BLACK) return WHITE;
         if(this == WHITE) return BLACK;
-//        throw new IllegalAccessException();
         return NEUTRAL;
     }
 }

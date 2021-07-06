@@ -17,7 +17,7 @@ public class testBoard {
         board.makeTurn(4, 5);
         board.makeTurn(5, 2);
 
-        Chip[][] boardResult = board.getBoard();
+        Chip[][] boardResult = board.getArray();
 
         assertEquals(board.getColor(5, 1), Color.BLACK);
         assertEquals(board.getColor(2, 2), Color.WHITE);
