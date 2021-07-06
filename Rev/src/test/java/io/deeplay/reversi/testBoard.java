@@ -17,7 +17,7 @@ public class testBoard {
         board.makeTurn(4, 5);
         board.makeTurn(5, 2);
 
-        Chip[][] boardResult = board.getBoard();
+        Chip[][] boardResult = board.getArray();
 
         assertEquals(board.getColor(5, 1), Color.BLACK);
         assertEquals(board.getColor(2, 2), Color.WHITE);
@@ -45,4 +45,12 @@ public class testBoard {
         Board board = new Board();
         board.makeTurn(9, 9);
     }
+
+//    @Test
+//    public void testst() {
+//        Handler handler = new Handler();
+//        Board board = new Board();
+//
+//        handler.makeStep(board, );
+//    }
 }
