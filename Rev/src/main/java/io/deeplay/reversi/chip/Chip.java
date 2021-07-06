@@ -17,15 +17,6 @@ public class Chip {
         this.color = color;
     }
 
-    public void changeColor() {
-        if (color == Color.BLACK) {
-            color = Color.WHITE;
-        }
-        else if (color == Color.WHITE) {
-            color = Color.BLACK;
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

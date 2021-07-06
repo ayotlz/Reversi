@@ -64,10 +64,13 @@ public class Handler {
             List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
-                    Chip chip = board.getArray()[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
-                    if (chip.getColor() == Color.NEUTRAL) {
-                        Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
-                        tempList.add(tempCell);
+                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
+                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
+                        Chip chip = board.getArray()[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
+                        if (chip.getColor() == Color.NEUTRAL) {
+                            Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
+                            tempList.add(tempCell);
+                        }
                     }
                 }
             }
@@ -109,6 +112,9 @@ public class Handler {
             neighbourX += differenceX;
             neighbourY += differenceY;
 
+            if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
+                return 0;
+            }
             if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
                 score += 1;
             }
@@ -118,9 +124,7 @@ public class Handler {
             if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder) {
                 return score;
             }
-            if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
-                return 0;
-            }
+
             schetchik += 1;
         }
         return 0;

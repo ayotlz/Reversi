@@ -23,6 +23,7 @@ public class TestBoard {
         board.setWhite(3, 3);
         board.setWhite(4, 4);
         board.setWhite(4, 2);
+        board.setWhite(0, 0);
 
         Handler handler = new Handler();
 
