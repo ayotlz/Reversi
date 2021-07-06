@@ -4,9 +4,81 @@ import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class testBoard {
+    @Test
+    public void test(){
+        Board board = new Board();
+        board.setBlack(2, 3);
+        board.setBlack(3, 4);
+        board.setBlack(4, 3);
+        board.setBlack(5, 2);
+
+        board.setWhite(2, 2);
+        board.setWhite(3, 3);
+        board.setWhite(4, 4);
+        board.setWhite(4, 2);
+
+        Handler handler = new Handler();
+
+        List<Cell> c = handler.findWhiteOrBlackChips(board, Color.BLACK);
+        System.out.println("Размер c: " + c.size());
+
+        Map<Cell, List<Cell>> m = handler.findNeighborhood(c, board);
+        System.out.println("Размер m: " + m.size());
+
+        Map<Cell, Integer> s = handler.getScoreMap(board, m, Color.BLACK);
+
+        for (Map.Entry<Cell, Integer> entry : s.entrySet()) {
+            System.out.print(entry.getKey().getX());
+            System.out.print(" ");
+            System.out.print(entry.getKey().getY());
+            System.out.print(": ");
+            System.out.println(entry.getValue());
+        }
+
+        System.out.println(board.toString());
+    }
+
+
+//    @Test
+//    public void testest() {
+//        Board board = new Board();
+//        board.setBlack(3, 4);
+//        board.setBlack(4, 5);
+//        board.setBlack(5, 3);
+//        board.setBlack(6, 2);
+//
+//        board.setWhite(3, 3);
+//        board.setWhite(4, 3);
+//        board.setWhite(4, 4);
+//        board.setWhite(5, 5);
+//
+//        Handler handler = new Handler();
+//
+//        List<Cell> c = handler.findWhiteOrBlackChips(board, Color.BLACK);
+//        System.out.println("Размер c: " + c.size());
+//
+//        Map<Cell, List<Cell>> m = handler.findNeighborhood(c, board);
+//        System.out.println("Размер m: " + m.size());
+//
+//        Map<Cell, Integer> s = handler.getScoreMap(board, m, Color.BLACK);
+//
+//        for (Map.Entry<Cell, Integer> entry : s.entrySet()) {
+//            System.out.print(entry.getKey().getX());
+//            System.out.print(" ");
+//            System.out.print(entry.getKey().getY());
+//            System.out.print(": ");
+//            System.out.println(entry.getValue());
+//        }
+//
+//        System.out.println(board.toString());
+//    }
 //    @Test
 //    public void testNormalGame() {
 //        Board board = new Board();

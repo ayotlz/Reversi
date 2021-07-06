@@ -44,16 +44,13 @@ public class Handler {
         return true;
     }
 
-    private List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
+    public List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
         ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
-        Cell elem = new Cell(0, 0);
         final Color findColor = turnOrder.reverseColor();
         for (int i = 0; i < board.getArray().length; i++) {
             for (int j = 0; j < board.getArray().length; j++) {
                 if (findColor == board.getArray()[i][j].getColor()) {
-                    elem.setX(i);
-                    elem.setY(j);
-                    listOfWhiteOrBlackChips.add(elem);
+                    listOfWhiteOrBlackChips.add(new Cell(i, j));
                 }
             }
         }
@@ -61,34 +58,71 @@ public class Handler {
         return listOfWhiteOrBlackChips;
     }
 
-    private Map<Cell, List> findNeighborhood(List<Cell> listOfWhiteOrBlackChips, Board board) {
-        Map<Cell, List> neighborhood = new HashMap<>();
-        for (int i = 0; i < listOfWhiteOrBlackChips.size(); i++) {
+    public Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfWhiteOrBlackChips, Board board) {
+        Map<Cell, List<Cell>> neighborhood = new HashMap<>();
+        for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
             List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
-                    Chip chip = board.getArray()[j + listOfWhiteOrBlackChips.get(i).getX()][k + listOfWhiteOrBlackChips.get(i).getY()];
+                    Chip chip = board.getArray()[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                     if (chip.getColor() == Color.NEUTRAL) {
-                        Cell tempCell = new Cell(j + listOfWhiteOrBlackChips.get(i).getX(), k + listOfWhiteOrBlackChips.get(i).getY());
+                        Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
                         tempList.add(tempCell);
                     }
                 }
             }
-            neighborhood.put(listOfWhiteOrBlackChips.get(i), tempList);
+            neighborhood.put(listOfWhiteOrBlackChip, tempList);
         }
         return neighborhood;
     }
 
-    private Map<Cell, Integer> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods) {
-        Map<Cell, Integer> score = new HashMap<>();
+    public Map<Cell, Integer> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods, Color turnOrder) {
+        Map<Cell, Integer> scoreMap = new HashMap<>();
         for (Map.Entry<Cell, List<Cell>> entry : neighborhoods.entrySet()) {
             for (Cell cell : entry.getValue()) {
-                score.put(cell, 0);
+                scoreMap.put(cell, 0);
             }
         }
 
+        for (Map.Entry<Cell, List<Cell>> entry : neighborhoods.entrySet()) {
+            for (Cell cell : entry.getValue()) {
+                Integer score = getScore(board, cell, entry.getKey(), turnOrder);
+                scoreMap.put(cell, scoreMap.get(cell) + score);
+            }
+        }
 
+        return scoreMap;
+    }
 
-        return null;
+    public Integer getScore(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) {
+        int differenceX = mainCell.getX() - neighbourCell.getX();
+        int differenceY = mainCell.getY() - neighbourCell.getY();
+
+        Integer score = 0;
+
+        int neighbourX = neighbourCell.getX();
+        int neighbourY = neighbourCell.getY();
+
+        //КОД ГОВНА ПЕРЕДЕЛАТЬ
+        int schetchik = 0;
+        while (schetchik < 10) {
+            neighbourX += differenceX;
+            neighbourY += differenceY;
+
+            if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
+                score += 1;
+            }
+            if (board.getChip(neighbourX, neighbourY).getColor() == Color.NEUTRAL) {
+                return 0;
+            }
+            if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder) {
+                return score;
+            }
+            if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
+                return 0;
+            }
+            schetchik += 1;
+        }
+        return 0;
     }
 }
