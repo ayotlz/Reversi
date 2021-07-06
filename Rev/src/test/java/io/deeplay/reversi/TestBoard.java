@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testBoard {
+public class TestBoard {
     @Test
     public void test(){
         Board board = new Board();
