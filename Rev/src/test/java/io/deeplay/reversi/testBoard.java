@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class testBoard {
-    @Test
+//    @Test
 //    public void testNormalGame() {
 //        Board board = new Board();
 //        board.makeTurn(3, 2);
