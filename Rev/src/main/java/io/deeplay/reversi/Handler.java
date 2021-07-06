@@ -4,7 +4,9 @@ import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Handler {
     public void beforeGame(Board board) {
@@ -42,14 +44,26 @@ public class Handler {
         return listOfWhiteOrBlackChips;
     }
 
-    //    private List[] findNeighborhood(int x, int y) {
-//
-//        return listOfNeighborhood;
-//    }
+    private Map<Cell, List> findNeighborhood(List<Cell> listOfWhiteOrBlackChips, Board board) {
+        Map<Cell, List> neighborhood = new HashMap<>();
+        for (int i = 0; i < listOfWhiteOrBlackChips.size(); i++) {
+            List<Cell> tempList = new ArrayList<>();
+            for (int j = -1; j < 2; j++) {
+                for (int k = -1; k < 2; k++) {
+                    Chip chip = board.getArray()[j+listOfWhiteOrBlackChips.get(i).getX()][k+listOfWhiteOrBlackChips.get(i).getY()];
+                        if (chip.getColor() == Color.NEUTRAL){
+                            Cell tempCell = new Cell(j+listOfWhiteOrBlackChips.get(i).getX(),k+listOfWhiteOrBlackChips.get(i).getY());
+                            tempList.add(tempCell);
+                        }
+                    }
+                }
+            neighborhood.put(listOfWhiteOrBlackChips.get(i),tempList);
+            }
+        return neighborhood;
+    }
+}
 
 //
 //    private int score(int x, int y) {
 //
 //    }
-
-}
