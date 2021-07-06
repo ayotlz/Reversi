@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testBoard {
+public class TestBoard {
 //    @Test
 //    public void testNormalGame() {
 //        Board board = new Board();
