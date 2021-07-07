@@ -1,22 +1,15 @@
 package io.deeplay.reversi;
 
-import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBoard {
     @Test
     public void test() throws ReversiException {
         Board board = new Board();
         Handler handler = new Handler();
-        handler.beforeGame(board);
+        handler.initializationBoard(board);
         System.out.println(board.toString());
         handler.makeStep(board, Color.BLACK, new Cell(2, 3));
         System.out.println(board.toString());
