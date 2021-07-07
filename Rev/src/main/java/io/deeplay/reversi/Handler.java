@@ -26,7 +26,7 @@ public class Handler {
     }
 
     public boolean isGameEnd(Board board) {
-        return isFullBoard(board) && isDeadEnd(board);
+        return isFullBoard(board) || isDeadEnd(board);
     }
 
     private boolean isDeadEnd(Board board) {
@@ -45,7 +45,6 @@ public class Handler {
     }
 
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
-        // Находим все фишки противника
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
 
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
@@ -66,7 +65,7 @@ public class Handler {
         return false;
     }
 
-    public List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
+    private List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
         ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
         final Color findColor = turnOrder.reverseColor();
         for (int i = 0; i < board.getArray().length; i++) {
@@ -80,7 +79,7 @@ public class Handler {
         return listOfWhiteOrBlackChips;
     }
 
-    public Map<Cell, List<Cell>> findNeighborhood(Board board, List<Cell> listOfWhiteOrBlackChips) {
+    private Map<Cell, List<Cell>> findNeighborhood(Board board, List<Cell> listOfWhiteOrBlackChips) {
         Map<Cell, List<Cell>> neighborhood = new HashMap<>();
         for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
             List<Cell> tempList = new ArrayList<>();
@@ -101,7 +100,7 @@ public class Handler {
         return neighborhood;
     }
 
-    public Map<Cell, List<Cell>> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods, Color turnOrder) throws ReversiException {
+    private Map<Cell, List<Cell>> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods, Color turnOrder) throws ReversiException {
         Map<Cell, List<Cell>> scoreMap = new HashMap<>();
         for (Map.Entry<Cell, List<Cell>> entry : neighborhoods.entrySet()) {
             for (Cell cell : entry.getValue()) {
@@ -118,7 +117,7 @@ public class Handler {
         return scoreMap;
     }
 
-    public List<Cell> getListOfFlipCells(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
+    private List<Cell> getListOfFlipCells(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
         if (neighbourCell.equals(mainCell)) {
             throw new ReversiException(ReversiErrorCode.CELLS_ARE_EQUALS);
         }
@@ -150,7 +149,7 @@ public class Handler {
         }
     }
 
-    public void flipCells(Board board, List<Cell> cells) {
+    private void flipCells(Board board, List<Cell> cells) throws ReversiException {
         for (Cell cell : cells) {
             Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
             board.getChip(cell.getX(), cell.getY()).setColor(reverse);
