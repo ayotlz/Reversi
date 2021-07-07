@@ -2,6 +2,7 @@ package io.deeplay.reversi;
 
 import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -12,37 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBoard {
     @Test
-    public void test(){
+    public void test() throws ReversiException {
         Board board = new Board();
-        board.setBlack(2, 3);
-        board.setBlack(3, 4);
-        board.setBlack(4, 3);
-        board.setBlack(5, 2);
-
-        board.setWhite(2, 2);
-        board.setWhite(3, 3);
-        board.setWhite(4, 4);
-        board.setWhite(4, 2);
-        board.setWhite(0, 0);
-
         Handler handler = new Handler();
+        handler.beforeGame(board);
+        System.out.println(board.toString());
+        handler.makeStep(board, Color.BLACK, new Cell(2, 3));
+        System.out.println(board.toString());
+        handler.makeStep(board, Color.WHITE, new Cell(4, 2));
+        System.out.println(board.toString());
+        handler.makeStep(board, Color.BLACK, new Cell(5, 1));
+        System.out.println(board.toString());
+        handler.makeStep(board, Color.WHITE, new Cell(2, 2));
+        System.out.println(board.toString());
 
-        List<Cell> c = handler.findWhiteOrBlackChips(board, Color.BLACK);
-        System.out.println("Размер c: " + c.size());
-
-        Map<Cell, List<Cell>> m = handler.findNeighborhood(c, board);
-        System.out.println("Размер m: " + m.size());
-
-        Map<Cell, Integer> s = handler.getScoreMap(board, m, Color.BLACK);
-
-        for (Map.Entry<Cell, Integer> entry : s.entrySet()) {
-            System.out.print(entry.getKey().getX());
-            System.out.print(" ");
-            System.out.print(entry.getKey().getY());
-            System.out.print(": ");
-            System.out.println(entry.getValue());
-        }
-
+        handler.makeStep(board, Color.BLACK, new Cell(0, 0));
         System.out.println(board.toString());
     }
 
