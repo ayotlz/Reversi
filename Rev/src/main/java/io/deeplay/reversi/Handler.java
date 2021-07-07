@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Handler {
-    public void beforeGame(Board board) throws ReversiException {
+    public void initializationBoard(Board board) throws ReversiException {
         if (board.getArray().length % 2 == 1) {
             throw new ReversiException(ReversiErrorCode.ODD_SIZE_BOARD);
         }
-
 
         int idx1 = board.getArray().length / 2 - 1;
         int idx2 = board.getArray().length / 2;
