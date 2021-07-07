@@ -26,22 +26,26 @@ public class Handler {
         board.getArray()[idx2][idx2] = new Chip(Color.WHITE);
     }
 
-    public boolean makeStep(Board board, Color turnOrder, Cell cell) {
+    public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
         // Находим все фишки противника
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
 
-        // Находим map(Cell *клетка цвета ходящего*: List<Cell>  *лист всех соседих пустых клеток*)
-//        findNeighborhoods(chipsOfOpponent)
+        Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
 
-        // Получаем map(Cell *пустая клетка*: int *очки, которые мы получим за ход сюда*)
-//        getScoreMap()
+        Map<Cell, List<Cell>> map = getScoreMap(board, mapNeighborhood, turnOrder);
 
-        // Бросаем исклющение если вдруг нельзя походить в данную клетку
-//      throw new Exception
+        if (map.containsKey(cell)) {
+            if (turnOrder == Color.BLACK) {
+                board.setBlack(cell.getX(), cell.getY());
+            }
+            if (turnOrder == Color.WHITE) {
+                board.setWhite(cell.getX(), cell.getY());
+            }
+            flipCells(board, map.get(cell));
+            return true;
+        }
 
-        // Ставим фишку, переворачиваем выигранные фишки, возвращаем true
-
-        return true;
+        return false;
     }
 
     public List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
@@ -58,7 +62,7 @@ public class Handler {
         return listOfWhiteOrBlackChips;
     }
 
-    public Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfWhiteOrBlackChips, Board board) {
+    public Map<Cell, List<Cell>> findNeighborhood(Board board, List<Cell> listOfWhiteOrBlackChips) {
         Map<Cell, List<Cell>> neighborhood = new HashMap<>();
         for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
             List<Cell> tempList = new ArrayList<>();
@@ -79,54 +83,83 @@ public class Handler {
         return neighborhood;
     }
 
-    public Map<Cell, Integer> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods, Color turnOrder) {
-        Map<Cell, Integer> scoreMap = new HashMap<>();
+    public Map<Cell, List<Cell>> getScoreMap(Board board, Map<Cell, List<Cell>> neighborhoods, Color turnOrder) throws ReversiException {
+        Map<Cell, List<Cell>> scoreMap = new HashMap<>();
         for (Map.Entry<Cell, List<Cell>> entry : neighborhoods.entrySet()) {
             for (Cell cell : entry.getValue()) {
-                scoreMap.put(cell, 0);
+                scoreMap.put(cell, new ArrayList<>());
             }
         }
 
         for (Map.Entry<Cell, List<Cell>> entry : neighborhoods.entrySet()) {
             for (Cell cell : entry.getValue()) {
-                Integer score = getScore(board, cell, entry.getKey(), turnOrder);
-                scoreMap.put(cell, scoreMap.get(cell) + score);
+                scoreMap.get(cell).addAll(getListOfFlipCells(board, cell, entry.getKey(), turnOrder));
             }
         }
 
         return scoreMap;
     }
 
-    public Integer getScore(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) {
+    public List<Cell> getListOfFlipCells(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
+        if (neighbourCell.equals(mainCell)) {
+            throw new ReversiException(ReversiErrorCode.CELLS_ARE_EQUALS);
+        }
+
         int differenceX = mainCell.getX() - neighbourCell.getX();
         int differenceY = mainCell.getY() - neighbourCell.getY();
 
-        Integer score = 0;
+        List<Cell> cells = new ArrayList<>();
 
         int neighbourX = neighbourCell.getX();
         int neighbourY = neighbourCell.getY();
 
-        //КОД ГОВНА ПЕРЕДЕЛАТЬ
-        int schetchik = 0;
-        while (schetchik < 10) {
+        while (true) {
             neighbourX += differenceX;
             neighbourY += differenceY;
 
             if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
-                return 0;
-            }
-            if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
-                score += 1;
+                return new ArrayList<>();
             }
             if (board.getChip(neighbourX, neighbourY).getColor() == Color.NEUTRAL) {
-                return 0;
+                return new ArrayList<>();
+            }
+            if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
+                cells.add(new Cell(neighbourX, neighbourY));
             }
             if (board.getChip(neighbourX, neighbourY).getColor() == turnOrder) {
-                return score;
+                return cells;
             }
-
-            schetchik += 1;
         }
-        return 0;
+    }
+
+    public void flipCells(Board board, List<Cell> cells) {
+        for (Cell cell : cells) {
+            Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
+            board.getChip(cell.getX(), cell.getY()).setColor(reverse);
+        }
+    }
+
+    public int getScoreWhite(Board board) {
+        int scoreWhite = 0;
+        for (Chip[] rows : board.getArray()) {
+            for (Chip chip : rows) {
+                if (chip.getColor() == Color.WHITE) {
+                    scoreWhite += 1;
+                }
+            }
+        }
+        return scoreWhite;
+    }
+
+    public int getScoreBlack(Board board) {
+        int scoreBlack = 0;
+        for (Chip[] rows : board.getArray()) {
+            for (Chip chip : rows) {
+                if (chip.getColor() == Color.BLACK) {
+                    scoreBlack += 1;
+                }
+            }
+        }
+        return scoreBlack;
     }
 }
