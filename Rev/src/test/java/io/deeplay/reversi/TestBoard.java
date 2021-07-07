@@ -1,28 +1,84 @@
 package io.deeplay.reversi;
 
+import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBoard {
-    @Test
-    public void test() throws ReversiException {
-        Board board = new Board();
-        Handler handler = new Handler();
-        handler.initializationBoard(board);
-        System.out.println(board.toString());
-        handler.makeStep(board, Color.BLACK, new Cell(2, 3));
-        System.out.println(board.toString());
-        handler.makeStep(board, Color.WHITE, new Cell(4, 2));
-        System.out.println(board.toString());
-        handler.makeStep(board, Color.BLACK, new Cell(5, 1));
-        System.out.println(board.toString());
-        handler.makeStep(board, Color.WHITE, new Cell(2, 2));
-        System.out.println(board.toString());
+//    @Test
+//    public void test() throws ReversiException {
+//        Board board = new Board();
+//        Handler handler = new Handler();
+//        handler.beforeGame(board);
+//        System.out.println(board.toString());
+//        handler.makeStep(board, Color.BLACK, new Cell(2, 3));
+//        System.out.println(board.toString());
+//        handler.makeStep(board, Color.WHITE, new Cell(4, 2));
+//        System.out.println(board.toString());
+//        handler.makeStep(board, Color.BLACK, new Cell(5, 1));
+//        System.out.println(board.toString());
+//        handler.makeStep(board, Color.WHITE, new Cell(2, 2));
+//        System.out.println(board.toString());
+//
+//        handler.makeStep(board, Color.BLACK, new Cell(0, 0));
+//        System.out.println(board.toString());
+//    }
 
-        handler.makeStep(board, Color.BLACK, new Cell(0, 0));
-        System.out.println(board.toString());
+    @Test (expected = ReversiException.class)
+    public void testGetColorException() throws ReversiException {
+        Board board = new Board();
+        board.getColor(-2,4);
     }
+
+    @Test
+    public void testGetColor() throws ReversiException {
+        Board board = new Board();
+        assertEquals(Color.NEUTRAL, board.getColor(0,0));
+    }
+
+    @Test
+    public void testGetColorBlack() throws ReversiException {
+        Board board = new Board();
+        board.getArray()[0][0].setColor(Color.BLACK);
+        assertEquals(Color.BLACK, board.getColor(0,0));
+    }
+    @Test
+    public void testGetColorWhite() throws ReversiException {
+        Board board = new Board();
+        board.getArray()[0][0].setColor(Color.WHITE);
+        assertEquals(Color.WHITE, board.getColor(0,0));
+    }
+
+    @Test
+    public void testGetAllColors() throws ReversiException {
+        Board board = new Board();
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+                assertEquals(Color.NEUTRAL, board.getColor(i,j));
+            }
+        }
+    }
+
+    @Test
+    public void testGetWhiteChip() throws ReversiException {
+        Board board = new Board();
+        Chip chip = new Chip(Color.WHITE);
+        board.getArray()[0][0].setColor(Color.WHITE);
+        assertEquals(chip, board.getChip(0,0));
+    }
+
+    @Test
+    public void testGetBlackChip() throws ReversiException {
+        Board board = new Board();
+        Chip chip = new Chip(Color.BLACK);
+        board.getArray()[0][0].setColor(Color.BLACK);
+        assertEquals(chip, board.getChip(0,0));
+    }
+
 
 
 //    @Test
