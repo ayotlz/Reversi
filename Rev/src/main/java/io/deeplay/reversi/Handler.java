@@ -26,6 +26,25 @@ public class Handler {
         board.getArray()[idx2][idx2] = new Chip(Color.WHITE);
     }
 
+    public boolean isGameEnd(Board board) {
+        return isFullBoard(board) && isDeadEnd(board);
+    }
+
+    private boolean isDeadEnd(Board board) {
+        return (getScoreWhite(board) == 0 || getScoreBlack(board) == 0);
+    }
+
+    private boolean isFullBoard(Board board) {
+        for (Chip[] row : board.getArray()) {
+            for (Chip chip : row) {
+                if (chip.getColor() == Color.NEUTRAL) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
         // Находим все фишки противника
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
