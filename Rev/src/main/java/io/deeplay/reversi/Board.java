@@ -2,11 +2,11 @@ package io.deeplay.reversi;
 
 import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
-
-import java.util.Arrays;
+import io.deeplay.reversi.exceptions.ReversiErrorCode;
+import io.deeplay.reversi.exceptions.ReversiException;
 
 public class Board {
-    private final Chip board[][];
+    private final Chip[][] board;
     private final int size = 8;
 
     public Board() {
@@ -18,7 +18,7 @@ public class Board {
             }
         }
     }
-
+//  Убрать
     public void setBlack(int x, int y) {
         board[x][y].setColor(Color.BLACK);
     }
@@ -31,8 +31,10 @@ public class Board {
         return board;
     }
 
-    //  Добавить валидацию
-    public Color getColor(int x, int y) {
+    public Color getColor(int x, int y) throws ReversiException {
+        if (x < 0 || x > size || y < 0 || y > size) {
+            throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
+        }
         return board[x][y].getColor();
     }
 
@@ -40,7 +42,10 @@ public class Board {
         return size;
     }
 
-    public Chip getChip(int x, int y) {
+    public Chip getChip(int x, int y) throws ReversiException {
+        if (x < 0 || x > size || y < 0 || y > size) {
+            throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
+        } 
         return board[x][y];
     }
 
