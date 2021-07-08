@@ -17,10 +17,6 @@ public class Chip {
         this.color = color;
     }
 
-    public void changeColor() {
-        color = color.reverseColor();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
