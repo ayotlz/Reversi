@@ -30,17 +30,17 @@
         </layout>
     </appender>
 
-    <category name="deeplay.debug_pack">
+    <category name="io.deeplay.reversi">
         <priority value="debug"/>
         <appender-ref ref="FILE_APPENDER_DEBUG"/>
     </category>
 
-    <category name="deeplay.error_pack">
+    <category name="io.deeplay.reversi">
         <priority value="error"/>
         <appender-ref ref="FILE_APPENDER_ERROR"/>
     </category>
 
-    <category name="deeplay">
+    <category name="io.deeplay.reversi">
         <appender-ref ref="FILE_APPENDER_DEBUG"/>
     </category>
 
