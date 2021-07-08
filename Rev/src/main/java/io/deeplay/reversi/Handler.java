@@ -45,6 +45,8 @@ public class Handler {
     }
 
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
+        cell.validation(0, board.getSize() - 1);
+
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
 
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);

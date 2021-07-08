@@ -1,5 +1,8 @@
 package io.deeplay.reversi;
 
+import io.deeplay.reversi.exceptions.ReversiErrorCode;
+import io.deeplay.reversi.exceptions.ReversiException;
+
 import java.util.Objects;
 
 public class Cell {
@@ -25,6 +28,12 @@ public class Cell {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void validation(int min, int max) throws ReversiException {
+        if (x < min || x > max || y < min || y > max) {
+            throw new ReversiException(ReversiErrorCode.CELL_IS_INCORRECT);
+        }
     }
 
     @Override
