@@ -3,7 +3,6 @@ package io.deeplay.reversi;
 import io.deeplay.reversi.chip.Chip;
 import io.deeplay.reversi.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
