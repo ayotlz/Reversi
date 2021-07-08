@@ -1,10 +1,14 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.chip.Chip;
-import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.board.Cell;
+import io.deeplay.reversi.models.chip.Chip;
+import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Handler {
-    static Logger logger = Logger.getLogger(Handler.class);
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void initializationBoard(Board board) throws ReversiException {
         if (board.getArray().length % 2 == 1) {
@@ -27,7 +31,7 @@ public class Handler {
         board.getArray()[idx2][idx1] = new Chip(Color.BLACK);
         board.getArray()[idx2][idx2] = new Chip(Color.WHITE);
 
-        logger.debug("Поле инициализировано");
+        logger.debug("Доска проинициализирована");
     }
 
     public boolean isGameEnd(Board board) {
@@ -50,25 +54,23 @@ public class Handler {
     }
 
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
+        logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
+
         cell.validation(0, board.getSize() - 1);
 
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
-
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
-
         Map<Cell, List<Cell>> map = getScoreMap(board, mapNeighborhood, turnOrder);
 
-        if (map.containsKey(cell)) {
-            if (turnOrder == Color.BLACK) {
-                board.setBlack(cell.getX(), cell.getY());
-            }
-            if (turnOrder == Color.WHITE) {
-                board.setWhite(cell.getX(), cell.getY());
-            }
+        if (map.get(cell) != null && map.get(cell).size() != 0) {
+            board.getChip(cell.getX(), cell.getY()).setColor(turnOrder);
             flipCells(board, map.get(cell));
+
+            logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
             return true;
         }
 
+        logger.warn("{} не может быть установлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
         return false;
     }
 
