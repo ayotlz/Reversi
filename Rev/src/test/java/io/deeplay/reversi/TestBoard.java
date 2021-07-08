@@ -1,7 +1,8 @@
 package io.deeplay.reversi;
 
-import io.deeplay.reversi.chip.Chip;
-import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.chip.Chip;
+import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

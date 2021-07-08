@@ -1,6 +1,9 @@
 package io.deeplay.reversi;
 
-import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.handler.Handler;
+import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.board.Cell;
+import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,43 +31,6 @@ public class TestHandler {
         assertEquals(board.getArray()[4][4].getColor(), Color.WHITE);
         assertEquals(board.getArray()[3][4].getColor(), Color.BLACK);
         assertEquals(board.getArray()[4][3].getColor(), Color.BLACK);
-    }
-
-    @Test
-    public void testGameEndWithNoFullBoard() throws ReversiException {
-        assertFalse(handler.isGameEnd(board));
-
-        handler.makeStep(board, Color.BLACK, new Cell(3, 2));
-        handler.makeStep(board, Color.WHITE, new Cell(4, 2));
-        handler.makeStep(board, Color.BLACK, new Cell(5, 2));
-        handler.makeStep(board, Color.WHITE, new Cell(2, 4));
-        handler.makeStep(board, Color.BLACK, new Cell(1, 5));
-        handler.makeStep(board, Color.WHITE, new Cell(4, 1));
-        handler.makeStep(board, Color.BLACK, new Cell(5, 4));
-        handler.makeStep(board, Color.WHITE, new Cell(6, 2));
-        handler.makeStep(board, Color.BLACK, new Cell(5, 1));
-        handler.makeStep(board, Color.WHITE, new Cell(6, 1));
-        handler.makeStep(board, Color.BLACK, new Cell(7, 0));
-        handler.makeStep(board, Color.WHITE, new Cell(7, 1));
-        handler.makeStep(board, Color.BLACK, new Cell(3, 0));
-        handler.makeStep(board, Color.WHITE, new Cell(5, 3));
-        handler.makeStep(board, Color.BLACK, new Cell(7, 2));
-        handler.makeStep(board, Color.WHITE, new Cell(5, 5));
-        handler.makeStep(board, Color.BLACK, new Cell(5, 6));
-        handler.makeStep(board, Color.WHITE, new Cell(6, 3));
-        handler.makeStep(board, Color.BLACK, new Cell(7, 3));
-        handler.makeStep(board, Color.WHITE, new Cell(6, 4));
-        handler.makeStep(board, Color.BLACK, new Cell(6, 0));
-        handler.makeStep(board, Color.WHITE, new Cell(4, 0));
-        handler.makeStep(board, Color.BLACK, new Cell(5, 0));
-        handler.makeStep(board, Color.WHITE, new Cell(4, 6));
-        handler.makeStep(board, Color.BLACK, new Cell(3, 7));
-        handler.makeStep(board, Color.WHITE, new Cell(6, 5));
-        handler.makeStep(board, Color.BLACK, new Cell(6, 6));
-
-        assertTrue(handler.isGameEnd(board));
-        assertEquals(handler.getScoreBlack(board), 31);
-        assertEquals(handler.getScoreWhite(board), 0);
     }
 
     @Test
@@ -102,6 +68,43 @@ public class TestHandler {
         assertTrue(handler.isGameEnd(board));
         assertEquals(handler.getScoreBlack(board), 34);
         assertEquals(handler.getScoreWhite(board), 30);
+    }
+
+    @Test
+    public void testGameEndWithNoFullBoard() throws ReversiException {
+        assertFalse(handler.isGameEnd(board));
+
+        handler.makeStep(board, Color.BLACK, new Cell(3, 2));
+        handler.makeStep(board, Color.WHITE, new Cell(4, 2));
+        handler.makeStep(board, Color.BLACK, new Cell(5, 2));
+        handler.makeStep(board, Color.WHITE, new Cell(2, 4));
+        handler.makeStep(board, Color.BLACK, new Cell(1, 5));
+        handler.makeStep(board, Color.WHITE, new Cell(4, 1));
+        handler.makeStep(board, Color.BLACK, new Cell(5, 4));
+        handler.makeStep(board, Color.WHITE, new Cell(6, 2));
+        handler.makeStep(board, Color.BLACK, new Cell(5, 1));
+        handler.makeStep(board, Color.WHITE, new Cell(6, 1));
+        handler.makeStep(board, Color.BLACK, new Cell(7, 0));
+        handler.makeStep(board, Color.WHITE, new Cell(7, 1));
+        handler.makeStep(board, Color.BLACK, new Cell(3, 0));
+        handler.makeStep(board, Color.WHITE, new Cell(5, 3));
+        handler.makeStep(board, Color.BLACK, new Cell(7, 2));
+        handler.makeStep(board, Color.WHITE, new Cell(5, 5));
+        handler.makeStep(board, Color.BLACK, new Cell(5, 6));
+        handler.makeStep(board, Color.WHITE, new Cell(6, 3));
+        handler.makeStep(board, Color.BLACK, new Cell(7, 3));
+        handler.makeStep(board, Color.WHITE, new Cell(6, 4));
+        handler.makeStep(board, Color.BLACK, new Cell(6, 0));
+        handler.makeStep(board, Color.WHITE, new Cell(4, 0));
+        handler.makeStep(board, Color.BLACK, new Cell(5, 0));
+        handler.makeStep(board, Color.WHITE, new Cell(4, 6));
+        handler.makeStep(board, Color.BLACK, new Cell(3, 7));
+        handler.makeStep(board, Color.WHITE, new Cell(6, 5));
+        handler.makeStep(board, Color.BLACK, new Cell(6, 6));
+
+        assertTrue(handler.isGameEnd(board));
+        assertEquals(handler.getScoreBlack(board), 31);
+        assertEquals(handler.getScoreWhite(board), 0);
     }
 
     @Test

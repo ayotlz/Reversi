@@ -1,4 +1,6 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.bot;
+
+import io.deeplay.reversi.models.board.Cell;
 
 import java.io.*;
 

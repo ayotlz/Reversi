@@ -1,7 +1,7 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.models.board;
 
-import io.deeplay.reversi.chip.Chip;
-import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.models.chip.Chip;
+import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
 
@@ -17,14 +17,6 @@ public class Board {
                 chips[j] = new Chip(Color.NEUTRAL);
             }
         }
-    }
-//  Убрать
-    public void setBlack(int x, int y) {
-        board[x][y].setColor(Color.BLACK);
-    }
-
-    public void setWhite(int x, int y) {
-        board[x][y].setColor(Color.WHITE);
     }
 
     public Chip[][] getArray() {

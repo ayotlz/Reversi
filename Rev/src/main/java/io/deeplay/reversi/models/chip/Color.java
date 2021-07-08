@@ -1,4 +1,4 @@
-package io.deeplay.reversi.chip;
+package io.deeplay.reversi.models.chip;
 
 public enum Color {
     BLACK, WHITE, NEUTRAL;

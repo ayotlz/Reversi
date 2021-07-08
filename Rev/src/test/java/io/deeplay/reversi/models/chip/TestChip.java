@@ -1,5 +1,6 @@
-package io.deeplay.reversi.chip;
+package io.deeplay.reversi.models.chip;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

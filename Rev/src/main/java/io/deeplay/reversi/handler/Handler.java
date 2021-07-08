@@ -1,10 +1,11 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.chip.Chip;
-import io.deeplay.reversi.chip.Color;
+import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.board.Cell;
+import io.deeplay.reversi.models.chip.Chip;
+import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Handler {
-    static Logger logger = Logger.getLogger(Handler.class);
-
     public void initializationBoard(Board board) throws ReversiException {
         if (board.getArray().length % 2 == 1) {
             throw new ReversiException(ReversiErrorCode.ODD_SIZE_BOARD);
@@ -26,8 +25,6 @@ public class Handler {
         board.getArray()[idx1][idx2] = new Chip(Color.BLACK);
         board.getArray()[idx2][idx1] = new Chip(Color.BLACK);
         board.getArray()[idx2][idx2] = new Chip(Color.WHITE);
-
-        logger.debug("Поле инициализировано");
     }
 
     public boolean isGameEnd(Board board) {
@@ -59,13 +56,9 @@ public class Handler {
         Map<Cell, List<Cell>> map = getScoreMap(board, mapNeighborhood, turnOrder);
 
         if (map.containsKey(cell)) {
-            if (turnOrder == Color.BLACK) {
-                board.setBlack(cell.getX(), cell.getY());
-            }
-            if (turnOrder == Color.WHITE) {
-                board.setWhite(cell.getX(), cell.getY());
-            }
+            board.getChip(cell.getX(), cell.getY()).setColor(turnOrder);
             flipCells(board, map.get(cell));
+
             return true;
         }
 

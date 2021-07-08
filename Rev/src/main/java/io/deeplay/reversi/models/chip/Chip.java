@@ -1,4 +1,4 @@
-package io.deeplay.reversi.chip;
+package io.deeplay.reversi.models.chip;
 
 import java.util.Objects;
 
@@ -15,6 +15,10 @@ public class Chip {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public void changeColor() {
+        color = color.reverseColor();
     }
 
     @Override

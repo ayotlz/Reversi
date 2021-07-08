@@ -1,4 +1,4 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.models.board;
 
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
