@@ -2,12 +2,10 @@ package io.deeplay.reversi;
 
 import io.deeplay.reversi.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.apache.log4j.BasicConfigurator;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +18,7 @@ public class TestHandler {
         board = new Board();
         handler = new Handler();
         handler.initializationBoard(board);
+        BasicConfigurator.configure();
     }
 
 
@@ -74,12 +73,12 @@ public class TestHandler {
 
         int[][] arr =
                 {
-                       // 0   1   2   3   4   5   6   7
-                        {42, 51, 52,  7,  6,  5, 55,  9}, //0
-                        {44, 41, 43, 53,  4, 54,  8, 60}, //1
-                        {45, 40, 12,  1,  2,  3, 10, 11}, //2
-                        {46, 39, 13,  0,  0, 56, 59, 30}, //3
-                        {47, 38, 14,  0,  0, 57, 58, 29}, //4
+                        // 0   1   2   3   4   5   6   7
+                        {42, 51, 52, 7, 6, 5, 55, 9}, //0
+                        {44, 41, 43, 53, 4, 54, 8, 60}, //1
+                        {45, 40, 12, 1, 2, 3, 10, 11}, //2
+                        {46, 39, 13, 0, 0, 56, 59, 30}, //3
+                        {47, 38, 14, 0, 0, 57, 58, 29}, //4
                         {48, 37, 15, 20, 17, 18, 19, 28}, //5
                         {49, 36, 16, 21, 22, 24, 32, 31}, //6
                         {50, 35, 34, 33, 23, 25, 26, 27}  //7
