@@ -6,6 +6,18 @@ import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
 
 public class Board {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+
+
     private final Chip[][] board;
     private final int size = 8;
 
@@ -45,18 +57,24 @@ public class Board {
     public String toString() {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < size; i++) {
+            b.append(ANSI_PURPLE + " ").append(i).append(" " + ANSI_RESET);
+        }
+        b.append("\n");
+
+        for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j].getColor() == Color.BLACK) {
-                    b.append("Ч");
+                    b.append(ANSI_RED + " B " + ANSI_RESET);
                 }
                 if (board[i][j].getColor() == Color.WHITE) {
-                    b.append("Б");
+                    b.append(ANSI_YELLOW + " W " + ANSI_RESET);
                 }
                 if (board[i][j].getColor() == Color.NEUTRAL) {
-                    b.append(".");
+                    b.append(ANSI_CYAN + " . " + ANSI_RESET);
                 }
             }
-            b.append("\n");
+            b.append(ANSI_PURPLE + " ").append(i).append("\n" + ANSI_RESET);
+
         }
         return b.toString();
     }
