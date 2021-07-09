@@ -1,5 +1,6 @@
 package io.deeplay.reversi.handler;
 
+import io.deeplay.reversi.Validator;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Chip;
@@ -56,7 +57,7 @@ public class Handler {
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
         logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
 
-        cell.validation(0, board.getBoardSize() - 1);
+        Validator.isCorrectCell(cell, board.getBoardSize());
 
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
