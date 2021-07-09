@@ -19,17 +19,17 @@ public class Handler {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void initializationBoard(Board board) throws ReversiException {
-        if (board.getArray().length % 2 == 1) {
+        if (board.getBoardSize() % 2 == 1) {
             throw new ReversiException(ReversiErrorCode.ODD_SIZE_BOARD);
         }
 
-        int idx1 = board.getArray().length / 2 - 1;
-        int idx2 = board.getArray().length / 2;
+        int idx1 = board.getBoardSize() / 2 - 1;
+        int idx2 = board.getBoardSize() / 2;
 
-        board.getArray()[idx1][idx1] = new Chip(Color.WHITE);
-        board.getArray()[idx1][idx2] = new Chip(Color.BLACK);
-        board.getArray()[idx2][idx1] = new Chip(Color.BLACK);
-        board.getArray()[idx2][idx2] = new Chip(Color.WHITE);
+        board.getBoard()[idx1][idx1] = new Chip(Color.WHITE);
+        board.getBoard()[idx1][idx2] = new Chip(Color.BLACK);
+        board.getBoard()[idx2][idx1] = new Chip(Color.BLACK);
+        board.getBoard()[idx2][idx2] = new Chip(Color.WHITE);
 
         logger.debug("Доска проинициализирована");
     }
@@ -43,7 +43,7 @@ public class Handler {
     }
 
     private boolean isFullBoard(Board board) {
-        for (Chip[] row : board.getArray()) {
+        for (Chip[] row : board.getBoard()) {
             for (Chip chip : row) {
                 if (chip.getColor() == Color.NEUTRAL) {
                     return false;
@@ -56,7 +56,7 @@ public class Handler {
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
         logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
 
-        cell.validation(0, board.getSize() - 1);
+        cell.validation(0, board.getBoardSize() - 1);
 
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
@@ -77,9 +77,9 @@ public class Handler {
     private List<Cell> findWhiteOrBlackChips(Board board, Color turnOrder) {
         ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
         final Color findColor = turnOrder.reverseColor();
-        for (int i = 0; i < board.getArray().length; i++) {
-            for (int j = 0; j < board.getArray().length; j++) {
-                if (findColor == board.getArray()[i][j].getColor()) {
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (findColor == board.getBoard()[i][j].getColor()) {
                     listOfWhiteOrBlackChips.add(new Cell(i, j));
                 }
             }
@@ -96,7 +96,7 @@ public class Handler {
                 for (int k = -1; k < 2; k++) {
                     if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
                             k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
-                        Chip chip = board.getArray()[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
+                        Chip chip = board.getBoard()[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
                             Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
                             tempList.add(tempCell);
@@ -167,7 +167,7 @@ public class Handler {
 
     public int getScoreWhite(Board board) {
         int scoreWhite = 0;
-        for (Chip[] rows : board.getArray()) {
+        for (Chip[] rows : board.getBoard()) {
             for (Chip chip : rows) {
                 if (chip.getColor() == Color.WHITE) {
                     scoreWhite += 1;
@@ -179,7 +179,7 @@ public class Handler {
 
     public int getScoreBlack(Board board) {
         int scoreBlack = 0;
-        for (Chip[] rows : board.getArray()) {
+        for (Chip[] rows : board.getBoard()) {
             for (Chip chip : rows) {
                 if (chip.getColor() == Color.BLACK) {
                     scoreBlack += 1;

@@ -3,7 +3,7 @@ package io.deeplay.reversi.models.chip;
 import java.util.Objects;
 
 public class Chip {
-    Color color;
+    private Color color;
 
     public Chip(Color color) {
         this.color = color;

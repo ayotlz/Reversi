@@ -7,6 +7,9 @@ import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,10 +22,8 @@ public class TestBoard {
     }
 
     @Test
-    public void testGetColorException() throws ReversiException {
-        assertThrows(ReversiException.class, () -> {
-            board.getColor(-2,4);
-        });
+    public void testGetColorException() {
+        assertThrows(ReversiException.class, () -> board.getColor(-2,4));
     }
 
     @Test
@@ -32,19 +33,19 @@ public class TestBoard {
 
     @Test
     public void testGetColorBlack() throws ReversiException {
-        board.getArray()[0][0].setColor(Color.BLACK);
+        board.getBoard()[0][0].setColor(Color.BLACK);
         assertEquals(Color.BLACK, board.getColor(0,0));
     }
     @Test
     public void testGetColorWhite() throws ReversiException {
-        board.getArray()[0][0].setColor(Color.WHITE);
+        board.getBoard()[0][0].setColor(Color.WHITE);
         assertEquals(Color.WHITE, board.getColor(0,0));
     }
 
     @Test
     public void testGetAllColors() throws ReversiException {
-        for (int i = 0; i < board.getSize(); i++) {
-            for (int j = 0; j < board.getSize(); j++) {
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
                 assertEquals(Color.NEUTRAL, board.getColor(i,j));
             }
         }
@@ -53,14 +54,29 @@ public class TestBoard {
     @Test
     public void testGetWhiteChip() throws ReversiException {
         Chip chip = new Chip(Color.WHITE);
-        board.getArray()[0][0].setColor(Color.WHITE);
+        board.getBoard()[0][0].setColor(Color.WHITE);
         assertEquals(chip, board.getChip(0,0));
     }
 
     @Test
     public void testGetBlackChip() throws ReversiException {
         Chip chip = new Chip(Color.BLACK);
-        board.getArray()[0][0].setColor(Color.BLACK);
+        board.getBoard()[0][0].setColor(Color.BLACK);
         assertEquals(chip, board.getChip(0,0));
     }
+
+//    @Test
+//    public void testApply(){
+//        JFrame frame = new JFrame("Reversi");
+//        frame.setBounds(100, 100, 400, 400);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        String workingDir = System.getProperty("user.dir");
+//        String iconFilename = workingDir + File.separator + "res" + File.separator + "Icon32.png";
+//        ImageIcon icon = new ImageIcon(iconFilename);
+//        frame.setIconImage(icon.getImage());
+//        frame.setVisible(true);
+//        frame.;
+//
+//        JLabel cell = new JLabel(new ImageIcon("MyImage"));
+//    }
 }

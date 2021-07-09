@@ -19,10 +19,10 @@ public class Board {
 
 
     private final Chip[][] board;
-    private final int size = 8;
+    private final int boardSize = 8;
 
     public Board() {
-        board = new Chip[size][size];
+        board = new Chip[boardSize][boardSize];
 
         for (Chip[] chips : board) {
             for (int j = 0; j < board.length; j++) {
@@ -31,23 +31,23 @@ public class Board {
         }
     }
 
-    public Chip[][] getArray() {
+    public Chip[][] getBoard() {
         return board;
     }
 
     public Color getColor(int x, int y) throws ReversiException {
-        if (x < 0 || x > size || y < 0 || y > size) {
+        if (x < 0 || x > boardSize || y < 0 || y > boardSize) {
             throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
         }
         return board[x][y].getColor();
     }
 
-    public int getSize() {
-        return size;
+    public int getBoardSize() {
+        return boardSize;
     }
 
     public Chip getChip(int x, int y) throws ReversiException {
-        if (x < 0 || x > size || y < 0 || y > size) {
+        if (x < 0 || x > boardSize || y < 0 || y > boardSize) {
             throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
         } 
         return board[x][y];
@@ -56,13 +56,13 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < boardSize; i++) {
             b.append(ANSI_PURPLE + " ").append(i).append(" " + ANSI_RESET);
         }
         b.append("\n");
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
                 if (board[i][j].getColor() == Color.BLACK) {
                     b.append(ANSI_RED + " B " + ANSI_RESET);
                 }

@@ -26,11 +26,11 @@ public class TestHandler {
 
 
     @Test
-    public void testInitializationBoard() throws ReversiException {
-        assertEquals(board.getArray()[3][3].getColor(), Color.WHITE);
-        assertEquals(board.getArray()[4][4].getColor(), Color.WHITE);
-        assertEquals(board.getArray()[3][4].getColor(), Color.BLACK);
-        assertEquals(board.getArray()[4][3].getColor(), Color.BLACK);
+    public void testInitializationBoard() {
+        assertEquals(board.getBoard()[3][3].getColor(), Color.WHITE);
+        assertEquals(board.getBoard()[4][4].getColor(), Color.WHITE);
+        assertEquals(board.getBoard()[3][4].getColor(), Color.BLACK);
+        assertEquals(board.getBoard()[4][3].getColor(), Color.BLACK);
     }
 
     @Test
@@ -114,8 +114,6 @@ public class TestHandler {
 
     @Test
     public void testIncorrectStep() {
-        assertThrows(ReversiException.class, () -> {
-            handler.makeStep(board, Color.BLACK, new Cell(-1, 8));
-        });
+        assertThrows(ReversiException.class, () -> handler.makeStep(board, Color.BLACK, new Cell(-1, 8)));
     }
 }
