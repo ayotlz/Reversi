@@ -6,12 +6,9 @@ import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
