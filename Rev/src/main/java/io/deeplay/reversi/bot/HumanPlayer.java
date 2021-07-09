@@ -1,11 +1,18 @@
 package io.deeplay.reversi.bot;
 
+import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
+import io.deeplay.reversi.models.chip.Color;
 
 import java.io.*;
 
-public class HumanBot extends Bot {
-    public Cell getAnswer() {
+public class HumanPlayer extends Player {
+    public HumanPlayer(Color color) {
+        super(color);
+    }
+
+    @Override
+    public Cell getAnswer(Board board) {
         InputStream inputStream = System.in;
         Reader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
