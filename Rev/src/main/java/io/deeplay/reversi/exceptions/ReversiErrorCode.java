@@ -9,7 +9,7 @@ public enum ReversiErrorCode {
 
     private final String errorString;
 
-    private ReversiErrorCode(String errorString) {
+    ReversiErrorCode(String errorString) {
         this.errorString = errorString;
     }
 
