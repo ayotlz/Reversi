@@ -5,6 +5,11 @@ import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Board {
     private final Chip[][] board;
     private final int boardSize = 8;
@@ -42,6 +47,104 @@ public class Board {
         Validator.isCellCorrect(new Cell(x, y), boardSize);
         board[x][y] = new Chip(color);
     }
+
+    public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) throws ReversiException {
+        List<Cell> chipsOfOpponent = findWhiteOrBlackChips(turnOrder);
+        Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
+
+        Map<Cell, List<Cell>> scoreMap = new HashMap<>();
+        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+            for (Cell cell : entry.getValue()) {
+                scoreMap.put(cell, new ArrayList<>());
+            }
+        }
+
+        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+            for (Cell cell : entry.getValue()) {
+                scoreMap.get(cell).addAll(getListOfFlipCells(cell, entry.getKey(), turnOrder));
+            }
+        }
+
+        List<Cell> listToDelete = new ArrayList<>();
+        for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
+            if (scoreMap.get(entry.getKey()).size() == 0) {
+                listToDelete.add(entry.getKey());
+            }
+        }
+
+        for (Cell cell : listToDelete) {
+            scoreMap.remove(cell);
+        }
+
+        return scoreMap;
+    }
+
+
+    private List<Cell> findWhiteOrBlackChips(Color turnOrder) {
+        ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
+        final Color findColor = turnOrder.reverseColor();
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (findColor == board[i][j].getColor()) {
+                    listOfWhiteOrBlackChips.add(new Cell(i, j));
+                }
+            }
+        }
+
+        return listOfWhiteOrBlackChips;
+    }
+
+    private Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfWhiteOrBlackChips) {
+        Map<Cell, List<Cell>> neighborhood = new HashMap<>();
+        for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
+            List<Cell> tempList = new ArrayList<>();
+            for (int j = -1; j < 2; j++) {
+                for (int k = -1; k < 2; k++) {
+                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
+                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
+                        Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
+                        if (chip.getColor() == Color.NEUTRAL) {
+                            Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
+                            tempList.add(tempCell);
+                        }
+                    }
+                }
+            }
+            neighborhood.put(listOfWhiteOrBlackChip, tempList);
+        }
+        return neighborhood;
+    }
+
+    private List<Cell> getListOfFlipCells(Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
+        Validator.isCellEquals(neighbourCell, mainCell);
+
+        int differenceX = mainCell.getX() - neighbourCell.getX();
+        int differenceY = mainCell.getY() - neighbourCell.getY();
+
+        List<Cell> cells = new ArrayList<>();
+
+        int neighbourX = neighbourCell.getX();
+        int neighbourY = neighbourCell.getY();
+
+        while (true) {
+            neighbourX += differenceX;
+            neighbourY += differenceY;
+
+            if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
+                return new ArrayList<>();
+            }
+            if (getChip(neighbourX, neighbourY).getColor() == Color.NEUTRAL) {
+                return new ArrayList<>();
+            }
+            if (getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
+                cells.add(new Cell(neighbourX, neighbourY));
+            }
+            if (getChip(neighbourX, neighbourY).getColor() == turnOrder) {
+                return cells;
+            }
+        }
+    }
+
 
     @Override
     public String toString() {
