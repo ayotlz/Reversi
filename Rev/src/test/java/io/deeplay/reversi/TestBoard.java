@@ -19,7 +19,7 @@ public class TestBoard {
     }
 
     @Test
-    public void testGetColorException() throws ReversiException {
+    public void testGetColorException() {
         assertThrows(ReversiException.class, () -> {
             board.getColor(-2,4);
         });

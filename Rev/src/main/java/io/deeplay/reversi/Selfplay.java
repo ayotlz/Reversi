@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import io.deeplay.reversi.bot.Bot;
+import io.deeplay.reversi.bot.HumanBot;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public class Selfplay {
     public static void main(String[] args) throws ReversiException, IOException {
-        Bot[] bots = new Bot[]{new Bot(), new Bot()};
+        Bot[] bots = new Bot[]{new HumanBot(), new HumanBot()};
         Board board = new Board();
         Handler handler = new Handler();
 

@@ -13,8 +13,8 @@ import org.apache.log4j.BasicConfigurator;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHandler {
-    static Board board;
-    static Handler handler;
+    Board board;
+    Handler handler;
 
     @BeforeEach
     public void init() throws ReversiException {
@@ -26,7 +26,7 @@ public class TestHandler {
 
 
     @Test
-    public void testInitializationBoard() throws ReversiException {
+    public void testInitializationBoard() {
         assertEquals(board.getArray()[3][3].getColor(), Color.WHITE);
         assertEquals(board.getArray()[4][4].getColor(), Color.WHITE);
         assertEquals(board.getArray()[3][4].getColor(), Color.BLACK);
