@@ -17,10 +17,4 @@ public class TestChip {
         assertEquals(chip.getColor().reverseColor(), Color.NEUTRAL);
     }
 
-    @Test
-    public void testSetColor() {
-        Chip chip = new Chip(Color.WHITE);
-        chip.setColor(Color.NEUTRAL);
-        assertEquals(chip.getColor(), Color.NEUTRAL);
-    }
 }

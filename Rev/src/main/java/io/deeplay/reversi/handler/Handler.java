@@ -63,7 +63,7 @@ public class Handler {
         Map<Cell, List<Cell>> map = getScoreMap(board, mapNeighborhood, turnOrder);
 
         if (map.get(cell) != null && map.get(cell).size() != 0) {
-            board.getChip(cell.getX(), cell.getY()).setColor(turnOrder);
+            board.setChip(cell.getX(), cell.getY(), turnOrder);
             flipCells(board, map.get(cell));
 
             logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
@@ -161,7 +161,7 @@ public class Handler {
     private void flipCells(Board board, List<Cell> cells) throws ReversiException {
         for (Cell cell : cells) {
             Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
-            board.getChip(cell.getX(), cell.getY()).setColor(reverse);
+            board.setChip(cell.getX(), cell.getY(), reverse);
         }
     }
 

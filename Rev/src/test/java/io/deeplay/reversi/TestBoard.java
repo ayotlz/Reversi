@@ -33,12 +33,12 @@ public class TestBoard {
 
     @Test
     public void testGetColorBlack() throws ReversiException {
-        board.getBoard()[0][0].setColor(Color.BLACK);
+        board.setChip(0,0, Color.BLACK);
         assertEquals(Color.BLACK, board.getColor(0,0));
     }
     @Test
     public void testGetColorWhite() throws ReversiException {
-        board.getBoard()[0][0].setColor(Color.WHITE);
+        board.setChip(0,0, Color.WHITE);
         assertEquals(Color.WHITE, board.getColor(0,0));
     }
 
@@ -54,14 +54,14 @@ public class TestBoard {
     @Test
     public void testGetWhiteChip() throws ReversiException {
         Chip chip = new Chip(Color.WHITE);
-        board.getBoard()[0][0].setColor(Color.WHITE);
+        board.setChip(0,0, Color.WHITE);
         assertEquals(chip, board.getChip(0,0));
     }
 
     @Test
     public void testGetBlackChip() throws ReversiException {
         Chip chip = new Chip(Color.BLACK);
-        board.getBoard()[0][0].setColor(Color.BLACK);
+        board.setChip(0,0, Color.BLACK);
         assertEquals(chip, board.getChip(0,0));
     }
 

@@ -53,6 +53,13 @@ public class Board {
         return board[x][y];
     }
 
+    public void setChip(int x, int y, Color color) throws ReversiException {
+        if (x < 0 || x > boardSize || y < 0 || y > boardSize) {
+            throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
+        }
+        board[x][y] = new Chip(color);
+    }
+
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
