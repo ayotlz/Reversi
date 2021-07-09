@@ -13,8 +13,8 @@ import org.apache.log4j.BasicConfigurator;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHandler {
-    static Board board;
-    static Handler handler;
+    Board board;
+    Handler handler;
 
     @BeforeEach
     public void init() throws ReversiException {
