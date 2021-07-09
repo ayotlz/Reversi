@@ -5,7 +5,6 @@ import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
 
 import org.slf4j.Logger;
@@ -20,9 +19,7 @@ public class Handler {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public void initializationBoard(Board board) throws ReversiException {
-        if (board.getBoardSize() % 2 == 1) {
-            throw new ReversiException(ReversiErrorCode.ODD_SIZE_BOARD);
-        }
+        Validator.isBoardCorrect(board);
 
         int idx1 = board.getBoardSize() / 2 - 1;
         int idx2 = board.getBoardSize() / 2;
@@ -57,7 +54,7 @@ public class Handler {
     public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
         logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
 
-        Validator.isCorrectCell(cell, board.getBoardSize());
+        Validator.isCellCorrect(cell, board.getBoardSize());
 
         List<Cell> chipsOfOpponent = findWhiteOrBlackChips(board, turnOrder);
         Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(board, chipsOfOpponent);
@@ -128,9 +125,7 @@ public class Handler {
     }
 
     private List<Cell> getListOfFlipCells(Board board, Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
-        if (neighbourCell.equals(mainCell)) {
-            throw new ReversiException(ReversiErrorCode.CELLS_ARE_EQUALS);
-        }
+        Validator.isCellEquals(neighbourCell, mainCell);
 
         int differenceX = mainCell.getX() - neighbourCell.getX();
         int differenceY = mainCell.getY() - neighbourCell.getY();

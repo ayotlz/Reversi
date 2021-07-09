@@ -3,7 +3,6 @@ package io.deeplay.reversi.models.board;
 import io.deeplay.reversi.Validator;
 import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
 
 public class Board {
@@ -25,7 +24,7 @@ public class Board {
     }
 
     public Color getColor(int x, int y) throws ReversiException {
-        Validator.isCorrectCell(new Cell(x, y), boardSize);
+        Validator.isCellCorrect(new Cell(x, y), boardSize);
 
         return board[x][y].getColor();
     }
@@ -35,16 +34,12 @@ public class Board {
     }
 
     public Chip getChip(int x, int y) throws ReversiException {
-        if (x < 0 || x > boardSize || y < 0 || y > boardSize) {
-            throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
-        } 
+        Validator.isCellCorrect(new Cell(x, y), boardSize);
         return board[x][y];
     }
 
     public void setChip(int x, int y, Color color) throws ReversiException {
-        if (x < 0 || x > boardSize || y < 0 || y > boardSize) {
-            throw new ReversiException(ReversiErrorCode.OUT_OF_BOARD);
-        }
+        Validator.isCellCorrect(new Cell(x, y), boardSize);
         board[x][y] = new Chip(color);
     }
 
