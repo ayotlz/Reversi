@@ -7,14 +7,11 @@ import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
-import java.io.File;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestBoard {
-    static Board board;
+    Board board;
 
     @BeforeEach
     public void init() {
@@ -27,22 +24,6 @@ public class TestBoard {
     }
 
     @Test
-    public void testGetColor() throws ReversiException {
-        assertEquals(Color.NEUTRAL, board.getColor(0,0));
-    }
-
-    @Test
-    public void testGetColorBlack() throws ReversiException {
-        board.setChip(0,0, Color.BLACK);
-        assertEquals(Color.BLACK, board.getColor(0,0));
-    }
-    @Test
-    public void testGetColorWhite() throws ReversiException {
-        board.setChip(0,0, Color.WHITE);
-        assertEquals(Color.WHITE, board.getColor(0,0));
-    }
-
-    @Test
     public void testGetAllColors() throws ReversiException {
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
@@ -52,16 +33,22 @@ public class TestBoard {
     }
 
     @Test
-    public void testGetWhiteChip() throws ReversiException {
+    public void testSetWhiteChip() throws ReversiException {
         Chip chip = new Chip(Color.WHITE);
         board.setChip(0,0, Color.WHITE);
-        assertEquals(chip, board.getChip(0,0));
+        assertEquals(chip.getColor(), board.getColor(0,0));
     }
 
     @Test
-    public void testGetBlackChip() throws ReversiException {
+    public void testSetBlackChip() throws ReversiException {
         Chip chip = new Chip(Color.BLACK);
         board.setChip(0,0, Color.BLACK);
+        assertEquals(chip.getColor(), board.getColor(0,0));
+    }
+
+    @Test
+    public void testGetChip() throws ReversiException {
+        Chip chip = new Chip(Color.NEUTRAL);
         assertEquals(chip, board.getChip(0,0));
     }
 

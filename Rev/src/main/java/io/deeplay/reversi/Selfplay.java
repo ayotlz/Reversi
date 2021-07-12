@@ -1,7 +1,6 @@
 package io.deeplay.reversi;
 
 import io.deeplay.reversi.bot.Player;
-import io.deeplay.reversi.bot.HumanPlayer;
 import io.deeplay.reversi.bot.RandomBot;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
