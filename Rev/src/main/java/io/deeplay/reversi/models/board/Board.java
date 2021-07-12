@@ -49,10 +49,10 @@ public class Board {
     }
 
     public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) throws ReversiException {
-        List<Cell> chipsOfOpponent = findWhiteOrBlackChips(turnOrder);
-        Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
+        final List<Cell> chipsOfOpponent = findWhiteOrBlackChips(turnOrder);
+        final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
 
-        Map<Cell, List<Cell>> scoreMap = new HashMap<>();
+        final Map<Cell, List<Cell>> scoreMap = new HashMap<>();
         for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.put(cell, new ArrayList<>());
@@ -65,7 +65,7 @@ public class Board {
             }
         }
 
-        List<Cell> listToDelete = new ArrayList<>();
+        final List<Cell> listToDelete = new ArrayList<>();
         for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
             if (scoreMap.get(entry.getKey()).size() == 0) {
                 listToDelete.add(entry.getKey());
@@ -81,7 +81,7 @@ public class Board {
 
 
     private List<Cell> findWhiteOrBlackChips(Color turnOrder) {
-        ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
+        final ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
         final Color findColor = turnOrder.reverseColor();
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
@@ -95,16 +95,16 @@ public class Board {
     }
 
     private Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfWhiteOrBlackChips) {
-        Map<Cell, List<Cell>> neighborhood = new HashMap<>();
+        final Map<Cell, List<Cell>> neighborhood = new HashMap<>();
         for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
-            List<Cell> tempList = new ArrayList<>();
+            final List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
                     if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
                             k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
-                        Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
+                        final Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
-                            Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
+                            final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
                             tempList.add(tempCell);
                         }
                     }
@@ -121,7 +121,7 @@ public class Board {
         int differenceX = mainCell.getX() - neighbourCell.getX();
         int differenceY = mainCell.getY() - neighbourCell.getY();
 
-        List<Cell> cells = new ArrayList<>();
+        final List<Cell> cells = new ArrayList<>();
 
         int neighbourX = neighbourCell.getX();
         int neighbourY = neighbourCell.getY();
@@ -148,7 +148,7 @@ public class Board {
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         for (int i = 0; i < boardSize; i++) {
             b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append(" ").append(BoardColor.RESET.getColor());
         }

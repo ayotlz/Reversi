@@ -18,8 +18,8 @@ public class Handler {
     public void initializationBoard(Board board) throws ReversiException {
         Validator.isBoardCorrect(board);
 
-        int idx1 = board.getBoardSize() / 2 - 1;
-        int idx2 = board.getBoardSize() / 2;
+        final int idx1 = board.getBoardSize() / 2 - 1;
+        final int idx2 = board.getBoardSize() / 2;
 
         board.getBoard()[idx1][idx1] = new Chip(Color.WHITE);
         board.getBoard()[idx1][idx2] = new Chip(Color.BLACK);
@@ -48,28 +48,34 @@ public class Handler {
         return true;
     }
 
-    public boolean makeStep(Board board, Color turnOrder, Cell cell) throws ReversiException {
+    public boolean haveIStep(Board board, Color turnOrder) throws ReversiException {
+        return board.getScoreMap(turnOrder).size() != 0;
+    }
+
+    public boolean makeStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
         logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
 
+        checkStep(board, cell, turnOrder);
+        setChips(board, cell, turnOrder);
+        return true;
+    }
+
+    private void checkStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
+        Validator.isBoardCorrect(board);
         Validator.isCellCorrect(cell, board.getBoardSize());
+        Validator.canIMakeStep(board, cell, turnOrder);
+    }
 
-        Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
-
-        if (map.get(cell) != null && map.get(cell).size() != 0) {
-            board.setChip(cell.getX(), cell.getY(), turnOrder);
-            flipCells(board, map.get(cell));
-
-            logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
-            return true;
-        }
-
-        logger.warn("{} не может быть установлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
-        return false;
+    private void setChips(Board board, Cell cell, Color turnOrder) throws ReversiException {
+        final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
+        board.setChip(cell.getX(), cell.getY(), turnOrder);
+        flipCells(board, map.get(cell));
+        logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
     }
 
     private void flipCells(Board board, List<Cell> cells) throws ReversiException {
         for (Cell cell : cells) {
-            Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
+            final Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
             board.setChip(cell.getX(), cell.getY(), reverse);
         }
     }

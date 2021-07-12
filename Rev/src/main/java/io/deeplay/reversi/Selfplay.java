@@ -12,11 +12,11 @@ public class Selfplay {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
     public static void main(String[] args) throws ReversiException {
-        Board board = new Board();
-        Handler handler = new Handler();
+        final Board board = new Board();
+        final Handler handler = new Handler();
 
 //        Player[] players = new Player[]{new RandomBot(Color.BLACK), new RandomBot(Color.WHITE)};
-        Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new HumanPlayer(Color.WHITE)};
+        final Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new HumanPlayer(Color.WHITE)};
 
         handler.initializationBoard(board);
         System.out.println(board.toString());
@@ -24,22 +24,33 @@ public class Selfplay {
         logger.debug("Началась новая игра");
         while (!handler.isGameEnd(board)) {
             for (Player player : players) {
+                if (handler.isGameEnd(board)) {
+                    break;
+                }
+
+                if (!handler.haveIStep(board, player.getPlayerColor())) {
+                    System.out.println("Ход переходит");
+                    continue;
+                }
+
                 while (true) {
                     logger.debug("Ходят {}", player.getPlayerColor());
                     System.out.println("Ходят " + player.getPlayerColor());
-                    Cell cell = player.getAnswer(board);
 
-                    if (handler.makeStep(board, player.getPlayerColor(), cell)) {
+                    try {
+                        final Cell cell = player.getAnswer(board);
+                        handler.makeStep(board, cell, player.getPlayerColor());
                         System.out.println(board.toString());
-                        logger.debug("Ход поменялся");
                         break;
+                    } catch (ReversiException e) {
+                        System.out.println("Ход не может быть сделан\n");
                     }
-                    else {
-                        System.out.println("Ход не может быть сделан");
-                    }
-                    System.out.println(board.toString());
                 }
             }
         }
+        System.out.println("Игра закончилась");
+        System.out.println("Черные: " + handler.getScoreBlack(board));
+        System.out.println("Белые: " + handler.getScoreWhite(board));
+        logger.debug("Игра закончилась");
     }
 }

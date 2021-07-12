@@ -15,7 +15,7 @@ public class RandomBot extends Player {
 
     @Override
     public Cell getAnswer(Board board) throws ReversiException {
-        Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
+        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         int maxScore = 0;
         Cell cell = null;
