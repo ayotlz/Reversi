@@ -35,12 +35,6 @@ public class Validator {
         }
     }
 
-    public static void isCellEquals(Cell cell1, Cell cell2) throws ReversiException {
-        if (cell1.equals(cell2)) {
-            throw new ReversiException(ReversiErrorCode.CELLS_ARE_EQUALS);
-        }
-    }
-
     public static void canIMakeStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
 

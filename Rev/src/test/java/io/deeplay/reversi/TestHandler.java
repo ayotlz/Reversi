@@ -11,6 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestHandler {
     Board board;
@@ -57,9 +58,8 @@ public class TestHandler {
                 for (int column = 0; column < arr[row].length; column++) {
                     if (arr[row][column] == i) {
                         assertFalse(handler.isGameEnd(board));
-                        if (handler.makeStep(board, new Cell(row, column), color)) {
-                            color = color.reverseColor();
-                        }
+                        handler.makeStep(board, new Cell(row, column), color);
+                        color = color.reverseColor();
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class TestHandler {
 
     @Test
     public void testWrongStep() throws ReversiException {
-        assertFalse(handler.makeStep(board, new Cell(0, 0), Color.BLACK));
+        assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(0, 0), Color.BLACK));
     }
 
     @Test

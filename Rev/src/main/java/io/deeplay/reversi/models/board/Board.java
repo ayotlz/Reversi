@@ -38,17 +38,15 @@ public class Board {
         return boardSize;
     }
 
-    public Chip getChip(int x, int y) throws ReversiException {
-        Validator.isCellCorrect(new Cell(x, y), boardSize);
+    public Chip getChip(int x, int y) {
         return board[x][y];
     }
 
-    public void setChip(int x, int y, Color color) throws ReversiException {
-        Validator.isCellCorrect(new Cell(x, y), boardSize);
+    public void setChip(int x, int y, Color color) {
         board[x][y] = new Chip(color);
     }
 
-    public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) throws ReversiException {
+    public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) {
         final List<Cell> chipsOfOpponent = findWhiteOrBlackChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
 
@@ -115,8 +113,10 @@ public class Board {
         return neighborhood;
     }
 
-    private List<Cell> getListOfFlipCells(Cell neighbourCell, Cell mainCell, Color turnOrder) throws ReversiException {
-        Validator.isCellEquals(neighbourCell, mainCell);
+    private List<Cell> getListOfFlipCells(Cell neighbourCell, Cell mainCell, Color turnOrder) {
+        if (neighbourCell.equals(mainCell)) {
+            return new ArrayList<>();
+        }
 
         int differenceX = mainCell.getX() - neighbourCell.getX();
         int differenceY = mainCell.getY() - neighbourCell.getY();
