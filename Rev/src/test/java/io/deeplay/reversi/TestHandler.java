@@ -108,7 +108,7 @@ public class TestHandler {
     }
 
     @Test
-    public void testWrongStep() throws ReversiException {
+    public void testWrongStep() {
         assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(0, 0), Color.BLACK));
     }
 
