@@ -28,10 +28,10 @@ public class TestHandler {
 
     @Test
     public void testInitializationBoard() {
-        assertEquals(board.getBoard()[3][3].getColor(), Color.WHITE);
-        assertEquals(board.getBoard()[4][4].getColor(), Color.WHITE);
-        assertEquals(board.getBoard()[3][4].getColor(), Color.BLACK);
-        assertEquals(board.getBoard()[4][3].getColor(), Color.BLACK);
+        assertEquals(board.getColor(3, 3), Color.WHITE);
+        assertEquals(board.getColor(4, 4), Color.WHITE);
+        assertEquals(board.getColor(3, 4), Color.BLACK);
+        assertEquals(board.getColor(4, 3), Color.BLACK);
     }
 
     @Test

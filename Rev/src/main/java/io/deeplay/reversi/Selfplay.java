@@ -15,8 +15,8 @@ public class Selfplay {
         final Board board = new Board();
         final Handler handler = new Handler();
 
-//        Player[] players = new Player[]{new RandomBot(Color.BLACK), new RandomBot(Color.WHITE)};
-        final Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new HumanPlayer(Color.WHITE)};
+        Player[] players = new Player[]{new RandomBot(Color.BLACK), new RandomBot(Color.WHITE)};
+//        final Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new HumanPlayer(Color.WHITE)};
 
         handler.initializationBoard(board);
         System.out.println(board.toString());

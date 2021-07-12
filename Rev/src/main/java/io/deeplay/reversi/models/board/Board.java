@@ -1,19 +1,30 @@
 package io.deeplay.reversi.models.board;
 
-import io.deeplay.reversi.Validator;
 import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Класс Board - класс доски
+ */
 public class Board {
+    /**
+     * Поле доски, которое хранит двумерный массив фишек
+     */
     private final Chip[][] board;
+
+    /**
+     * Поле размера доски
+     */
     private final int boardSize = 8;
 
+    /**
+     * Конкструктор - создание доски размера boardSize с нейтральными фишками по умолчанию
+     */
     public Board() {
         board = new Chip[boardSize][boardSize];
 
@@ -24,30 +35,56 @@ public class Board {
         }
     }
 
-    public Chip[][] getBoard() {
-        return board;
-    }
-
-    public Color getColor(int x, int y) throws ReversiException {
-        Validator.isCellCorrect(new Cell(x, y), boardSize);
-
+    /**
+     * Функция возвращает цвет на клетке с координатами x и y
+     *
+     * @param x - координата x
+     * @param y - координата y
+     * @return возвращает Color
+     */
+    public Color getColor(int x, int y) {
         return board[x][y].getColor();
     }
 
+    /**
+     * Функция возвращает размер доски
+     *
+     * @return возвращает boardSize
+     */
     public int getBoardSize() {
         return boardSize;
     }
 
-    public Chip getChip(int x, int y) {
-        return board[x][y];
-    }
-
-    public void setChip(int x, int y, Color color) {
+    /**
+     * Функция устанавливает цвет фишки в клетке
+     *
+     * @param x     - координата x
+     * @param y     - координата x
+     * @param color - цвет фишки
+     */
+    public void setColor(int x, int y, Color color) {
         board[x][y] = new Chip(color);
     }
 
+    /**
+     * Функция переворота фишки по координатам
+     *
+     * @param x - координата x
+     * @param y - координата y
+     */
+    public void reverseChip(int x, int y) {
+        board[x][y].reverseChip();
+    }
+
+    /**
+     * Функция ищет клетки, в которые можно походить
+     *
+     * @param turnOrder - цвет, который совершает ход в данный момент
+     * @return возвращает Map: ключ - клетка, куда можно походить; значение - список клеток, фишки в которых будут
+     * перевёрнуты, в случае хода в клетку из ключа
+     */
     public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) {
-        final List<Cell> chipsOfOpponent = findWhiteOrBlackChips(turnOrder);
+        final List<Cell> chipsOfOpponent = findOpponentsChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
 
         final Map<Cell, List<Cell>> scoreMap = new HashMap<>();
@@ -78,7 +115,13 @@ public class Board {
     }
 
 
-    private List<Cell> findWhiteOrBlackChips(Color turnOrder) {
+    /**
+     * Функция поиска всех фишек противника
+     *
+     * @param turnOrder - цвет, который совершает ход в данный момент
+     * @return возвращает список клеток, в которых расположены фишки противника
+     */
+    private List<Cell> findOpponentsChips(Color turnOrder) {
         final ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
         final Color findColor = turnOrder.reverseColor();
         for (int i = 0; i < boardSize; i++) {
@@ -92,9 +135,15 @@ public class Board {
         return listOfWhiteOrBlackChips;
     }
 
-    private Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfWhiteOrBlackChips) {
+    /**
+     * Функция поиска пустых клеток вокруг фишек противника
+     *
+     * @param listOfOpponentsChips - список клеток, в которых расположены фишки противника
+     * @return возвращает Map: ключ - клетка противника; значение - список пустых клеток вокруг
+     */
+    private Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfOpponentsChips) {
         final Map<Cell, List<Cell>> neighborhood = new HashMap<>();
-        for (Cell listOfWhiteOrBlackChip : listOfWhiteOrBlackChips) {
+        for (Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
             final List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
@@ -113,13 +162,21 @@ public class Board {
         return neighborhood;
     }
 
+    /**
+     * Функция поиска всех клеток, которые будут перевёрнуты в одном напралении
+     *
+     * @param neighbourCell - клетка, в сторону которой будет искаться возможность сделать ход
+     * @param mainCell      - клетка, из которой ищется возможность сделать ход
+     * @param turnOrder     - цвет, который совершает ход в данный момент
+     * @return возвращается список клеток одного конкретного направления, которые могут быть перевёрнуты
+     */
     private List<Cell> getListOfFlipCells(Cell neighbourCell, Cell mainCell, Color turnOrder) {
         if (neighbourCell.equals(mainCell)) {
             return new ArrayList<>();
         }
 
-        int differenceX = mainCell.getX() - neighbourCell.getX();
-        int differenceY = mainCell.getY() - neighbourCell.getY();
+        final int differenceX = mainCell.getX() - neighbourCell.getX();
+        final int differenceY = mainCell.getY() - neighbourCell.getY();
 
         final List<Cell> cells = new ArrayList<>();
 
@@ -133,18 +190,17 @@ public class Board {
             if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
                 return new ArrayList<>();
             }
-            if (getChip(neighbourX, neighbourY).getColor() == Color.NEUTRAL) {
+            if (getColor(neighbourX, neighbourY) == Color.NEUTRAL) {
                 return new ArrayList<>();
             }
-            if (getChip(neighbourX, neighbourY).getColor() == turnOrder.reverseColor()) {
+            if (getColor(neighbourX, neighbourY) == turnOrder.reverseColor()) {
                 cells.add(new Cell(neighbourX, neighbourY));
             }
-            if (getChip(neighbourX, neighbourY).getColor() == turnOrder) {
+            if (getColor(neighbourX, neighbourY) == turnOrder) {
                 return cells;
             }
         }
     }
-
 
     @Override
     public String toString() {

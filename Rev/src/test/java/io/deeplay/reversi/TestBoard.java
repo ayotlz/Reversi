@@ -1,7 +1,6 @@
 package io.deeplay.reversi;
 
 import io.deeplay.reversi.models.board.Board;
-import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,12 +30,12 @@ public class TestBoard {
 
     @Test
     public void testGetColorBlack() throws ReversiException {
-        board.setChip(0,0, Color.BLACK);
+        board.setColor(0,0, Color.BLACK);
         assertEquals(Color.BLACK, board.getColor(0,0));
     }
     @Test
     public void testGetColorWhite() throws ReversiException {
-        board.setChip(0,0, Color.WHITE);
+        board.setColor(0,0, Color.WHITE);
         assertEquals(Color.WHITE, board.getColor(0,0));
     }
 
@@ -50,17 +49,15 @@ public class TestBoard {
     }
 
     @Test
-    public void testGetWhiteChip() throws ReversiException {
-        Chip chip = new Chip(Color.WHITE);
-        board.setChip(0,0, Color.WHITE);
-        assertEquals(chip, board.getChip(0,0));
+    public void testGetWhiteChip() {
+        board.setColor(0,0, Color.WHITE);
+        assertEquals(Color.WHITE, board.getColor(0,0));
     }
 
     @Test
-    public void testGetBlackChip() throws ReversiException {
-        Chip chip = new Chip(Color.BLACK);
-        board.setChip(0,0, Color.BLACK);
-        assertEquals(chip, board.getChip(0,0));
+    public void testGetBlackChip() {
+        board.setColor(0,0, Color.BLACK);
+        assertEquals(Color.BLACK, board.getColor(0,0));
     }
 
 //    @Test

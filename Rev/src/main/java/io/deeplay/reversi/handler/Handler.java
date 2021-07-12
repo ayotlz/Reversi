@@ -1,9 +1,8 @@
 package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.Validator;
+import io.deeplay.reversi.validation.Validator;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
-import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.exceptions.ReversiException;
 import org.slf4j.Logger;
@@ -33,10 +32,10 @@ public class Handler {
         final int idx1 = board.getBoardSize() / 2 - 1;
         final int idx2 = board.getBoardSize() / 2;
 
-        board.getBoard()[idx1][idx1] = new Chip(Color.WHITE);
-        board.getBoard()[idx1][idx2] = new Chip(Color.BLACK);
-        board.getBoard()[idx2][idx1] = new Chip(Color.BLACK);
-        board.getBoard()[idx2][idx2] = new Chip(Color.WHITE);
+        board.setColor(idx1, idx1, Color.WHITE);
+        board.setColor(idx1, idx2, Color.BLACK);
+        board.setColor(idx2, idx1, Color.BLACK);
+        board.setColor(idx2, idx2, Color.WHITE);
 
         logger.debug("Доска проинициализирована");
     }
@@ -79,7 +78,7 @@ public class Handler {
      */
     private void setChips(Board board, Cell cell, Color turnOrder) {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
-        board.setChip(cell.getX(), cell.getY(), turnOrder);
+        board.setColor(cell.getX(), cell.getY(), turnOrder);
         flipCells(board, map.get(cell));
         logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
     }
@@ -111,9 +110,9 @@ public class Handler {
      * @return возвращает false если на доске ещё есть пустые клетки, в противоположном случае возвращает true
      */
     private boolean isFullBoard(Board board) {
-        for (Chip[] row : board.getBoard()) {
-            for (Chip chip : row) {
-                if (chip.getColor() == Color.NEUTRAL) {
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (board.getColor(i, j) == Color.NEUTRAL) {
                     return false;
                 }
             }
@@ -150,8 +149,7 @@ public class Handler {
      */
     private void flipCells(Board board, List<Cell> cells) {
         for (Cell cell : cells) {
-            final Color reverse = board.getChip(cell.getX(), cell.getY()).getColor().reverseColor();
-            board.setChip(cell.getX(), cell.getY(), reverse);
+            board.reverseChip(cell.getX(), cell.getY());
         }
     }
 
@@ -163,13 +161,14 @@ public class Handler {
      */
     public int getScoreWhite(Board board) {
         int scoreWhite = 0;
-        for (Chip[] rows : board.getBoard()) {
-            for (Chip chip : rows) {
-                if (chip.getColor() == Color.WHITE) {
-                    scoreWhite += 1;
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (board.getColor(i, j) == Color.WHITE) {
+                    scoreWhite++;
                 }
             }
         }
+
         return scoreWhite;
     }
 
@@ -181,13 +180,14 @@ public class Handler {
      */
     public int getScoreBlack(Board board) {
         int scoreBlack = 0;
-        for (Chip[] rows : board.getBoard()) {
-            for (Chip chip : rows) {
-                if (chip.getColor() == Color.BLACK) {
-                    scoreBlack += 1;
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (board.getColor(i, j) == Color.BLACK) {
+                    scoreBlack++;
                 }
             }
         }
+
         return scoreBlack;
     }
 }

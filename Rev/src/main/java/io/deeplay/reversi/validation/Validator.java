@@ -1,4 +1,4 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.validation;
 
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
@@ -12,9 +12,22 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Класс Validator - класс валидации
+ */
 public class Validator {
+    /**
+     * Поле логгера
+     */
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
 
+    /**
+     * Функция проверки клетки на корректность
+     *
+     * @param cell      - клетка
+     * @param boardSize - размеры доски
+     * @throws ReversiException выбрасиывает исключение, если клетка вылезает за границы доски или равна null
+     */
     public static void isCellCorrect(Cell cell, int boardSize) throws ReversiException {
         if (cell == null) {
             throw new ReversiException(ReversiErrorCode.CELL_IS_NULL);
@@ -25,6 +38,12 @@ public class Validator {
         }
     }
 
+    /**
+     * Функция проверки доски на корректность
+     *
+     * @param board - доска
+     * @throws ReversiException выбрасывает исключение, если размер доски - нечётное число или доска равна null
+     */
     public static void isBoardCorrect(Board board) throws ReversiException {
         if (board == null) {
             throw new ReversiException(ReversiErrorCode.BOARD_IS_NULL);
@@ -35,6 +54,14 @@ public class Validator {
         }
     }
 
+    /**
+     * Функция проверки возможности шага
+     *
+     * @param board     - доска
+     * @param cell      - клетка
+     * @param turnOrder - цвет, который совершает ход в данный момент
+     * @throws ReversiException выбрасывает исключение, если игрок не может совершить ход в данную клетку
+     */
     public static void canIMakeStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
 

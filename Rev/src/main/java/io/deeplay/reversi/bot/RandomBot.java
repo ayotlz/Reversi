@@ -1,6 +1,5 @@
 package io.deeplay.reversi.bot;
 
-import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
@@ -14,7 +13,7 @@ public class RandomBot extends Player {
     }
 
     @Override
-    public Cell getAnswer(Board board) throws ReversiException {
+    public Cell getAnswer(Board board) {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         int maxScore = 0;
