@@ -1,19 +1,49 @@
 package io.deeplay.reversi.models.board;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
+/**
+ * Класс Cell - класс клетки
+ */
 public class Cell {
+    /**
+     * переменная координаты x
+     */
+    @JsonProperty
     private final int x;
+    /**
+     * переменная координаты y
+     */
+    @JsonProperty
     private final int y;
 
+    /**
+     * Конструктор - создание клетки по координатам
+     *
+     * @param x - координата x
+     * @param y - координата y
+     */
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Функция получения координаты x
+     *
+     * @return возвращает координату x
+     */
     public int getX() {
         return x;
     }
+
+    /**
+     * Функция получения координаты y
+     *
+     * @return возвращает координату y
+     */
 
     public int getY() {
         return y;
