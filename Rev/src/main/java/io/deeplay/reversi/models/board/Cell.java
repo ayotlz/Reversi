@@ -1,5 +1,7 @@
 package io.deeplay.reversi.models.board;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 /**
@@ -9,10 +11,12 @@ public class Cell {
     /**
      * переменная координаты x
      */
+    @JsonProperty
     private final int x;
     /**
      * переменная координаты y
      */
+    @JsonProperty
     private final int y;
 
     /**
