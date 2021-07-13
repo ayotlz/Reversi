@@ -13,9 +13,9 @@ public class HumanPlayer extends Player {
 
     @Override
     public Cell getAnswer(Board board) {
-        InputStream inputStream = System.in;
-        Reader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        final InputStream inputStream = System.in;
+        final Reader inputStreamReader = new InputStreamReader(inputStream);
+        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         Integer x = null, y = null;
 
@@ -23,8 +23,9 @@ public class HumanPlayer extends Player {
             try {
                 System.out.print("Введите значение по вертикали: ");
                 x = Integer.parseInt(bufferedReader.readLine());
-            } catch (IOException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Вы ввели некорректное значение");
+            } catch (IOException ignore) {
             }
         }
 
@@ -32,8 +33,9 @@ public class HumanPlayer extends Player {
             try {
                 System.out.print("Введите значение по горизонтали: ");
                 y = Integer.parseInt(bufferedReader.readLine());
-            } catch (IOException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Вы ввели некорректное значение");
+            } catch (IOException ignore) {
             }
         }
 
