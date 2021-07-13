@@ -31,6 +31,14 @@ public class Cell {
     }
 
     /**
+     * Конструктор копирования клетки
+     */
+    public Cell(Cell cell) {
+        this.x = cell.getX();
+        this.y = cell.getY();
+    }
+
+    /**
      * Функция получения координаты x
      *
      * @return возвращает координату x

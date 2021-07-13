@@ -1,5 +1,7 @@
 package io.deeplay.reversi.models.board;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.deeplay.reversi.models.chip.Chip;
 import io.deeplay.reversi.models.chip.Color;
 
@@ -15,6 +17,7 @@ public class Board {
     /**
      * Поле доски, которое хранит двумерный массив фишек
      */
+    @JsonProperty
     private final Chip[][] board;
 
     /**
@@ -26,12 +29,24 @@ public class Board {
      * Конкструктор - создание доски размера boardSize с нейтральными фишками по умолчанию
      */
     public Board() {
-        board = new Chip[boardSize][boardSize];
+        this.board = new Chip[boardSize][boardSize];
 
-        for (Chip[] chips : board) {
-            for (int j = 0; j < board.length; j++) {
+        for (Chip[] chips : this.board) {
+            for (int j = 0; j < this.board.length; j++) {
                 chips[j] = new Chip(Color.NEUTRAL);
             }
+        }
+    }
+
+    /**
+     * Конкструктор копирования доски
+     */
+    @JsonCreator
+    public Board(@JsonProperty("board") final Chip[][] board) {
+        this.board = new Chip[boardSize][boardSize];
+
+        for (int i = 0; i < board.length; i++) {
+            System.arraycopy(board[i], 0, this.board[i], 0, board.length);
         }
     }
 
