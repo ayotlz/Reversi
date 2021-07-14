@@ -1,14 +1,20 @@
 package io.deeplay.reversi.models.chip;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.Objects;
 
 /**
  * Класс Chip - класс фишки
  */
+@JsonPropertyOrder
 public class Chip {
     /**
      * поле цвета фишки
      */
+    @JsonProperty
     private Color color;
 
     /**
@@ -16,7 +22,8 @@ public class Chip {
      *
      * @param color - цвет
      */
-    public Chip(Color color) {
+    @JsonCreator
+    public Chip(@JsonProperty("color") Color color) {
         this.color = color;
     }
 
@@ -36,9 +43,9 @@ public class Chip {
      */
     public void setColor(Color color) {
         if (color == Color.BLACK) {
-            setBlack();
+            this.color = Color.BLACK;
         } else if (color == Color.WHITE) {
-            setWhite();
+            this.color = Color.WHITE;
         }
     }
 
@@ -47,20 +54,6 @@ public class Chip {
      */
     public void reverseChip() {
         color = color.reverseColor();
-    }
-
-    /**
-     * Функция установки чёрного цвета
-     */
-    private void setBlack() {
-        this.color = Color.BLACK;
-    }
-
-    /**
-     * Функция установки белого цвета
-     */
-    private void setWhite() {
-        this.color = Color.WHITE;
     }
 
     @Override
@@ -75,4 +68,5 @@ public class Chip {
     public int hashCode() {
         return Objects.hash(color);
     }
+
 }

@@ -8,21 +8,32 @@ import io.deeplay.reversi.exceptions.ReversiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 public class Selfplay {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
+    private Board board;
+    private Handler handler;
+    private Player[] players;
 
-    public static void main(String[] args) throws ReversiException {
-        final Board board = new Board();
-        final Handler handler = new Handler();
+    //    getPlayers
+//    getAnswer
+    public Selfplay() {
+        board = new Board();
+        handler = new Handler();
+    }
 
-        Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new RandomBot(Color.WHITE)};
-//        Player[] players = new Player[]{new RandomBot(Color.BLACK), new RandomBot(Color.WHITE)};
-//        final Player[] players = new Player[]{new HumanPlayer(Color.BLACK), new HumanPlayer(Color.WHITE)};
+    public void start() {
+        try {
+            handler.initializationBoard(board);
+            logger.debug("Началась новая игра");
+        } catch (ReversiException ignored) {
+        }
+    }
 
-        handler.initializationBoard(board);
-        System.out.println(board.toString());
+    public void game() throws ReversiException {
+        players = new Player[]{new HumanPlayer(Color.BLACK), new RandomBot(Color.WHITE)};
 
-        logger.debug("Началась новая игра");
         while (!handler.isGameEnd(board)) {
             for (Player player : players) {
                 if (handler.isGameEnd(board)) {
@@ -43,7 +54,7 @@ public class Selfplay {
                         handler.makeStep(board, cell, player.getPlayerColor());
                         System.out.println(board.toString());
                         break;
-                    } catch (ReversiException e) {
+                    } catch (ReversiException | IOException e) {
                         System.out.println("Ход не может быть сделан\n");
                     }
                 }

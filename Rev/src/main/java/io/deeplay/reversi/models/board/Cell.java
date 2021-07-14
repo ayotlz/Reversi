@@ -1,5 +1,6 @@
 package io.deeplay.reversi.models.board;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -25,9 +26,18 @@ public class Cell {
      * @param x - координата x
      * @param y - координата y
      */
-    public Cell(int x, int y) {
+    @JsonCreator
+    public Cell(@JsonProperty("x") final int x, @JsonProperty("y") final int y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Конструктор копирования клетки
+     */
+    public Cell(final Cell cell) {
+        this.x = cell.getX();
+        this.y = cell.getY();
     }
 
     /**

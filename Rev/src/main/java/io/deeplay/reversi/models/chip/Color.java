@@ -1,10 +1,20 @@
 package io.deeplay.reversi.models.chip;
 
-public enum Color {
-    BLACK("Black"), WHITE("White"), NEUTRAL("Neutral");
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public enum Color {
+    @JsonProperty
+    BLACK("Black"),
+    @JsonProperty
+    WHITE("White"),
+    @JsonProperty
+    NEUTRAL("Neutral");
+
+    @JsonProperty
     private final String colorString;
 
+    @JsonCreator
     Color(String colorString) {
         this.colorString = colorString;
     }

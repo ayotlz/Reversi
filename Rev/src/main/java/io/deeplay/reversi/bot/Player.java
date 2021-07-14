@@ -5,6 +5,8 @@ import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
+import java.io.IOException;
+
 /**
  * Класс Player - класс абстрактного игрока
  */
@@ -37,7 +39,6 @@ public abstract class Player {
      *
      * @param board - доска
      * @return возвращается ответ от игрока
-     * @throws ReversiException выбрасывает исключение при нарушении игровой логики
      */
-    public abstract Cell getAnswer(Board board) throws ReversiException;
+    public abstract Cell getAnswer(Board board) throws IOException;
 }

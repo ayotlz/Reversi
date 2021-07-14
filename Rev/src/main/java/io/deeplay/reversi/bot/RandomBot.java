@@ -1,9 +1,12 @@
 package io.deeplay.reversi.bot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,24 +18,17 @@ public class RandomBot extends Player {
     }
 
     @Override
-    public Cell getAnswer(Board board) {
+    public Cell getAnswer(Board board) throws IOException {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         Random random = new Random();
         List<Cell> keys = new ArrayList<>(scoreMap.keySet());
         Cell randomCell = keys.get(random.nextInt(keys.size()));
 
+        final StringWriter writer = new StringWriter();
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(writer, randomCell);
+
         return randomCell;
-//        int maxScore = 0;
-//        Cell cell = null;
-//
-//        for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
-//            if (scoreMap.get(entry.getKey()).size() > maxScore) {
-//                maxScore++;
-//                cell = entry.getKey();
-//            }
-//        }
-//
-//        return cell;
     }
 }
