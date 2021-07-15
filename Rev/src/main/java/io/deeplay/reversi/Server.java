@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.deeplay.reversi.bot.Player;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
@@ -17,6 +18,7 @@ public class Server {
     static final int PORT = 8082;
 
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
+//    private final ConcurrentLinkedQueue<Room> roomList = new ConcurrentLinkedQueue<>();
 
     private class ServerSomething extends Thread {
         private final Server server;
@@ -55,8 +57,8 @@ public class Server {
                     for (ServerSomething ss : serverList) {
                         serverSomethings[idx++] = ss;
                     }
-                    Game game = new Game(serverSomethings);
-                    game.startGame();
+                    Room game = new Room(serverSomethings);
+                    game.run();
                 } else if (serverList.size() > 2) {
                     this.downService();
                 }
@@ -87,18 +89,19 @@ public class Server {
         }
     }
 
-    private class Game {
+    private class Room extends Thread {
         private final ServerSomething[] players;
         private final Handler handler;
         private final Board board;
 
-        private Game(ServerSomething[] players) {
+        private Room(ServerSomething[] players) {
             this.players = players;
             handler = new Handler();
             board = new Board();
         }
 
-        private void startGame() {
+        @Override
+        public void run() {
             System.out.println("All the players have joined");
             try {
                 handler.initializationBoard(board);
@@ -107,10 +110,6 @@ public class Server {
 
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
-                    if (handler.isGameEnd(board)) {
-                        break;
-                    }
-
                     if (!handler.haveIStep(board, player.getColor())) {
                         System.out.println("Ход переходит");
                         continue;
@@ -138,7 +137,18 @@ public class Server {
                     }
                 }
             }
-
+            try {
+                for (ServerSomething player : players) {
+                    player.send("Игра закончилась");
+                    player.send("Черные: " + handler.getScoreBlack(board));
+                    player.send("Белые: " + handler.getScoreWhite(board));
+                    player.downService();
+                }
+            } catch (IOException ignored) {
+            }
+            System.out.println("Игра закончилась");
+            System.out.println("Черные: " + handler.getScoreBlack(board));
+            System.out.println("Белые: " + handler.getScoreWhite(board));
         }
     }
 

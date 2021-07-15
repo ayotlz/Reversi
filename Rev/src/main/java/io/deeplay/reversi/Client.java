@@ -1,8 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.deeplay.reversi.bot.HumanPlayer;
-import io.deeplay.reversi.bot.Player;
+import io.deeplay.reversi.bot.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
@@ -51,7 +50,7 @@ public class Client {
         }
 
         System.out.printf("Client started, ip: %s, port: %d%n", ip, port);
-        player = new HumanPlayer(getColor());
+        player = new RandomBot(getColor());
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
@@ -59,7 +58,6 @@ public class Client {
     private Color getColor() {
         try {
             String str = in.readLine();
-            System.out.println(str);
             final StringReader reader = new StringReader(str);
             final ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(reader, Color.class);
@@ -102,13 +100,15 @@ public class Client {
         @Override
         public void run() {
             String message;
-            try {
-                while (true) {
+            while (true) {
+                try {
                     message = in.readLine(); // ждем сообщения с сервера
-                    if (message.equals("Game end")) {
-                        break;
-                    }
+                } catch (IOException e) {
+                    downService();
+                    break;
+                }
 
+                try {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
                     final Board board = mapper.readValue(reader, Board.class);
@@ -117,8 +117,11 @@ public class Client {
                     final Cell cell = player.getAnswer(board);
                     mapper.writeValue(writer, cell);
                     send(writer.toString());
+                } catch (IOException e) {
+                    System.out.println(message);
+                } catch (NullPointerException e) {
+                    downService();
                 }
-            } catch (final IOException ignored) {
             }
         }
     }
