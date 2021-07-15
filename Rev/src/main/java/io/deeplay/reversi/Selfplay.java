@@ -12,27 +12,17 @@ import java.io.IOException;
 
 public class Selfplay {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-    private Board board;
-    private Handler handler;
-    private Player[] players;
-
     //    getPlayers
 //    getAnswer
-    public Selfplay() {
-        board = new Board();
-        handler = new Handler();
-    }
 
-    public void start() {
-        try {
-            handler.initializationBoard(board);
-            logger.debug("Началась новая игра");
-        } catch (ReversiException ignored) {
-        }
-    }
+    public static void game() throws ReversiException {
+        Board board = new Board();
+        Handler handler = new Handler();
+        Player[] players = new Player[]{new RandomBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        ;
 
-    public void game() throws ReversiException {
-        players = new Player[]{new HumanPlayer(Color.BLACK), new RandomBot(Color.WHITE)};
+        handler.initializationBoard(board);
+        logger.debug("Началась новая игра");
 
         while (!handler.isGameEnd(board)) {
             for (Player player : players) {
@@ -64,5 +54,11 @@ public class Selfplay {
         System.out.println("Черные: " + handler.getScoreBlack(board));
         System.out.println("Белые: " + handler.getScoreWhite(board));
         logger.debug("Игра закончилась");
+    }
+
+    public static void main(String[] args) throws ReversiException {
+        for (int i = 0; i < 100; i++) {
+            game();
+        }
     }
 }
