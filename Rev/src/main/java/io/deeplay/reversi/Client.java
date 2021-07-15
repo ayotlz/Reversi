@@ -3,15 +3,12 @@ package io.deeplay.reversi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.bot.HumanPlayer;
 import io.deeplay.reversi.bot.Player;
-import io.deeplay.reversi.bot.RandomBot;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
 import java.io.*;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Client {
 

@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.Random;
 
 public class RandomBot extends Player {
-    public RandomBot(Color color) {
+    public RandomBot(final Color color) {
         super(color);
     }
 
     @Override
-    public Cell getAnswer(Board board) throws IOException {
+    public final Cell getAnswer(final Board board) throws IOException {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         Random random = new Random();

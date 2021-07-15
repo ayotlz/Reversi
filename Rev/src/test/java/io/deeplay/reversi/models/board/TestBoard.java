@@ -1,4 +1,4 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.models.board;
 
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.chip.Color;

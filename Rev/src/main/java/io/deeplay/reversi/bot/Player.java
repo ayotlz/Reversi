@@ -1,6 +1,5 @@
 package io.deeplay.reversi.bot;
 
-import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
@@ -21,7 +20,7 @@ public abstract class Player {
      *
      * @param color - цвет игрока
      */
-    public Player(Color color) {
+    public Player(final Color color) {
         this.color = color;
     }
 
@@ -40,5 +39,5 @@ public abstract class Player {
      * @param board - доска
      * @return возвращается ответ от игрока
      */
-    public abstract Cell getAnswer(Board board) throws IOException;
+    public abstract Cell getAnswer(final Board board) throws IOException;
 }

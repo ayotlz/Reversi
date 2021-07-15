@@ -45,7 +45,7 @@ public class Cell {
      *
      * @return возвращает координату x
      */
-    public int getX() {
+    public final int getX() {
         return x;
     }
 
@@ -55,7 +55,7 @@ public class Cell {
      * @return возвращает координату y
      */
 
-    public int getY() {
+    public final int getY() {
         return y;
     }
 

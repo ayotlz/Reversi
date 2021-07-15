@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class Selfplay {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-    private Board board;
-    private Handler handler;
+    private final Board board;
+    private final Handler handler;
     private Player[] players;
 
     //    getPlayers
