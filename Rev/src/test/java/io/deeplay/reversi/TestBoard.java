@@ -52,19 +52,4 @@ public class TestBoard {
         board.setColor(0,0, Color.BLACK);
         assertEquals(Color.BLACK, board.getColor(0,0));
     }
-
-//    @Test
-//    public void testApply(){
-//        JFrame frame = new JFrame("Reversi");
-//        frame.setBounds(100, 100, 400, 400);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        String workingDir = System.getProperty("user.dir");
-//        String iconFilename = workingDir + File.separator + "res" + File.separator + "Icon32.png";
-//        ImageIcon icon = new ImageIcon(iconFilename);
-//        frame.setIconImage(icon.getImage());
-//        frame.setVisible(true);
-//        frame.;
-//
-//        JLabel cell = new JLabel(new ImageIcon("MyImage"));
-//    }
 }

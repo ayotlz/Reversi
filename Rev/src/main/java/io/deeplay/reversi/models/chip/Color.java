@@ -15,7 +15,7 @@ public enum Color {
     private final String colorString;
 
     @JsonCreator
-    Color(String colorString) {
+    Color(@JsonProperty("colorString") String colorString) {
         this.colorString = colorString;
     }
 

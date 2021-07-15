@@ -40,6 +40,7 @@ public class Board {
 
     /**
      * Конкструктор копирования доски
+     * @param board - исходная доска
      */
     @JsonCreator
     public Board(@JsonProperty("board") final Chip[][] board) {
