@@ -21,9 +21,9 @@ public class RandomBot extends Player {
     public final Cell getAnswer(final Board board) throws IOException {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
-        Random random = new Random();
-        List<Cell> keys = new ArrayList<>(scoreMap.keySet());
-        Cell randomCell = keys.get(random.nextInt(keys.size()));
+        final Random random = new Random();
+        final List<Cell> keys = new ArrayList<>(scoreMap.keySet());
+        final Cell randomCell = keys.get(random.nextInt(keys.size()));
 
         final StringWriter writer = new StringWriter();
         final ObjectMapper mapper = new ObjectMapper();

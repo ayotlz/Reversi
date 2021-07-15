@@ -14,6 +14,7 @@ public class Cell {
      */
     @JsonProperty
     private final int x;
+
     /**
      * переменная координаты y
      */

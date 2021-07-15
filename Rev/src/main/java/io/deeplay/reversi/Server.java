@@ -51,13 +51,13 @@ public class Server {
                     mapper.writeValue(writer, color);
                     send(writer.toString());
 
-                    ServerSomething[] serverSomethings = new ServerSomething[2];
+                    final ServerSomething[] serverSomethings = new ServerSomething[2];
                     int idx = 0;
                     for (ServerSomething ss : serverList) {
                         serverSomethings[idx++] = ss;
                     }
-                    Room game = new Room(serverSomethings);
-                    game.run();
+                    final Room room = new Room(serverSomethings);
+                    room.run();
                 } else if (serverList.size() > 2) {
                     this.downService();
                 }
@@ -93,7 +93,7 @@ public class Server {
         private final Handler handler;
         private final Board board;
 
-        private Room(ServerSomething[] players) {
+        private Room(final ServerSomething[] players) {
             this.players = players;
             handler = new Handler();
             board = new Board();
@@ -123,7 +123,7 @@ public class Server {
                             mapper.writeValue(writer, board);
                             player.send(writer.toString());
 
-                            String answer = player.in.readLine();
+                            final String answer = player.in.readLine();
                             final StringReader reader = new StringReader(answer);
                             final Cell cell = mapper.readValue(reader, Cell.class);
 
@@ -143,7 +143,7 @@ public class Server {
                     player.send("Белые: " + handler.getScoreWhite(board));
                     player.downService();
                 }
-            } catch (IOException ignored) {
+            } catch (final IOException ignored) {
             }
             System.out.println("Игра закончилась");
             System.out.println("Черные: " + handler.getScoreBlack(board));

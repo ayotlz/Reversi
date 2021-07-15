@@ -11,15 +11,15 @@ import java.net.Socket;
 
 public class Client {
 
-    private static final String IP = "127.0.0.1";//"localhost";
+    private static final String IP = "127.0.0.1";
     private static final int PORT = Server.PORT;
 
-    private final String ip; // ip адрес клиента
-    private final int port; // порт соединения
+    private final String ip;
+    private final int port;
 
     private Socket socket = null;
-    private BufferedReader in = null; // поток чтения из сокета
-    private BufferedWriter out = null; // поток записи в сокет
+    private BufferedReader in = null;
+    private BufferedWriter out = null;
     private Player player;
 
     /**
@@ -102,8 +102,8 @@ public class Client {
             String message;
             while (true) {
                 try {
-                    message = in.readLine(); // ждем сообщения с сервера
-                } catch (IOException e) {
+                    message = in.readLine();
+                } catch (final IOException e) {
                     downService();
                     break;
                 }
@@ -117,9 +117,9 @@ public class Client {
                     final Cell cell = player.getAnswer(board);
                     mapper.writeValue(writer, cell);
                     send(writer.toString());
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     System.out.println(message);
-                } catch (NullPointerException e) {
+                } catch (final NullPointerException e) {
                     downService();
                 }
             }

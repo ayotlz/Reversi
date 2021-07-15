@@ -55,9 +55,9 @@ public class TestSerializeDeserialize {
     @Test
     public void serializeAndDeserializeBoard() throws IOException {
         Board startBoard = new Board();
-        startBoard.setColor(0,0, Color.WHITE);
-        startBoard.setColor(0,1, Color.WHITE);
-        startBoard.setColor(0,2, Color.WHITE);
+        startBoard.setChip(0,0, Color.WHITE);
+        startBoard.setChip(0,1, Color.WHITE);
+        startBoard.setChip(0,2, Color.WHITE);
         final StringWriter writer = new StringWriter();
         final ObjectMapper mapper = new ObjectMapper();
         final StringReader reader = new StringReader("{\"board\":[[{\"color\":\"WHITE\"},{\"color\":\"WHITE\"},{\"color\":\"WHITE\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}],[{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"},{\"color\":\"NEUTRAL\"}]],\"boardSize\":8}\n");

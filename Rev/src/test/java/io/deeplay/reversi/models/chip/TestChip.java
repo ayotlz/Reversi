@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestChip {
     @Test
     public void testReverse() {
-        Chip chip = new Chip(Color.BLACK);
+        final Chip chip = new Chip(Color.BLACK);
         assertEquals(chip.getColor().reverseColor(), Color.WHITE);
     }
 
     @Test
     public void testWrongReverse() {
-        Chip chip = new Chip(Color.NEUTRAL);
+        final Chip chip = new Chip(Color.NEUTRAL);
         assertEquals(chip.getColor().reverseColor(), Color.NEUTRAL);
     }
 }

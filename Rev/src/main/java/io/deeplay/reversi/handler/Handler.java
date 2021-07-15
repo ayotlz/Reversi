@@ -1,6 +1,6 @@
 package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.validation.Validator;
+import io.deeplay.reversi.validation.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
@@ -8,8 +8,6 @@ import io.deeplay.reversi.exceptions.ReversiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,10 +32,10 @@ public class Handler {
         final int idx1 = board.getBoardSize() / 2 - 1;
         final int idx2 = board.getBoardSize() / 2;
 
-        board.setColor(idx1, idx1, Color.WHITE);
-        board.setColor(idx1, idx2, Color.BLACK);
-        board.setColor(idx2, idx1, Color.BLACK);
-        board.setColor(idx2, idx2, Color.WHITE);
+        board.setChip(idx1, idx1, Color.WHITE);
+        board.setChip(idx1, idx2, Color.BLACK);
+        board.setChip(idx2, idx1, Color.BLACK);
+        board.setChip(idx2, idx2, Color.WHITE);
 
         logger.debug("Доска проинициализирована");
     }
@@ -80,7 +78,7 @@ public class Handler {
      */
     private void setChips(final Board board, final Cell cell, final Color turnOrder) {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
-        board.setColor(cell.getX(), cell.getY(), turnOrder);
+        board.setChip(cell.getX(), cell.getY(), turnOrder);
         flipCells(board, map.get(cell));
         logger.debug("{} поставлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
     }
@@ -114,7 +112,7 @@ public class Handler {
     private boolean isFullBoard(final Board board) {
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getColor(i, j) == Color.NEUTRAL) {
+                if (board.getChipColor(i, j) == Color.NEUTRAL) {
                     return false;
                 }
             }
@@ -165,12 +163,11 @@ public class Handler {
         int scoreWhite = 0;
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getColor(i, j) == Color.WHITE) {
+                if (board.getChipColor(i, j) == Color.WHITE) {
                     scoreWhite++;
                 }
             }
         }
-
         return scoreWhite;
     }
 
@@ -184,12 +181,11 @@ public class Handler {
         int scoreBlack = 0;
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getColor(i, j) == Color.BLACK) {
+                if (board.getChipColor(i, j) == Color.BLACK) {
                     scoreBlack++;
                 }
             }
         }
-
         return scoreBlack;
     }
 }

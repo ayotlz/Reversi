@@ -23,9 +23,9 @@ public class HumanPlayer extends Player {
             try {
                 System.out.print("Введите значение по вертикали: ");
                 x = Integer.parseInt(bufferedReader.readLine());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 System.out.println("Вы ввели некорректное значение");
-            } catch (IOException ignore) {
+            } catch (final IOException ignore) {
             }
         }
 
@@ -33,12 +33,11 @@ public class HumanPlayer extends Player {
             try {
                 System.out.print("Введите значение по горизонтали: ");
                 y = Integer.parseInt(bufferedReader.readLine());
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 System.out.println("Вы ввели некорректное значение");
-            } catch (IOException ignore) {
+            } catch (final IOException ignore) {
             }
         }
-
         return new Cell(x, y);
     }
 }

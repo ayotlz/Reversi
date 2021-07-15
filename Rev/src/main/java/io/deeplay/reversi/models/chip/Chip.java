@@ -15,7 +15,7 @@ public class Chip {
      * поле цвета фишки
      */
     @JsonProperty
-    private Color color;
+    private final Color color;
 
     /**
      * Конструктор - создание фишки по её цвету
@@ -34,26 +34,6 @@ public class Chip {
      */
     public final Color getColor() {
         return color;
-    }
-
-    /**
-     * Функция установки цвета (разрешены только чёрный и белый)
-     *
-     * @param color - цвет
-     */
-    public final void setColor(Color color) {
-        if (color == Color.BLACK) {
-            this.color = Color.BLACK;
-        } else if (color == Color.WHITE) {
-            this.color = Color.WHITE;
-        }
-    }
-
-    /**
-     * Функция переворота фишки
-     */
-    public final void reverseChip() {
-        color = color.reverseColor();
     }
 
     @Override

@@ -40,6 +40,7 @@ public class Board {
 
     /**
      * Конкструктор копирования доски
+     *
      * @param board - исходная доска
      */
     @JsonCreator
@@ -58,7 +59,7 @@ public class Board {
      * @param y - координата y
      * @return возвращает Color
      */
-    public final Color getColor(final int x, final int y) {
+    public final Color getChipColor(final int x, final int y) {
         return board[x][y].getColor();
     }
 
@@ -78,7 +79,7 @@ public class Board {
      * @param y     - координата x
      * @param color - цвет фишки
      */
-    public final void setColor(final int x, final int y, final Color color) {
+    public final void setChip(final int x, final int y, final Color color) {
         board[x][y] = new Chip(color);
     }
 
@@ -89,7 +90,7 @@ public class Board {
      * @param y - координата y
      */
     public final void reverseChip(final int x, final int y) {
-        board[x][y].reverseChip();
+        setChip(x, y, board[x][y].getColor().reverseColor());
     }
 
     /**
@@ -99,7 +100,7 @@ public class Board {
      * @return возвращает Map: ключ - клетка, куда можно походить; значение - список клеток, фишки в которых будут
      * перевёрнуты, в случае хода в клетку из ключа
      */
-    public final Map<Cell, List<Cell>> getScoreMap(Color turnOrder) {
+    public final Map<Cell, List<Cell>> getScoreMap(final Color turnOrder) {
         final List<Cell> chipsOfOpponent = findOpponentsChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
 
@@ -126,10 +127,8 @@ public class Board {
         for (Cell cell : listToDelete) {
             scoreMap.remove(cell);
         }
-
         return scoreMap;
     }
-
 
     /**
      * Функция поиска всех фишек противника
@@ -147,7 +146,6 @@ public class Board {
                 }
             }
         }
-
         return listOfWhiteOrBlackChips;
     }
 
@@ -157,7 +155,7 @@ public class Board {
      * @param listOfOpponentsChips - список клеток, в которых расположены фишки противника
      * @return возвращает Map: ключ - клетка противника; значение - список пустых клеток вокруг
      */
-    private  Map<Cell, List<Cell>> findNeighborhood(final List<Cell> listOfOpponentsChips) {
+    private Map<Cell, List<Cell>> findNeighborhood(final List<Cell> listOfOpponentsChips) {
         final Map<Cell, List<Cell>> neighborhood = new HashMap<>();
         for (Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
             final List<Cell> tempList = new ArrayList<>();
@@ -206,13 +204,13 @@ public class Board {
             if (neighbourX >= boardSize || neighbourX < 0 || neighbourY >= boardSize || neighbourY < 0) {
                 return new ArrayList<>();
             }
-            if (getColor(neighbourX, neighbourY) == Color.NEUTRAL) {
+            if (getChipColor(neighbourX, neighbourY) == Color.NEUTRAL) {
                 return new ArrayList<>();
             }
-            if (getColor(neighbourX, neighbourY) == turnOrder.reverseColor()) {
+            if (getChipColor(neighbourX, neighbourY) == turnOrder.reverseColor()) {
                 cells.add(new Cell(neighbourX, neighbourY));
             }
-            if (getColor(neighbourX, neighbourY) == turnOrder) {
+            if (getChipColor(neighbourX, neighbourY) == turnOrder) {
                 return cells;
             }
         }
@@ -239,7 +237,6 @@ public class Board {
                 }
             }
             b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append("\n").append(BoardColor.RESET.getColor());
-
         }
         return b.toString();
     }

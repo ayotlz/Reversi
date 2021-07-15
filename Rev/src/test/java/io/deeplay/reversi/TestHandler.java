@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHandler {
-    Board board;
-    Handler handler;
+    private Board board;
+    private Handler handler;
 
     @BeforeEach
     public void init() throws ReversiException {
@@ -26,17 +26,17 @@ public class TestHandler {
 
     @Test
     public void testInitializationBoard() {
-        assertEquals(board.getColor(3, 3), Color.WHITE);
-        assertEquals(board.getColor(4, 4), Color.WHITE);
-        assertEquals(board.getColor(3, 4), Color.BLACK);
-        assertEquals(board.getColor(4, 3), Color.BLACK);
+        assertEquals(board.getChipColor(3, 3), Color.WHITE);
+        assertEquals(board.getChipColor(4, 4), Color.WHITE);
+        assertEquals(board.getChipColor(3, 4), Color.BLACK);
+        assertEquals(board.getChipColor(4, 3), Color.BLACK);
     }
 
     @Test
     public void testGameEndWithFullBoard() throws ReversiException {
         assertFalse(handler.isGameEnd(board));
 
-        int[][] arr =
+        final int[][] arr =
                 {
                         // 0   1   2   3   4   5   6   7
                         {42, 51, 52, 7, 6, 5, 55, 9}, //0
