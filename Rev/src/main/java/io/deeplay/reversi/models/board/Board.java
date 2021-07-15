@@ -202,7 +202,7 @@ public class Board {
             neighbourX += differenceX;
             neighbourY += differenceY;
 
-            if (neighbourX >= boardSize || neighbourX < 0 || neighbourY >= boardSize || neighbourY < 0) {
+            if (neighbourX > 7 || neighbourX < 0 || neighbourY > 7 || neighbourY < 0) {
                 return new ArrayList<>();
             }
             if (getColor(neighbourX, neighbourY) == Color.NEUTRAL) {
