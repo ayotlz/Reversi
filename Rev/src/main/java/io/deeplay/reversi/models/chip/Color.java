@@ -15,17 +15,17 @@ public enum Color {
     private final String colorString;
 
     @JsonCreator
-    Color(String colorString) {
+    Color(@JsonProperty("colorString") String colorString) {
         this.colorString = colorString;
     }
 
-    public Color reverseColor(){
+    public final Color reverseColor(){
         if(this == BLACK) return WHITE;
         if(this == WHITE) return BLACK;
         return NEUTRAL;
     }
 
-    public String getString() {
+    public final String getString() {
         return colorString;
     }
 }

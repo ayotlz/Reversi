@@ -28,7 +28,7 @@ public class Handler {
      * @param board - доска
      * @throws ReversiException выбрасывает исключение при некорректно переданной доске
      */
-    public void initializationBoard(Board board) throws ReversiException {
+    public final void initializationBoard(final Board board) throws ReversiException {
         Validator.isBoardCorrect(board);
 
         final int idx1 = board.getBoardSize() / 2 - 1;
@@ -50,7 +50,7 @@ public class Handler {
      * @param turnOrder - цвет, который совершает ход в данный момент
      * @throws ReversiException выбрасывает исключение при нарушении игровой логики
      */
-    public void makeStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
+    public final void makeStep(final Board board, final Cell cell, final Color turnOrder) throws ReversiException {
         logger.debug("Попытка поставить {} в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
 
         checkStep(board, cell, turnOrder);
@@ -65,7 +65,7 @@ public class Handler {
      * @param turnOrder - цвет, который совершает ход в данный момент
      * @throws ReversiException выбрасывает исключение при нарушении игровой логики
      */
-    private void checkStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
+    private void checkStep(final Board board, final Cell cell, final Color turnOrder) throws ReversiException {
         Validator.isBoardCorrect(board);
         Validator.isCellCorrect(cell, board.getBoardSize());
         Validator.canIMakeStep(board, cell, turnOrder);
@@ -78,7 +78,7 @@ public class Handler {
      * @param cell      - клетка
      * @param turnOrder - цвет, который совершает ход в данный момент
      */
-    private void setChips(Board board, Cell cell, Color turnOrder) {
+    private void setChips(final Board board, final Cell cell, final Color turnOrder) {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
         board.setColor(cell.getX(), cell.getY(), turnOrder);
         flipCells(board, map.get(cell));
@@ -91,7 +91,7 @@ public class Handler {
      * @param board - доска
      * @return возвращает boolean значение в зависимости от того, закончилась игра или нет
      */
-    public boolean isGameEnd(Board board) {
+    public final boolean isGameEnd(final Board board) {
         return isFullBoard(board) || isDeadEnd(board) || noOneCanStep(board);
     }
 
@@ -101,7 +101,7 @@ public class Handler {
      * @param board - доска
      * @return возвращает false если на поле ещё есть фишки обоих цветов, в противоположном случае возвращает true
      */
-    private boolean isDeadEnd(Board board) {
+    private boolean isDeadEnd(final Board board) {
         return (getScoreWhite(board) == 0 || getScoreBlack(board) == 0);
     }
 
@@ -111,7 +111,7 @@ public class Handler {
      * @param board - доска
      * @return возвращает false если на доске ещё есть пустые клетки, в противоположном случае возвращает true
      */
-    private boolean isFullBoard(Board board) {
+    private boolean isFullBoard(final Board board) {
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
                 if (board.getColor(i, j) == Color.NEUTRAL) {
@@ -128,7 +128,7 @@ public class Handler {
      * @param board - доска
      * @return возвращает false если фишки хотя бы одного цвета ещё могут сделать ход, в противоположном случае true
      */
-    private boolean noOneCanStep(Board board) {
+    private boolean noOneCanStep(final Board board) {
         return !haveIStep(board, Color.BLACK) && !haveIStep(board, Color.WHITE);
     }
 
@@ -139,7 +139,7 @@ public class Handler {
      * @param turnOrder - цвет, который совершает ход в данный момент
      * @return возвращает true если данный цвет может сделать ход, в противоположном случае false
      */
-    public boolean haveIStep(Board board, Color turnOrder) {
+    public final boolean haveIStep(final Board board, final Color turnOrder) {
         return board.getScoreMap(turnOrder).size() != 0;
     }
 
@@ -149,7 +149,7 @@ public class Handler {
      * @param board - доска
      * @param cells - клетка
      */
-    private void flipCells(Board board, List<Cell> cells) {
+    private void flipCells(final Board board, final List<Cell> cells) {
         for (Cell cell : cells) {
             board.reverseChip(cell.getX(), cell.getY());
         }
@@ -161,7 +161,7 @@ public class Handler {
      * @param board - клетка
      * @return возвращает количество белых фишек на доске в данный момент
      */
-    public int getScoreWhite(Board board) {
+    public final int getScoreWhite(final Board board) {
         int scoreWhite = 0;
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {
@@ -180,7 +180,7 @@ public class Handler {
      * @param board - клетка
      * @return возвращает количество чёрных фишек на доске в данный момент
      */
-    public int getScoreBlack(Board board) {
+    public final int getScoreBlack(final Board board) {
         int scoreBlack = 0;
         for (int i = 0; i < board.getBoardSize(); i++) {
             for (int j = 0; j < board.getBoardSize(); j++) {

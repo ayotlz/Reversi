@@ -1,17 +1,15 @@
 package io.deeplay.reversi;
 
+import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiException;
+import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.apache.log4j.BasicConfigurator;
-
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestHandler {
     Board board;

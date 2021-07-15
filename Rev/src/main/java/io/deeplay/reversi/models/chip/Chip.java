@@ -32,7 +32,7 @@ public class Chip {
      *
      * @return возвращает цвет фишки
      */
-    public Color getColor() {
+    public final Color getColor() {
         return color;
     }
 
@@ -41,7 +41,7 @@ public class Chip {
      *
      * @param color - цвет
      */
-    public void setColor(Color color) {
+    public final void setColor(Color color) {
         if (color == Color.BLACK) {
             this.color = Color.BLACK;
         } else if (color == Color.WHITE) {
@@ -52,7 +52,7 @@ public class Chip {
     /**
      * Функция переворота фишки
      */
-    public void reverseChip() {
+    public final void reverseChip() {
         color = color.reverseColor();
     }
 

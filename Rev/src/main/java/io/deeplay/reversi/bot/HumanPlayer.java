@@ -7,12 +7,12 @@ import io.deeplay.reversi.models.chip.Color;
 import java.io.*;
 
 public class HumanPlayer extends Player {
-    public HumanPlayer(Color color) {
+    public HumanPlayer(final Color color) {
         super(color);
     }
 
     @Override
-    public Cell getAnswer(Board board) {
+    public final Cell getAnswer(final Board board) {
         final InputStream inputStream = System.in;
         final Reader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
