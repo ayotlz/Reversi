@@ -63,7 +63,7 @@ public class Client {
             final StringReader reader = new StringReader(str);
             final ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(reader, Color.class);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             downService();
         }
         downService();
@@ -119,8 +119,6 @@ public class Client {
                     send(writer.toString());
                 }
             } catch (final IOException ignored) {
-//                System.out.println("АШИБКА");
-//                downService();
             }
         }
     }

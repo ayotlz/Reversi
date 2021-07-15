@@ -60,7 +60,7 @@ public class Server {
                 } else if (serverList.size() > 2) {
                     this.downService();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 this.downService();
             }
         }
@@ -102,7 +102,7 @@ public class Server {
             System.out.println("All the players have joined");
             try {
                 handler.initializationBoard(board);
-            } catch (ReversiException ignored) {
+            } catch (final ReversiException ignored) {
             }
 
             while (!handler.isGameEnd(board)) {
@@ -128,16 +128,12 @@ public class Server {
                             String answer = player.in.readLine();
                             final StringReader reader = new StringReader(answer);
                             final Cell cell = mapper.readValue(reader, Cell.class);
-                            System.out.println(cell);
-                            System.out.println("a");
 
                             handler.makeStep(board, cell, player.getColor());
                             System.out.println(board.toString());
                             break;
-                        } catch (ReversiException e) {
+                        } catch (final ReversiException | IOException e) {
                             System.out.println("Ход не может быть сделан\n");
-                        } catch (IOException e) {
-                            System.out.println("IO");
                         }
                     }
                 }
