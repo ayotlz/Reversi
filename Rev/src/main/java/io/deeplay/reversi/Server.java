@@ -95,12 +95,13 @@ public class Server {
 
         @Override
         public void run() {
-            System.out.println("All the players have joined");
+            System.out.println("Все игроки присоединились");
             try {
                 handler.initializationBoard(board);
             } catch (final ReversiException ignored) {
             }
 
+            System.out.println(board.toString());
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
                     if (!handler.haveIStep(board, player.getColor())) {
@@ -115,11 +116,14 @@ public class Server {
                             final StringWriter writer = new StringWriter();
                             final ObjectMapper mapper = new ObjectMapper();
                             mapper.writeValue(writer, board);
+                            mapper.writeValue(writer, player.getColor());
                             player.send(writer.toString());
 
                             final String answer = player.in.readLine();
                             final StringReader reader = new StringReader(answer);
                             final Cell cell = mapper.readValue(reader, Cell.class);
+                            sendMessageToAllPlayers(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
+                            System.out.println(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
 
                             handler.makeStep(board, cell, player.getColor());
                             System.out.println(board.toString());
@@ -144,6 +148,12 @@ public class Server {
             System.out.println("Белые: " + handler.getScoreWhite(board));
         }
 
+        private void sendMessageToAllPlayers(String message) throws IOException {
+            for (ServerSomething ss : players) {
+                ss.send(message);
+            }
+        }
+
         private boolean isRoomHasPlace() {
             return players.size() < 2;
         }
@@ -162,7 +172,7 @@ public class Server {
 
     @SuppressWarnings("InfiniteLoopStatement")
     private void startServer() throws IOException {
-        System.out.printf("Server started, port: %d%n", PORT);
+        System.out.println("Сервер запущен");
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 final Socket socket = serverSocket.accept();
