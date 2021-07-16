@@ -19,6 +19,7 @@ public class Client {
 
     private Socket socket = null;
     private BufferedReader in = null;
+    private BufferedReader inputUser = null;
     private BufferedWriter out = null;
     private Player player;
 
@@ -42,6 +43,7 @@ public class Client {
         }
 
         try {
+            inputUser = new BufferedReader(new InputStreamReader(System.in));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (final IOException e) {
@@ -50,9 +52,25 @@ public class Client {
         }
 
         System.out.printf("Client started, ip: %s, port: %d%n", ip, port);
-        player = new RandomBot(getColor());
+        choosePlayer();
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
+    }
+
+    private void choosePlayer() {
+        System.out.println("1: HumanPlayer\n2: RandomBot");
+        int choice = 0;
+        while (choice != 1 && choice != 2) {
+            try {
+                choice = Integer.parseInt(inputUser.readLine());
+            } catch (final IOException | NumberFormatException ignored) {
+            }
+        }
+        if (choice == 1) {
+            player = new HumanPlayer(getColor());
+        } else if (choice == 2) {
+            player = new RandomBot(getColor());
+        }
     }
 
     private Color getColor() {

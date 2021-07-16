@@ -11,13 +11,15 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server {
     static final int PORT = 8082;
 
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
-//    private final ConcurrentLinkedQueue<Room> roomList = new ConcurrentLinkedQueue<>();
+    private final List<Room> roomList = new ArrayList<>();
 
     private class ServerSomething extends Thread {
         private final Server server;
@@ -37,33 +39,25 @@ public class Server {
         public void run() {
             try {
                 serverList.add(this);
-                if (serverList.size() == 1) {
-                    color = Color.BLACK;
-                    final StringWriter writer = new StringWriter();
-                    final ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(writer, color);
-                    send(writer.toString());
-                }
-                if (serverList.size() == 2) {
-                    color = Color.WHITE;
-                    final StringWriter writer = new StringWriter();
-                    final ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(writer, color);
-                    send(writer.toString());
-
-                    final ServerSomething[] serverSomethings = new ServerSomething[2];
-                    int idx = 0;
-                    for (ServerSomething ss : serverList) {
-                        serverSomethings[idx++] = ss;
-                    }
-                    final Room room = new Room(serverSomethings);
-                    room.run();
-                } else if (serverList.size() > 2) {
-                    this.downService();
-                }
+                color = chooseRoom().joinRoom(this);
+                final StringWriter writer = new StringWriter();
+                final ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(writer, color);
+                send(writer.toString());
             } catch (final IOException e) {
                 this.downService();
             }
+        }
+
+        private Room chooseRoom() {
+            for (Room room : roomList) {
+                if (room.isRoomHasPlace()) {
+                    return room;
+                }
+            }
+            Room newRoom = new Room();
+            roomList.add(newRoom);
+            return newRoom;
         }
 
         private Color getColor() {
@@ -89,12 +83,12 @@ public class Server {
     }
 
     private class Room extends Thread {
-        private final ServerSomething[] players;
+        private final List<ServerSomething> players;
         private final Handler handler;
         private final Board board;
 
-        private Room(final ServerSomething[] players) {
-            this.players = players;
+        private Room() {
+            players = new ArrayList<>();
             handler = new Handler();
             board = new Board();
         }
@@ -148,6 +142,21 @@ public class Server {
             System.out.println("Игра закончилась");
             System.out.println("Черные: " + handler.getScoreBlack(board));
             System.out.println("Белые: " + handler.getScoreWhite(board));
+        }
+
+        private boolean isRoomHasPlace() {
+            return players.size() < 2;
+        }
+
+        private Color joinRoom(ServerSomething ss) {
+            players.add(ss);
+            if (players.size() == 1) {
+                return Color.BLACK;
+            } else if (players.size() == 2) {
+                start();
+                return Color.WHITE;
+            }
+            return null;
         }
     }
 
