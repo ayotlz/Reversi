@@ -1,36 +1,32 @@
 package io.deeplay.reversi.GUI;
 
+import io.deeplay.reversi.models.board.Board;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import io.deeplay.reversi.models.chip.Color;
 
 public class GUI extends JFrame {
 
     public GUI() {
         setLayout(new FlowLayout());
 
-        JButton[] buttons = new JButton[64];
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i] = new JButton();
-            add(buttons[i]);
-            int finalI = i;
-            buttons[i].addActionListener(e -> buttons[finalI].setEnabled(false));
+        Board board = new Board();
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                board.setChip(i, j, Color.BLACK);
+            }
         }
+        board.setChip(1, 1, Color.WHITE);
+        drawBoard(board);
 
-        buttons[27].setEnabled(false);
-        buttons[28].setEnabled(false);
-        buttons[35].setEnabled(false);
-        buttons[36].setEnabled(false);
-
-
-
-        // Constructor to setup GUI components and event handlers
         setLayout(new GridLayout(8, 8, 3, 3));
-        // "super" Frame sets layout to 3x2 GridLayout, horizontal and vertical gaps of 3 pixels
-
-        // The components are added from left-to-right, top-to-bottom
-
         setTitle("Reversi");
-//        this.setIconImage(new ImageIcon(GUI.class.getResource("io/deeplay/reversi/GUI/icon.png")).getImage());
+        ImageIcon image = new ImageIcon("C:/Users/KIRILL-NOTEBOOK/IdeaProjects/Reversi/Rev/src/main/resources/icon.png");
+        setIconImage(image.getImage());
         setSize(700, 700);
         setResizable(false);
         setVisible(true);
@@ -38,7 +34,38 @@ public class GUI extends JFrame {
 
     }
 
+    private void drawBoard(final Board board) {
+        final String white = "C:/Users/KIRILL-NOTEBOOK/IdeaProjects/Reversi/Rev/src/main/resources/White.png";
+        final String black = "C:/Users/KIRILL-NOTEBOOK/IdeaProjects/Reversi/Rev/src/main/resources/Black.png";
+        JButton[][] buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons[i].length; j++) {
+                buttons[i][j] = new JButton();
+                buttons[i][j].setFocusPainted(false);
+                buttons[i][j].setContentAreaFilled(false);
+                System.out.println(board.getChipColor(i,j));
+                if (board.getChipColor(i,j) == Color.WHITE){
+                    buttons[i][j].setIcon(new ImageIcon(white));
+                    buttons[i][j].setEnabled(false);
+                }
+                if (board.getChipColor(i,j) == Color.BLACK){
+                    buttons[i][j].setIcon(new ImageIcon(black));
+                    buttons[i][j].setEnabled(false);
+                }
+                add(buttons[i][j]);
+                int finalI = i;
+                int finalJ = j;
+                buttons[i][j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        buttons[finalI][finalJ].setEnabled(false);
+                    }
+                });
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        new GUI();  // Let the constructor do the job
+        new GUI();
     }
 }
