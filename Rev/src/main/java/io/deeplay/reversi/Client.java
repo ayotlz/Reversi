@@ -51,7 +51,7 @@ public class Client {
             return;
         }
 
-        System.out.printf("Client started, ip: %s, port: %d%n", ip, port);
+        System.out.println("Клиент запущен");
         choosePlayer();
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
@@ -131,6 +131,7 @@ public class Client {
                     final ObjectMapper mapper = new ObjectMapper();
                     final Board board = mapper.readValue(reader, Board.class);
                     System.out.println(board.toString());
+
                     final StringWriter writer = new StringWriter();
                     final Cell cell = player.getAnswer(board);
                     mapper.writeValue(writer, cell);
