@@ -101,23 +101,31 @@ public class Server {
             } catch (final ReversiException ignored) {
             }
 
+            gameProcess();
+            gameEnd();
+        }
+
+        public void gameProcess() {
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
                     if (!handler.haveIStep(board, player.getColor())) {
                         continue;
                     }
 
+                    try {
+                        final StringWriter writer = new StringWriter();
+                        final ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                        sendMessageToAllPlayers(writer.toString());
+                    } catch (IOException ignored) {
+                    }
+
                     while (true) {
                         try {
-                            final StringWriter writer = new StringWriter();
-                            final ObjectMapper mapper = new ObjectMapper();
-                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
-                            for (ServerSomething ss : players) {
-                                ss.send(writer.toString());
-                            }
-
                             final String answer = player.in.readLine();
+
                             final StringReader reader = new StringReader(answer);
+                            final ObjectMapper mapper = new ObjectMapper();
                             final Cell cell = mapper.readValue(reader, Cell.class);
                             sendMessageToAllPlayers(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
 
@@ -128,24 +136,30 @@ public class Server {
                     }
                 }
             }
+        }
+
+        public void gameEnd() {
             try {
+                final StringWriter writer = new StringWriter();
+                final ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(writer, new PlayerRequest(board, Color.NEUTRAL));
+                sendMessageToAllPlayers(writer.toString());
+                sendMessageToAllPlayers("Игра закончилась");
+
+                final int scoreBlack = handler.getScoreBlack(board);
+                final int scoreWhite = handler.getScoreWhite(board);
+                sendMessageToAllPlayers("Черные: " + scoreBlack);
+                sendMessageToAllPlayers("Белые: " + scoreWhite);
+
+                if (scoreBlack > scoreWhite) {
+                    sendMessageToAllPlayers("Чёрные победили");
+                } else if (scoreBlack < scoreWhite) {
+                    sendMessageToAllPlayers("Белые победили");
+                } else {
+                    sendMessageToAllPlayers("Ничья");
+                }
+
                 for (ServerSomething player : players) {
-                    final StringWriter writer = new StringWriter();
-                    final ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(writer, new PlayerRequest(board, Color.NEUTRAL));
-                    player.send(writer.toString());
-                    player.send("Игра закончилась");
-                    final int scoreBlack = handler.getScoreBlack(board);
-                    final int scoreWhite = handler.getScoreWhite(board);
-                    player.send("Черные: " + scoreBlack);
-                    player.send("Белые: " + scoreWhite);
-                    if (scoreBlack > scoreWhite) {
-                        player.send("Чёрные победили");
-                    } else if (scoreBlack < scoreWhite) {
-                        player.send("Белые победили");
-                    } else {
-                        player.send("Ничья");
-                    }
                     player.downService();
                 }
                 roomList.remove(this);
