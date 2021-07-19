@@ -1,6 +1,7 @@
 package io.deeplay.reversi.GUI;
 
 import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
 import javax.swing.*;
@@ -8,15 +9,13 @@ import java.awt.*;
 
 public class GUI extends JFrame {
 
-    private final Board board = new Board();
-
-    private final JButton[][] buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
-
-    public final JButton[][] getButtons() {
-        return buttons;
-    }
+    private final JButton[][] buttons;
 
     public GUI() {
+
+        Board board = new Board();
+
+        buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
 
         createButtons();
         drawActiveBoard(board);
@@ -67,11 +66,23 @@ public class GUI extends JFrame {
                 if (buttons[i][j].isEnabled()) {
                     int finalI = i;
                     int finalJ = j;
-                    //                    ПОДПРАВИТЬ ЭТО!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    buttons[i][j].addActionListener(e -> buttons[finalI][finalJ].setEnabled(false));
+                    buttons[i][j].addActionListener(e -> {
+                        buttons[finalI][finalJ].setEnabled(false);
+                    });
                 }
             }
         }
+    }
+
+    public final Cell getAnswerCell(final Board board) {
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons.length; j++) {
+                if (!buttons[i][j].isEnabled() && board.getChipColor(i, j).equals(Color.NEUTRAL)) {
+                    return new Cell(i, j);
+                }
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args) {
