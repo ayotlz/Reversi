@@ -49,11 +49,12 @@ public class GUI extends JFrame {
                     buttons[i][j].setIcon(new ImageIcon(white));
                     buttons[i][j].setEnabled(false);
                     buttons[i][j].setDisabledIcon(new ImageIcon(white));
-                }
-                if (board.getChipColor(i, j) == Color.BLACK) {
+                } else if (board.getChipColor(i, j) == Color.BLACK) {
                     buttons[i][j].setIcon(new ImageIcon(black));
                     buttons[i][j].setEnabled(false);
                     buttons[i][j].setDisabledIcon(new ImageIcon(black));
+                } else {
+                    buttons[i][j].setEnabled(true);
                 }
             }
         }
@@ -66,9 +67,7 @@ public class GUI extends JFrame {
                 if (buttons[i][j].isEnabled()) {
                     int finalI = i;
                     int finalJ = j;
-                    buttons[i][j].addActionListener(e -> {
-                        buttons[finalI][finalJ].setEnabled(false);
-                    });
+                    buttons[i][j].addActionListener(e -> buttons[finalI][finalJ].setEnabled(false));
                 }
             }
         }
