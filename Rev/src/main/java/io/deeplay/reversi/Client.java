@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.deeplay.reversi.GUI.GUI;
 import io.deeplay.reversi.bot.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
@@ -13,6 +14,7 @@ public class Client {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = Server.PORT;
+
 
     private final String ip;
     private final int port;
@@ -118,6 +120,7 @@ public class Client {
         @Override
         public void run() {
             String message;
+            GUI gui = new GUI();
             while (true) {
                 try {
                     message = in.readLine();
@@ -130,6 +133,7 @@ public class Client {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
                     final Board board = mapper.readValue(reader, Board.class);
+                    gui.drawActiveBoard(board);
                     System.out.println(board.toString());
 
                     final StringWriter writer = new StringWriter();
