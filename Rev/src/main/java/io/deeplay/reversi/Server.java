@@ -6,6 +6,7 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.requests.PlayerRequest;
 
 import java.io.*;
 import java.net.BindException;
@@ -36,7 +37,7 @@ public class Server {
         }
 
         @Override
-        public final void run() {
+        public void run() {
             try {
                 serverList.add(this);
                 color = chooseRoom().joinRoom(this);
@@ -94,58 +95,62 @@ public class Server {
         }
 
         @Override
-        public final void run() {
-            System.out.println("Все игроки присоединились");
+        public void run() {
             try {
                 handler.initializationBoard(board);
             } catch (final ReversiException ignored) {
             }
 
-            System.out.println(board.toString());
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
                     if (!handler.haveIStep(board, player.getColor())) {
-                        System.out.println("Ход переходит");
                         continue;
                     }
 
                     while (true) {
-                        System.out.println("Ходят " + player.getColor());
-
                         try {
                             final StringWriter writer = new StringWriter();
                             final ObjectMapper mapper = new ObjectMapper();
-                            mapper.writeValue(writer, board);
-                            mapper.writeValue(writer, player.getColor());
-                            player.send(writer.toString());
+                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                            for (ServerSomething ss : players) {
+                                ss.send(writer.toString());
+                            }
 
                             final String answer = player.in.readLine();
                             final StringReader reader = new StringReader(answer);
                             final Cell cell = mapper.readValue(reader, Cell.class);
                             sendMessageToAllPlayers(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
-                            System.out.println(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
 
                             handler.makeStep(board, cell, player.getColor());
-                            System.out.println(board.toString());
                             break;
-                        } catch (final ReversiException | IOException e) {
-                            System.out.println("Ход не может быть сделан\n");
+                        } catch (final ReversiException | IOException ignored) {
                         }
                     }
                 }
             }
             try {
                 for (ServerSomething player : players) {
+                    final StringWriter writer = new StringWriter();
+                    final ObjectMapper mapper = new ObjectMapper();
+                    mapper.writeValue(writer, new PlayerRequest(board, Color.NEUTRAL));
+                    player.send(writer.toString());
                     player.send("Игра закончилась");
-                    player.send("Черные: " + handler.getScoreBlack(board));
-                    player.send("Белые: " + handler.getScoreWhite(board));
+                    final int scoreBlack = handler.getScoreBlack(board);
+                    final int scoreWhite = handler.getScoreWhite(board);
+                    player.send("Черные: " + scoreBlack);
+                    player.send("Белые: " + scoreWhite);
+                    if (scoreBlack > scoreWhite) {
+                        player.send("Чёрные победили");
+                    } else if (scoreBlack < scoreWhite) {
+                        player.send("Белые победили");
+                    } else {
+                        player.send("Ничья");
+                    }
                     player.downService();
                 }
+                roomList.remove(this);
             } catch (final IOException ignored) {
             }
-            System.out.println("Игра закончилась");
-            System.out.println("Черные: " + handler.getScoreBlack(board));
-            System.out.println("Белые: " + handler.getScoreWhite(board));
         }
 
         private void sendMessageToAllPlayers(final String message) throws IOException {

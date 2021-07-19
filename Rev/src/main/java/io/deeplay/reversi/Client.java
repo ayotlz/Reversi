@@ -6,6 +6,7 @@ import io.deeplay.reversi.bot.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.requests.PlayerRequest;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,7 +15,6 @@ public class Client {
 
     private static final String IP = "127.0.0.1";
     private static final int PORT = Server.PORT;
-
 
     private final String ip;
     private final int port;
@@ -54,7 +54,8 @@ public class Client {
         }
 
         System.out.println("Клиент запущен");
-        choosePlayer();
+//        choosePlayer();
+        player = new RandomBot(getColor());
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
@@ -132,14 +133,18 @@ public class Client {
                 try {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
-                    final Board board = mapper.readValue(reader, Board.class);
+                    final PlayerRequest request = mapper.readValue(reader, PlayerRequest.class);
+                    final Board board = request.getBoard();
+                    final Color turnOrder = request.getColor();
                     gui.drawActiveBoard(board);
                     System.out.println(board.toString());
 
-                    final StringWriter writer = new StringWriter();
-                    final Cell cell = player.getAnswer(board);
-                    mapper.writeValue(writer, cell);
-                    send(writer.toString());
+                    if (turnOrder == player.getPlayerColor()) {
+                        final StringWriter writer = new StringWriter();
+                        final Cell cell = player.getAnswer(board);
+                        mapper.writeValue(writer, cell);
+                        send(writer.toString());
+                    }
                 } catch (final IOException e) {
                     System.out.println(message);
                 } catch (final NullPointerException e) {
