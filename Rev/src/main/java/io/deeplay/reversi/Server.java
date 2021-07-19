@@ -153,7 +153,7 @@ public class Server {
             }
         }
 
-        private void sendMessageToAllPlayers(String message) throws IOException {
+        private void sendMessageToAllPlayers(final String message) throws IOException {
             for (ServerSomething ss : players) {
                 ss.send(message);
             }
@@ -163,7 +163,7 @@ public class Server {
             return players.size() < 2;
         }
 
-        private Color joinRoom(ServerSomething ss) {
+        private Color joinRoom(final ServerSomething ss) {
             players.add(ss);
             if (players.size() == 1) {
                 return Color.BLACK;

@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.deeplay.reversi.GUI.GUI;
 import io.deeplay.reversi.bot.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
@@ -120,6 +121,7 @@ public class Client {
         @Override
         public void run() {
             String message;
+            GUI gui = new GUI();
             while (true) {
                 try {
                     message = in.readLine();
@@ -134,6 +136,7 @@ public class Client {
                     final PlayerRequest request = mapper.readValue(reader, PlayerRequest.class);
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
+                    gui.drawActiveBoard(board);
                     System.out.println(board.toString());
 
                     if (turnOrder == player.getPlayerColor()) {
