@@ -55,7 +55,7 @@ public class Client {
 
         System.out.println("Клиент запущен");
 //        choosePlayer();
-        player = new RandomBot(getColor());
+        player = new HumanPlayer(getColor());
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }

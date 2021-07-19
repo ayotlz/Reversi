@@ -5,6 +5,8 @@ import io.deeplay.reversi.models.chip.Color;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
 
@@ -36,6 +38,7 @@ public class GUI extends JFrame {
             for (int j = 0; j < buttons[i].length; j++) {
                 buttons[i][j] = new JButton();
                 buttons[i][j].setContentAreaFilled(false);
+                buttons[i][j].addActionListener(new TestActionListener());
                 add(buttons[i][j]);
             }
         }
@@ -69,6 +72,18 @@ public class GUI extends JFrame {
                     int finalJ = j;
                     //                    ПОДПРАВИТЬ ЭТО!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     buttons[i][j].addActionListener(e -> buttons[finalI][finalJ].setEnabled(false));
+                }
+            }
+        }
+    }
+
+    public class TestActionListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            for (int i = 0; i < buttons.length; i++) {
+                for (int j = 0; j < buttons[i].length; j++) {
+                    if (e.getSource() == buttons[i][j]) {
+                        System.out.println("Вы нажали на кнопку " + i + " " + j);
+                    }
                 }
             }
         }
