@@ -29,7 +29,7 @@ public abstract class Player {
      *
      * @return возвращается цвет игрока
      */
-    public Color getPlayerColor() {
+    public final Color getPlayerColor() {
         return color;
     }
 

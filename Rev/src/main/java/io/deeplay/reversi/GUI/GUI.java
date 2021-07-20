@@ -12,6 +12,10 @@ import java.awt.*;
  */
 public class GUI extends JFrame {
 
+    private final String WHITE = "./src/main/resources/White.png";
+    private final String BLACK = "./src/main/resources/Black.png";
+    private final String ICON = "./src/main/resources/icon.png";
+
     /**
      * Поле GUI, которое хранит двумерный массив кнопок
      */
@@ -23,20 +27,18 @@ public class GUI extends JFrame {
     public GUI() {
 
         Board board = new Board();
-
         buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
 
         createButtons();
         drawActiveBoard(board);
         setLayout(new GridLayout(8, 8, 3, 3));
         setTitle("Reversi");
-        ImageIcon image = new ImageIcon("./src/main/resources/icon.png");
+        ImageIcon image = new ImageIcon(ICON);
         setIconImage(image.getImage());
         setSize(700, 700);
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
     /**
@@ -58,24 +60,30 @@ public class GUI extends JFrame {
      * @param board - доска, которую нужно отобразить с помошью кнопок
      */
     public final void drawActiveBoard(final Board board) {
-        final String white = "./src/main/resources/White.png";
-        final String black = "./src/main/resources/Black.png";
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (board.getChipColor(i, j) == Color.WHITE) {
-                    buttons[i][j].setIcon(new ImageIcon(white));
-                    buttons[i][j].setEnabled(false);
-                    buttons[i][j].setDisabledIcon(new ImageIcon(white));
+                    drawDisabledButtons(buttons[i][j], WHITE);
                 } else if (board.getChipColor(i, j) == Color.BLACK) {
-                    buttons[i][j].setIcon(new ImageIcon(black));
-                    buttons[i][j].setEnabled(false);
-                    buttons[i][j].setDisabledIcon(new ImageIcon(black));
+                    drawDisabledButtons(buttons[i][j], BLACK);
                 } else {
                     buttons[i][j].setEnabled(true);
                 }
             }
         }
         pushTheButton();
+    }
+
+    /**
+     * Функция добавляет кнопке изображение и делает ее не активной
+     *
+     * @param button -  кнопка
+     * @param color - адрес изображения
+     */
+    private void drawDisabledButtons(final JButton button, final String color){
+        button.setIcon(new ImageIcon(color));
+        button.setEnabled(false);
+        button.setDisabledIcon(new ImageIcon(color));
     }
 
     /**
@@ -116,44 +124,13 @@ public class GUI extends JFrame {
     public final void winLoseWindow(final int scoreBlack, final int scoreWhite) {
         final JFrame window = new JFrame();
         window.setLayout(new BorderLayout());
-        window.add(new MenuPane(scoreBlack, scoreWhite));
+        window.add(new MenuPanel(scoreBlack, scoreWhite));
         window.pack();
-        ImageIcon image = new ImageIcon("./src/main/resources/icon.png");
+        ImageIcon image = new ImageIcon(ICON);
         window.setIconImage(image.getImage());
-        window.setSize(300, 200);
+        window.setSize(300, 100);
         window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.setVisible(true);
-    }
-
-    public class MenuPane extends JPanel {
-
-        public MenuPane(int scoreBlack, int scoreWhite) {
-            final JLabel text1 = new JLabel("Игра окончена!");
-            final JLabel text2 = new JLabel(String.format("Чёрные: %d", scoreBlack));
-            final JLabel text3 = new JLabel(String.format("Белые: %d", scoreWhite));
-            final JButton button = new JButton("Выход");
-            button.addActionListener(evt -> System.exit(0));
-
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.ipadx = 20;
-            gbc.ipady = 20;
-
-            add(text1, gbc);
-            gbc.gridy++;
-            add(text2, gbc);
-            gbc.gridy++;
-            add(text3, gbc);
-            gbc.gridy++;
-            add(button, gbc);
-        }
-    }
-
-    public static void main(String[] args) {
-        GUI gui = new GUI();
-        gui.winLoseWindow(10, 10);
     }
 }

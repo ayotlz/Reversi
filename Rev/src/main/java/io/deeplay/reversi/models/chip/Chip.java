@@ -24,7 +24,7 @@ public class Chip {
      * @param color - цвет
      */
     @JsonCreator
-    public Chip(@JsonProperty("color") Color color) {
+    public Chip(@JsonProperty("color") final Color color) {
         this.color = color;
     }
 
@@ -39,8 +39,12 @@ public class Chip {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Chip chip = (Chip) o;
         return color == chip.color;
     }
@@ -49,5 +53,4 @@ public class Chip {
     public int hashCode() {
         return Objects.hash(color);
     }
-
 }

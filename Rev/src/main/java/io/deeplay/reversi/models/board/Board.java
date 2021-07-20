@@ -165,7 +165,8 @@ public class Board {
                             k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
                         final Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
-                            final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
+                            final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(),
+                                    k + listOfWhiteOrBlackChip.getY());
                             tempList.add(tempCell);
                         }
                     }
@@ -220,7 +221,8 @@ public class Board {
     public String toString() {
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i < boardSize; i++) {
-            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append(" ").append(BoardColor.RESET.getColor());
+            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append(" ").append(
+                    BoardColor.RESET.getColor());
         }
         b.append("\n");
 
@@ -236,7 +238,8 @@ public class Board {
                     b.append(BoardColor.CYAN.getColor()).append(" . ").append(BoardColor.RESET.getColor());
                 }
             }
-            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append("\n").append(BoardColor.RESET.getColor());
+            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append("\n").append(
+                    BoardColor.RESET.getColor());
         }
         return b.toString();
     }

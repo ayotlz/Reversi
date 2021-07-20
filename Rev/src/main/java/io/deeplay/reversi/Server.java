@@ -80,6 +80,7 @@ public class Server {
                     server.serverList.remove(this);
                 }
             } catch (final IOException ignored) {
+                System.out.println(ignored.getMessage());
             }
         }
     }
@@ -100,8 +101,8 @@ public class Server {
             try {
                 handler.initializationBoard(board);
             } catch (final ReversiException ignored) {
+                System.out.println(ignored.getMessage());
             }
-
             gameProcess();
             gameEnd();
         }
@@ -130,6 +131,7 @@ public class Server {
                             handler.makeStep(board, cell, player.getColor());
                             break;
                         } catch (final ReversiException | IOException ignored) {
+                            System.out.println(ignored.getMessage());
                         }
                     }
                 }
@@ -165,6 +167,7 @@ public class Server {
                 }
                 roomList.remove(this);
             } catch (final IOException ignored) {
+                System.out.println(ignored.getMessage());
             }
         }
 
@@ -203,7 +206,7 @@ public class Server {
                 }
             }
         } catch (final BindException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

@@ -2,7 +2,9 @@ package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.GUI.GUI;
-import io.deeplay.reversi.bot.*;
+import io.deeplay.reversi.bot.HumanPlayer;
+import io.deeplay.reversi.bot.Player;
+import io.deeplay.reversi.bot.RandomBot;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
@@ -57,7 +59,6 @@ public class Client {
 
         System.out.println("Клиент запущен");
         choosePlayer();
-//        player = new RandomBot(getColor());
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
@@ -69,6 +70,7 @@ public class Client {
             try {
                 choice = Integer.parseInt(inputUser.readLine());
             } catch (final IOException | NumberFormatException ignored) {
+                System.out.println(ignored.getMessage());
             }
         }
         if (choice == 1) {
@@ -116,6 +118,7 @@ public class Client {
                 }
             }
         } catch (final IOException ignored) {
+            System.out.println(ignored.getMessage());
         }
     }
 
@@ -123,7 +126,7 @@ public class Client {
         @Override
         public void run() {
             String message;
-            if (player.getClass() != RandomBot.class){
+            if (player.getClass() != RandomBot.class) {
                 gui = new GUI();
             }
 
@@ -141,10 +144,12 @@ public class Client {
                     final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
                     final int scoreBlack = request.getScoreBlack();
                     final int scoreWhite = request.getScoreWhite();
-                    gui.winLoseWindow(scoreBlack, scoreWhite);
-                    //  gui.drawGameEnd(scoreWhite, scoreBlack);
+                    if (gui != null) {
+                        gui.winLoseWindow(scoreBlack, scoreWhite);
+                    }
                     continue;
                 } catch (IOException ignored) {
+                    System.out.println(ignored.getMessage());
                 }
 
                 try {
@@ -158,14 +163,13 @@ public class Client {
                     if (turnOrder == player.getPlayerColor()) {
                         final StringWriter writer = new StringWriter();
                         Cell cell;
-                        if (player.getClass() != RandomBot.class){
+                        if (player.getClass() != RandomBot.class) {
                             gui.drawActiveBoard(board);
                             cell = gui.getAnswerCell(board);
                             while (cell == null) {
                                 cell = gui.getAnswerCell(board);
                             }
-                        }
-                        else{
+                        } else {
                             cell = player.getAnswer(board);
                         }
                         mapper.writeValue(writer, cell);
@@ -173,10 +177,10 @@ public class Client {
                     }
                     continue;
                 } catch (final IOException ignored) {
+                    System.out.println(ignored.getMessage());
                 } catch (final NullPointerException e) {
                     downService();
                 }
-
                 System.out.println(message);
             }
         }

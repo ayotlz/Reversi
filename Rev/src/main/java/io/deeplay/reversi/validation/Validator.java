@@ -67,7 +67,8 @@ public class Validator {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
 
         if (map.get(cell) == null || map.get(cell).size() == 0) {
-            logger.warn("{} не может быть установлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
+            logger.warn("{} не может быть установлен в клетку = ({}, {})",
+                    turnOrder.getString(), cell.getX(), cell.getY());
             throw new ReversiException(ReversiErrorCode.INCORRECT_PLACE_FOR_CHIP);
         }
     }
