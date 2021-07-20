@@ -6,6 +6,7 @@ import io.deeplay.reversi.bot.*;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
 
 import java.io.*;
@@ -134,6 +135,17 @@ public class Client {
                 try {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
+                    final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
+                    final int scoreWhite = request.getScoreWhite();
+                    final int scoreBlack = request.getScoreBlack();
+                    //  gui.drawGameEnd(scoreWhite, scoreBlack);
+                    continue;
+                } catch (IOException ignored) {
+                }
+
+                try {
+                    final StringReader reader = new StringReader(message);
+                    final ObjectMapper mapper = new ObjectMapper();
                     final PlayerRequest request = mapper.readValue(reader, PlayerRequest.class);
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
@@ -150,11 +162,13 @@ public class Client {
                         mapper.writeValue(writer, cell);
                         send(writer.toString());
                     }
-                } catch (final IOException e) {
-                    System.out.println(message);
+                    continue;
+                } catch (final IOException ignored) {
                 } catch (final NullPointerException e) {
                     downService();
                 }
+
+                System.out.println(message);
             }
         }
     }
