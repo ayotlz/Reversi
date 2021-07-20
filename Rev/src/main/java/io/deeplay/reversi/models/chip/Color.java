@@ -20,8 +20,12 @@ public enum Color {
     }
 
     public final Color reverseColor(){
-        if(this == BLACK) return WHITE;
-        if(this == WHITE) return BLACK;
+        if(this == BLACK) {
+            return WHITE;
+        }
+        if(this == WHITE) {
+            return BLACK;
+        }
         return NEUTRAL;
     }
 

@@ -1,24 +1,21 @@
 package io.deeplay.reversi.GUI;
 
 import io.deeplay.reversi.models.board.Board;
+import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
 
-    private final Board board = new Board();
-
-    private final JButton[][] buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
-
-    public final JButton[][] getButtons() {
-        return buttons;
-    }
+    private final JButton[][] buttons;
 
     public GUI() {
+
+        Board board = new Board();
+
+        buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
 
         createButtons();
         drawActiveBoard(board);
@@ -38,7 +35,6 @@ public class GUI extends JFrame {
             for (int j = 0; j < buttons[i].length; j++) {
                 buttons[i][j] = new JButton();
                 buttons[i][j].setContentAreaFilled(false);
-                buttons[i][j].addActionListener(new TestActionListener());
                 add(buttons[i][j]);
             }
         }
@@ -53,11 +49,12 @@ public class GUI extends JFrame {
                     buttons[i][j].setIcon(new ImageIcon(white));
                     buttons[i][j].setEnabled(false);
                     buttons[i][j].setDisabledIcon(new ImageIcon(white));
-                }
-                if (board.getChipColor(i, j) == Color.BLACK) {
+                } else if (board.getChipColor(i, j) == Color.BLACK) {
                     buttons[i][j].setIcon(new ImageIcon(black));
                     buttons[i][j].setEnabled(false);
                     buttons[i][j].setDisabledIcon(new ImageIcon(black));
+                } else {
+                    buttons[i][j].setEnabled(true);
                 }
             }
         }
@@ -70,23 +67,21 @@ public class GUI extends JFrame {
                 if (buttons[i][j].isEnabled()) {
                     int finalI = i;
                     int finalJ = j;
-                    //                    ПОДПРАВИТЬ ЭТО!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     buttons[i][j].addActionListener(e -> buttons[finalI][finalJ].setEnabled(false));
                 }
             }
         }
     }
 
-    public class TestActionListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            for (int i = 0; i < buttons.length; i++) {
-                for (int j = 0; j < buttons[i].length; j++) {
-                    if (e.getSource() == buttons[i][j]) {
-                        System.out.println("Вы нажали на кнопку " + i + " " + j);
-                    }
+    public final Cell getAnswerCell(final Board board) {
+        for (int i = 0; i < buttons.length; i++) {
+            for (int j = 0; j < buttons.length; j++) {
+                if (!buttons[i][j].isEnabled() && board.getChipColor(i, j).equals(Color.NEUTRAL)) {
+                    return new Cell(i, j);
                 }
             }
         }
+        return null;
     }
 
     public static void main(String[] args) {

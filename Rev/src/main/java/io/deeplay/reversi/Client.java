@@ -54,8 +54,8 @@ public class Client {
         }
 
         System.out.println("Клиент запущен");
-//        choosePlayer();
-        player = new HumanPlayer(getColor());
+        choosePlayer();
+//        player = new RandomBot(getColor());
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
@@ -71,7 +71,7 @@ public class Client {
         }
         if (choice == 1) {
             player = new HumanPlayer(getColor());
-        } else if (choice == 2) {
+        } else {
             player = new RandomBot(getColor());
         }
     }
@@ -122,6 +122,7 @@ public class Client {
         public void run() {
             String message;
             GUI gui = new GUI();
+
             while (true) {
                 try {
                     message = in.readLine();
@@ -141,7 +142,11 @@ public class Client {
 
                     if (turnOrder == player.getPlayerColor()) {
                         final StringWriter writer = new StringWriter();
-                        final Cell cell = player.getAnswer(board);
+//                        final Cell cell = player.getAnswer(board);
+                        Cell cell = gui.getAnswerCell(board);
+                        while (cell == null) {
+                            cell = gui.getAnswerCell(board);
+                        }
                         mapper.writeValue(writer, cell);
                         send(writer.toString());
                     }
