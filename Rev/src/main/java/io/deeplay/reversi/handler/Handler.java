@@ -1,10 +1,10 @@
 package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.validation.*;
+import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiException;
+import io.deeplay.reversi.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,7 @@ import java.util.Map;
  * Класс Handler отвечает за работу с доской и контролирует соблюдение правил
  */
 public class Handler {
+
     /**
      * Поле логгера
      */

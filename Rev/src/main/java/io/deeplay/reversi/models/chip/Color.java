@@ -19,11 +19,11 @@ public enum Color {
         this.colorString = colorString;
     }
 
-    public final Color reverseColor(){
-        if(this == BLACK) {
+    public final Color reverseColor() {
+        if (this == BLACK) {
             return WHITE;
         }
-        if(this == WHITE) {
+        if (this == WHITE) {
             return BLACK;
         }
         return NEUTRAL;

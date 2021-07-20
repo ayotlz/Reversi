@@ -25,6 +25,7 @@ public class Client {
     private BufferedReader inputUser = null;
     private BufferedWriter out = null;
     private Player player;
+    private GUI gui;
 
     /**
      * для создания необходимо принять адрес и номер порта
@@ -122,7 +123,9 @@ public class Client {
         @Override
         public void run() {
             String message;
-            GUI gui = new GUI();
+            if (player.getClass() != RandomBot.class){
+                gui = new GUI();
+            }
 
             while (true) {
                 try {
@@ -149,15 +152,20 @@ public class Client {
                     final PlayerRequest request = mapper.readValue(reader, PlayerRequest.class);
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
-                    gui.drawActiveBoard(board);
                     System.out.println(board.toString());
 
                     if (turnOrder == player.getPlayerColor()) {
                         final StringWriter writer = new StringWriter();
-//                        final Cell cell = player.getAnswer(board);
-                        Cell cell = gui.getAnswerCell(board);
-                        while (cell == null) {
+                        Cell cell;
+                        if (player.getClass() != RandomBot.class){
+                            gui.drawActiveBoard(board);
                             cell = gui.getAnswerCell(board);
+                            while (cell == null) {
+                                cell = gui.getAnswerCell(board);
+                            }
+                        }
+                        else{
+                            cell = player.getAnswer(board);
                         }
                         mapper.writeValue(writer, cell);
                         send(writer.toString());
