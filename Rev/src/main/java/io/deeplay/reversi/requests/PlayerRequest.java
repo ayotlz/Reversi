@@ -6,6 +6,7 @@ import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.chip.Color;
 
 public class PlayerRequest {
+
     @JsonProperty
     private final Board board;
     @JsonProperty
@@ -17,11 +18,11 @@ public class PlayerRequest {
         this.color = color;
     }
 
-    public Board getBoard() {
+    public final Board getBoard() {
         return board;
     }
 
-    public Color getColor() {
+    public final Color getColor() {
         return color;
     }
 }
