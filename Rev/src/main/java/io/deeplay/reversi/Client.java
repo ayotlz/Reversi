@@ -141,6 +141,7 @@ public class Client {
                     final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
                     final int scoreWhite = request.getScoreWhite();
                     final int scoreBlack = request.getScoreBlack();
+                    gui.winLoseWindow();
                     //  gui.drawGameEnd(scoreWhite, scoreBlack);
                     continue;
                 } catch (IOException ignored) {
