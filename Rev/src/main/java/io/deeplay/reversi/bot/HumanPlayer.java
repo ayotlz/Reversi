@@ -6,11 +6,20 @@ import io.deeplay.reversi.models.chip.Color;
 
 import java.io.*;
 
+/**
+ * Класс HumanPlayer - класс игрока расширяюшего Player
+ */
 public class HumanPlayer extends Player {
     public HumanPlayer(final Color color) {
         super(color);
     }
 
+    /**
+     * Функция, которая запращивает у игрока ответ
+     *
+     * @param board - доска
+     * @return возвращается ответ от игрока
+     */
     @Override
     public final Cell getAnswer(final Board board) {
         final InputStream inputStream = System.in;

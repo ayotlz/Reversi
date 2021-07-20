@@ -7,10 +7,19 @@ import io.deeplay.reversi.models.chip.Color;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Класс GUI - класс графического интерфейса пользователя, расширяет JFrame
+ */
 public class GUI extends JFrame {
 
+    /**
+     * Поле GUI, которое хранит двумерный массив кнопок
+     */
     private final JButton[][] buttons;
 
+    /**
+     * Конкструктор - создание оконного приложения
+     */
     public GUI() {
 
         Board board = new Board();
@@ -30,6 +39,9 @@ public class GUI extends JFrame {
 
     }
 
+    /**
+     * Функция добавляет кнопки в оконное приложение
+     */
     public final void createButtons() {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
@@ -40,6 +52,11 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Функция устанавливает фишки с board в оконное приложение
+     *
+     * @param board     - доска, которую нужно отобразить с помошью кнопок
+     */
     public final void drawActiveBoard(final Board board) {
         final String white = "./src/main/resources/White.png";
         final String black = "./src/main/resources/Black.png";
@@ -61,6 +78,9 @@ public class GUI extends JFrame {
         pushTheButton();
     }
 
+    /**
+     * Функция закрепляет слушателя за каждой активной кнопкой, после нажатия кнопка становится неактивной
+     */
     public final void pushTheButton() {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
@@ -73,6 +93,12 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Функция находит клетку, в которую можно походить и было совершено нажатие кнопки
+     *
+     * @param board     - доска
+     * @return возвращает Cell, если не нашел такую клетку, то возвращает null
+     */
     public final Cell getAnswerCell(final Board board) {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons.length; j++) {
@@ -84,7 +110,27 @@ public class GUI extends JFrame {
         return null;
     }
 
+    /**
+     * Функция создаёт оконное приложение с результатами игры
+     */
+    public final void winLoseWindow() {
+        final JFrame window = new JFrame();
+        JButton button = new JButton();
+
+        button.setText("Игра окончена!");
+        window.add(button);
+        window.pack();
+        ImageIcon image = new ImageIcon("./src/main/resources/icon.png");
+        window.setIconImage(image.getImage());
+        window.setSize(300, 200);
+        window.setResizable(false);
+        window.setVisible(true);
+
+        button.addActionListener(evt -> System.exit(0));
+    }
+
     public static void main(String[] args) {
-        new GUI();
+        GUI gui = new GUI();
+        gui.winLoseWindow();
     }
 }
