@@ -6,6 +6,7 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
 
 import java.io.*;
@@ -137,14 +138,17 @@ public class Server {
 
         private void gameEnd() {
             try {
-                final StringWriter writer = new StringWriter();
+                final StringWriter writerPlayerRequest = new StringWriter();
                 final ObjectMapper mapper = new ObjectMapper();
-                mapper.writeValue(writer, new PlayerRequest(board, Color.NEUTRAL));
-                sendMessageToAllPlayers(writer.toString());
+                mapper.writeValue(writerPlayerRequest, new PlayerRequest(board, Color.NEUTRAL));
+                sendMessageToAllPlayers(writerPlayerRequest.toString());
                 sendMessageToAllPlayers("Игра закончилась");
 
+                final StringWriter writerGameEndRequest = new StringWriter();
                 final int scoreBlack = handler.getScoreBlack(board);
                 final int scoreWhite = handler.getScoreWhite(board);
+                mapper.writeValue(writerGameEndRequest, new GameEndRequest(scoreBlack, scoreWhite));
+                sendMessageToAllPlayers(writerGameEndRequest.toString());
                 sendMessageToAllPlayers("Черные: " + scoreBlack);
                 sendMessageToAllPlayers("Белые: " + scoreWhite);
 
