@@ -139,9 +139,9 @@ public class Client {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
                     final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
-                    final int scoreWhite = request.getScoreWhite();
                     final int scoreBlack = request.getScoreBlack();
-                    gui.winLoseWindow();
+                    final int scoreWhite = request.getScoreWhite();
+                    gui.winLoseWindow(scoreBlack, scoreWhite);
                     //  gui.drawGameEnd(scoreWhite, scoreBlack);
                     continue;
                 } catch (IOException ignored) {

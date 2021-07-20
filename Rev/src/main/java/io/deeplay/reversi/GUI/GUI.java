@@ -55,7 +55,7 @@ public class GUI extends JFrame {
     /**
      * Функция устанавливает фишки с board в оконное приложение
      *
-     * @param board     - доска, которую нужно отобразить с помошью кнопок
+     * @param board - доска, которую нужно отобразить с помошью кнопок
      */
     public final void drawActiveBoard(final Board board) {
         final String white = "./src/main/resources/White.png";
@@ -96,7 +96,7 @@ public class GUI extends JFrame {
     /**
      * Функция находит клетку, в которую можно походить и было совершено нажатие кнопки
      *
-     * @param board     - доска
+     * @param board - доска
      * @return возвращает Cell, если не нашел такую клетку, то возвращает null
      */
     public final Cell getAnswerCell(final Board board) {
@@ -113,24 +113,47 @@ public class GUI extends JFrame {
     /**
      * Функция создаёт оконное приложение с результатами игры
      */
-    public final void winLoseWindow() {
+    public final void winLoseWindow(final int scoreBlack, final int scoreWhite) {
         final JFrame window = new JFrame();
-        JButton button = new JButton();
-
-        button.setText("Игра окончена!");
-        window.add(button);
+        window.setLayout(new BorderLayout());
+        window.add(new MenuPane(scoreBlack, scoreWhite));
         window.pack();
         ImageIcon image = new ImageIcon("./src/main/resources/icon.png");
         window.setIconImage(image.getImage());
         window.setSize(300, 200);
+        window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.setVisible(true);
+    }
 
-        button.addActionListener(evt -> System.exit(0));
+    public class MenuPane extends JPanel {
+
+        public MenuPane(int scoreBlack, int scoreWhite) {
+            final JLabel text1 = new JLabel("Игра окончена!");
+            final JLabel text2 = new JLabel(String.format("Чёрные: %d", scoreBlack));
+            final JLabel text3 = new JLabel(String.format("Белые: %d", scoreWhite));
+            final JButton button = new JButton("Выход");
+            button.addActionListener(evt -> System.exit(0));
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.ipadx = 20;
+            gbc.ipady = 20;
+
+            add(text1, gbc);
+            gbc.gridy++;
+            add(text2, gbc);
+            gbc.gridy++;
+            add(text3, gbc);
+            gbc.gridy++;
+            add(button, gbc);
+        }
     }
 
     public static void main(String[] args) {
         GUI gui = new GUI();
-        gui.winLoseWindow();
+        gui.winLoseWindow(10, 10);
     }
 }
