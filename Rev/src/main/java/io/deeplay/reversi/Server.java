@@ -105,27 +105,24 @@ public class Server {
             gameEnd();
         }
 
-        public void gameProcess() {
+        private void gameProcess() {
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
                     if (!handler.haveIStep(board, player.getColor())) {
                         continue;
                     }
 
-                    try {
-                        final StringWriter writer = new StringWriter();
-                        final ObjectMapper mapper = new ObjectMapper();
-                        mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
-                        sendMessageToAllPlayers(writer.toString());
-                    } catch (IOException ignored) {
-                    }
-
                     while (true) {
                         try {
-                            final String answer = player.in.readLine();
-
-                            final StringReader reader = new StringReader(answer);
+                            final StringWriter writer = new StringWriter();
                             final ObjectMapper mapper = new ObjectMapper();
+                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                            for (ServerSomething ss : players) {
+                                ss.send(writer.toString());
+                            }
+
+                            final String answer = player.in.readLine();
+                            final StringReader reader = new StringReader(answer);
                             final Cell cell = mapper.readValue(reader, Cell.class);
                             sendMessageToAllPlayers(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
 
@@ -138,7 +135,7 @@ public class Server {
             }
         }
 
-        public void gameEnd() {
+        private void gameEnd() {
             try {
                 final StringWriter writer = new StringWriter();
                 final ObjectMapper mapper = new ObjectMapper();
