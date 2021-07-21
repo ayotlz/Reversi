@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.deeplay.reversi.bot.RandomBot;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
@@ -40,8 +41,18 @@ public class Server {
         @Override
         public void run() {
             try {
+                RoomType roomType = null;
+                while (roomType == null) {
+                    String tr = in.readLine();
+                    roomType = switch (tr) {
+                        case "1" -> RoomType.HumanVsBot;
+                        case "2" -> RoomType.HumanVsHuman;
+                        case "3" -> RoomType.BotVsBot;
+                        default -> null;
+                    };
+                }
                 serverList.add(this);
-                color = chooseRoom().joinRoom(this);
+                color = chooseRoom(roomType).joinRoom(this);
                 final StringWriter writer = new StringWriter();
                 final ObjectMapper mapper = new ObjectMapper();
                 mapper.writeValue(writer, color);
@@ -51,13 +62,13 @@ public class Server {
             }
         }
 
-        private Room chooseRoom() {
+        private Room chooseRoom(RoomType rt) {
             for (Room room : roomList) {
-                if (room.isRoomHasPlace()) {
+                if (room.getRoomType() == rt && room.isRoomHasPlace()) {
                     return room;
                 }
             }
-            Room newRoom = new Room();
+            Room newRoom = new Room(rt);
             roomList.add(newRoom);
             return newRoom;
         }
@@ -84,15 +95,29 @@ public class Server {
         }
     }
 
+    private enum RoomType {
+        HumanVsHuman, HumanVsBot, BotVsBot;
+    }
+
     private class Room extends Thread {
         private final List<ServerSomething> players;
+        private final List<RandomBot> randomBots;
         private final Handler handler;
         private final Board board;
+        private final RoomType roomType;
 
-        private Room() {
+        private Room(RoomType roomType) {
             players = new ArrayList<>();
             handler = new Handler();
             board = new Board();
+            this.roomType = roomType;
+            randomBots = new ArrayList<>();
+            if (roomType == RoomType.BotVsBot) {
+                randomBots.add(new RandomBot(Color.BLACK));
+                randomBots.add(new RandomBot(Color.WHITE));
+            } else if (roomType == RoomType.HumanVsBot) {
+                randomBots.add(new RandomBot(Color.WHITE));
+            }
         }
 
         @Override
@@ -108,6 +133,16 @@ public class Server {
         private void gameProcess() {
             while (!handler.isGameEnd(board)) {
                 for (ServerSomething player : players) {
+                    if (player.getColor() == Color.NEUTRAL) {
+                        try {
+                            final StringWriter writer = new StringWriter();
+                            final ObjectMapper mapper = new ObjectMapper();
+                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                            player.send(writer.toString());
+                        } catch (IOException ignored) {
+                        }
+                        continue;
+                    }
                     if (!handler.haveIStep(board, player.getColor())) {
                         continue;
                     }
@@ -117,9 +152,7 @@ public class Server {
                             final StringWriter writer = new StringWriter();
                             final ObjectMapper mapper = new ObjectMapper();
                             mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
-                            for (ServerSomething ss : players) {
-                                ss.send(writer.toString());
-                            }
+                            sendMessageToAllPlayers(writer.toString());
 
                             final String answer = player.in.readLine();
                             final StringReader reader = new StringReader(answer);
@@ -129,6 +162,20 @@ public class Server {
                             handler.makeStep(board, cell, player.getColor());
                             break;
                         } catch (final ReversiException | IOException ignored) {
+                        }
+                    }
+                }
+                for (RandomBot rb : randomBots) {
+                    if (!handler.haveIStep(board, rb.getPlayerColor())) {
+                        continue;
+                    }
+                    while (true) {
+                        try {
+                            final Cell cell = rb.getAnswer(board);
+                            handler.makeStep(board, cell, rb.getPlayerColor());
+                            break;
+                        } catch (ReversiException | IOException e) {
+                            System.out.println("Бот работае некорректно");
                         }
                     }
                 }
@@ -173,19 +220,35 @@ public class Server {
             }
         }
 
+        private RoomType getRoomType() {
+            return roomType;
+        }
+
         private boolean isRoomHasPlace() {
-            return players.size() < 2;
+            if (roomType == RoomType.HumanVsBot) return players.size() < 1;
+            if (roomType == RoomType.HumanVsHuman) return players.size() < 2;
+            return false;
         }
 
         private Color joinRoom(final ServerSomething ss) {
-            players.add(ss);
-            if (players.size() == 1) {
-                return Color.BLACK;
-            } else if (players.size() == 2) {
+            if (roomType == RoomType.BotVsBot) {
+                players.add(ss);
                 start();
-                return Color.WHITE;
+                return Color.NEUTRAL;
+            } else if (roomType == RoomType.HumanVsBot) {
+                players.add(ss);
+                start();
+                return Color.BLACK;
+            } else {
+                players.add(ss);
+                if (players.size() == 1) {
+                    return Color.BLACK;
+                } else if (players.size() == 2) {
+                    start();
+                    return Color.WHITE;
+                }
+                return null;
             }
-            return null;
         }
     }
 
