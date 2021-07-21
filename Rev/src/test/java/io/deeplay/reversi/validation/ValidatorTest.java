@@ -5,9 +5,9 @@ import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestValidator {
+public class ValidatorTest {
     @Test
     public void testCorrectCell() throws ReversiException {
         assertThrows(ReversiException.class, () -> Validator.isCellCorrect(new Cell(-1, -1), 8));

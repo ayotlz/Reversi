@@ -78,9 +78,9 @@ public class GUI extends JFrame {
      * Функция добавляет кнопке изображение и делает ее не активной
      *
      * @param button -  кнопка
-     * @param color - адрес изображения
+     * @param color  - адрес изображения
      */
-    private void drawDisabledButtons(final JButton button, final String color){
+    private void drawDisabledButtons(final JButton button, final String color) {
         button.setIcon(new ImageIcon(color));
         button.setEnabled(false);
         button.setDisabledIcon(new ImageIcon(color));
