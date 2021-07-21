@@ -3,8 +3,17 @@ package io.deeplay.reversi.GUI;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Класс MenuPanel - класс для создания дополнительной панели, расширяет JPanel
+ */
 public class MenuPanel extends JPanel {
 
+    /**
+     * Конкструктор панели с итоговым счетом
+     *
+     * @param scoreBlack - количество чёрных фишек
+     * @param scoreWhite - количество белых фишек
+     */
     public MenuPanel(final int scoreBlack, final int scoreWhite) {
         final JLabel text1 = new JLabel("Игра окончена!");
         final JLabel text2 = new JLabel(String.format("Чёрные: %d", scoreBlack));

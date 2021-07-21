@@ -10,6 +10,7 @@ import java.io.IOException;
  * Класс Player - класс абстрактного игрока
  */
 public abstract class Player {
+
     /**
      * поле цвета, которым ходит игрок
      */

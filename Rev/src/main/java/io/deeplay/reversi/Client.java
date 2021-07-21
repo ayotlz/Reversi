@@ -70,7 +70,6 @@ public class Client {
             try {
                 choice = Integer.parseInt(inputUser.readLine());
             } catch (final IOException | NumberFormatException ignored) {
-                System.out.println(ignored.getMessage());
             }
         }
         if (choice == 1) {
@@ -118,7 +117,6 @@ public class Client {
                 }
             }
         } catch (final IOException ignored) {
-            System.out.println(ignored.getMessage());
         }
     }
 
@@ -149,7 +147,6 @@ public class Client {
                     }
                     continue;
                 } catch (IOException ignored) {
-                    System.out.println(ignored.getMessage());
                 }
 
                 try {
@@ -177,7 +174,6 @@ public class Client {
                     }
                     continue;
                 } catch (final IOException ignored) {
-                    System.out.println(ignored.getMessage());
                 } catch (final NullPointerException e) {
                     downService();
                 }

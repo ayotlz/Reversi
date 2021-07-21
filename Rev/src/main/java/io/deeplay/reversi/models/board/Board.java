@@ -103,27 +103,23 @@ public class Board {
     public final Map<Cell, List<Cell>> getScoreMap(final Color turnOrder) {
         final List<Cell> chipsOfOpponent = findOpponentsChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
-
         final Map<Cell, List<Cell>> scoreMap = new HashMap<>();
         for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.put(cell, new ArrayList<>());
             }
         }
-
         for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.get(cell).addAll(getListOfFlipCells(cell, entry.getKey(), turnOrder));
             }
         }
-
         final List<Cell> listToDelete = new ArrayList<>();
         for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
             if (scoreMap.get(entry.getKey()).size() == 0) {
                 listToDelete.add(entry.getKey());
             }
         }
-
         for (Cell cell : listToDelete) {
             scoreMap.remove(cell);
         }
@@ -189,10 +185,8 @@ public class Board {
         if (neighbourCell.equals(mainCell)) {
             return new ArrayList<>();
         }
-
         final int differenceX = mainCell.getX() - neighbourCell.getX();
         final int differenceY = mainCell.getY() - neighbourCell.getY();
-
         final List<Cell> cells = new ArrayList<>();
 
         int neighbourX = neighbourCell.getX();
@@ -201,7 +195,6 @@ public class Board {
         while (true) {
             neighbourX += differenceX;
             neighbourY += differenceY;
-
             if (neighbourX >= boardSize || neighbourX < 0 || neighbourY >= boardSize || neighbourY < 0) {
                 return new ArrayList<>();
             }
