@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestHandler {
+public class HandlerTest {
     private Board board;
     private Handler handler;
 
@@ -24,7 +24,7 @@ public class TestHandler {
 
 
     @Test
-    public void testInitializationBoard() {
+    void testInitializationBoard() {
         assertEquals(board.getChipColor(3, 3), Color.WHITE);
         assertEquals(board.getChipColor(4, 4), Color.WHITE);
         assertEquals(board.getChipColor(3, 4), Color.BLACK);
@@ -32,7 +32,7 @@ public class TestHandler {
     }
 
     @Test
-    public void testGameEndWithFullBoard() throws ReversiException {
+    void testGameEndWithFullBoard() throws ReversiException {
         assertFalse(handler.isGameEnd(board));
 
         final int[][] arr =
@@ -68,7 +68,7 @@ public class TestHandler {
     }
 
     @Test
-    public void testGameEndWithNoFullBoard() throws ReversiException {
+    void testGameEndWithNoFullBoard() throws ReversiException {
         assertFalse(handler.isGameEnd(board));
 
         handler.makeStep(board, new Cell(3, 2), Color.BLACK);
@@ -97,20 +97,30 @@ public class TestHandler {
         handler.makeStep(board, new Cell(4, 6), Color.WHITE);
         handler.makeStep(board, new Cell(3, 7), Color.BLACK);
         handler.makeStep(board, new Cell(6, 5), Color.WHITE);
+        assertFalse(handler.isGameEnd(board));
         handler.makeStep(board, new Cell(6, 6), Color.BLACK);
 
+        assertFalse(handler.haveIStep(board, Color.BLACK));
+        assertFalse(handler.haveIStep(board, Color.WHITE));
         assertTrue(handler.isGameEnd(board));
         assertEquals(handler.getScoreBlack(board), 31);
         assertEquals(handler.getScoreWhite(board), 0);
     }
 
     @Test
-    public void testWrongStep() {
+    void testWrongStep() {
         assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(0, 0), Color.BLACK));
     }
 
     @Test
-    public void testIncorrectStep() {
+    void testIncorrectStep() {
         assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(-1, 8), Color.BLACK));
     }
+
+    @Test
+    void testHaveIStep() {
+        assertTrue(handler.haveIStep(board, Color.BLACK));
+        assertTrue(handler.haveIStep(board, Color.WHITE));
+    }
+
 }
