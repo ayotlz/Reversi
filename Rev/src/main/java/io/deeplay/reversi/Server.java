@@ -96,7 +96,7 @@ public class Server {
     }
 
     private enum RoomType {
-        HumanVsHuman, HumanVsBot, BotVsBot;
+        HumanVsHuman, HumanVsBot, BotVsBot
     }
 
     private class Room extends Thread {

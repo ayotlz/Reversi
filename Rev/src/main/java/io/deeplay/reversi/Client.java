@@ -129,7 +129,7 @@ public class Client {
         public void run() {
             String message;
             if (player.getClass() != RandomBot.class) {
-                gui = new GUI();
+                gui = new GUI(player.getPlayerColor());
             }
 
             while (true) {
