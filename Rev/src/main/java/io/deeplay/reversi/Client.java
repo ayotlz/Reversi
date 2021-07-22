@@ -58,24 +58,28 @@ public class Client {
         }
 
         System.out.println("Клиент запущен");
-        choosePlayer();
+        chooseRoom();
         System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
 
-    private void choosePlayer() {
-        System.out.println("1: HumanPlayer\n2: RandomBot");
-        int choice = 0;
-        while (choice != 1 && choice != 2) {
-            try {
-                choice = Integer.parseInt(inputUser.readLine());
-            } catch (final IOException | NumberFormatException ignored) {
+    private void chooseRoom() {
+        System.out.println("1: Human Vs Bot\n2: Human Vs Human\n3: Bot Vs Bot");
+        try {
+            String choice = "0";
+            while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3")) {
+                choice = inputUser.readLine();
+
+                if (choice.equals("1") || choice.equals("2")) {
+                    send(choice);
+                    player = new HumanPlayer(getColor());
+                } else if (choice.equals("3")) {
+                    send(choice);
+                    player = new RandomBot(getColor());
+                }
             }
-        }
-        if (choice == 1) {
-            player = new HumanPlayer(getColor());
-        } else {
-            player = new RandomBot(getColor());
+        } catch (IOException e) {
+            downService();
         }
     }
 
@@ -125,7 +129,7 @@ public class Client {
         public void run() {
             String message;
             if (player.getClass() != RandomBot.class) {
-                gui = new GUI();
+                gui = new GUI(player.getPlayerColor());
             }
 
             while (true) {
@@ -146,9 +150,11 @@ public class Client {
                         gui.winLoseWindow(scoreBlack, scoreWhite);
                     }
                     continue;
-                } catch (IOException ignored) {
+                } catch (final IOException ignored) {
+                } catch (final NullPointerException e) {
+                    downService();
+                    continue;
                 }
-
                 try {
                     final StringReader reader = new StringReader(message);
                     final ObjectMapper mapper = new ObjectMapper();
@@ -156,12 +162,17 @@ public class Client {
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
                     System.out.println(board.toString());
+                    if (gui != null) {
+                        gui.drawActiveBoard(board);
+                    }
+                    if (player.getPlayerColor() == Color.NEUTRAL) {
+                        continue;
+                    }
 
                     if (turnOrder == player.getPlayerColor()) {
                         final StringWriter writer = new StringWriter();
                         Cell cell;
-                        if (player.getClass() != RandomBot.class) {
-                            gui.drawActiveBoard(board);
+                        if (player.getClass() != RandomBot.class && gui != null) {
                             cell = gui.getAnswerCell(board);
                             while (cell == null) {
                                 cell = gui.getAnswerCell(board);
@@ -176,6 +187,7 @@ public class Client {
                 } catch (final IOException ignored) {
                 } catch (final NullPointerException e) {
                     downService();
+                    continue;
                 }
                 System.out.println(message);
             }

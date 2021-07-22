@@ -24,15 +24,16 @@ public class GUI extends JFrame {
     /**
      * Конкструктор - создание оконного приложения
      */
-    public GUI() {
+    public GUI(final Color color) {
 
         Board board = new Board();
         buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
 
         createButtons();
         drawActiveBoard(board);
-        setLayout(new GridLayout(8, 8, 3, 3));
-        setTitle("Reversi");
+        getContentPane().setBackground(new java.awt.Color(46, 139, 87));
+        setLayout(new GridLayout(board.getBoardSize(), board.getBoardSize(), 3, 3));
+        setTitle("REVERSI " + color);
         ImageIcon image = new ImageIcon(ICON);
         setIconImage(image.getImage());
         setSize(700, 700);
@@ -78,9 +79,9 @@ public class GUI extends JFrame {
      * Функция добавляет кнопке изображение и делает ее не активной
      *
      * @param button -  кнопка
-     * @param color - адрес изображения
+     * @param color  - адрес изображения
      */
-    private void drawDisabledButtons(final JButton button, final String color){
+    private void drawDisabledButtons(final JButton button, final String color) {
         button.setIcon(new ImageIcon(color));
         button.setEnabled(false);
         button.setDisabledIcon(new ImageIcon(color));

@@ -157,8 +157,8 @@ public class Board {
             final List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
-                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
-                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
+                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < boardSize &&
+                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < boardSize ) {
                         final Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
                             final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(),
