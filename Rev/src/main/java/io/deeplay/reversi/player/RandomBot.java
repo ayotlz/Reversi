@@ -1,4 +1,4 @@
-package io.deeplay.reversi.bot;
+package io.deeplay.reversi.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.models.board.Board;

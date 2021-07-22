@@ -1,4 +1,4 @@
-package io.deeplay.reversi.bot;
+package io.deeplay.reversi.player;
 
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;

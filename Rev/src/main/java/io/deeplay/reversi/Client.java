@@ -2,9 +2,9 @@ package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.GUI.GUI;
-import io.deeplay.reversi.bot.HumanPlayer;
-import io.deeplay.reversi.bot.Player;
-import io.deeplay.reversi.bot.RandomBot;
+import io.deeplay.reversi.player.HumanPlayer;
+import io.deeplay.reversi.player.Player;
+import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
