@@ -1,7 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.deeplay.reversi.bot.RandomBot;
+import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
