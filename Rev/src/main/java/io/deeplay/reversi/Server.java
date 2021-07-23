@@ -9,6 +9,8 @@ import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.BindException;
@@ -21,6 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Server {
     static final int PORT = 8082;
 
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
     private final List<Room> roomList = new ArrayList<>();
 
@@ -43,7 +46,7 @@ public class Server {
             try {
                 RoomType roomType = null;
                 while (roomType == null) {
-                    String tr = in.readLine();
+                    final String tr = in.readLine();
                     roomType = switch (tr) {
                         case "1" -> RoomType.HumanVsBot;
                         case "2" -> RoomType.HumanVsHuman;
@@ -62,8 +65,8 @@ public class Server {
             }
         }
 
-        private Room chooseRoom(RoomType rt) {
-            for (Room room : roomList) {
+        private Room chooseRoom(final RoomType rt) {
+            for (final Room room : roomList) {
                 if (room.getRoomType() == rt && room.isRoomHasPlace()) {
                     return room;
                 }
@@ -106,7 +109,7 @@ public class Server {
         private final Board board;
         private final RoomType roomType;
 
-        private Room(RoomType roomType) {
+        private Room(final RoomType roomType) {
             players = new ArrayList<>();
             handler = new Handler();
             board = new Board();
@@ -138,7 +141,7 @@ public class Server {
         }
 
         private void humanHandler() {
-            for (ServerSomething player : players) {
+            for (final ServerSomething player : players) {
                 if (!handler.haveIStep(board, player.getColor()) || player.getColor() == Color.NEUTRAL) {
                     continue;
                 }
@@ -166,20 +169,20 @@ public class Server {
         }
 
         private void botHandler() {
-            for (RandomBot rb : randomBots) {
-                if (!handler.haveIStep(board, rb.getPlayerColor())) {
+            for (final RandomBot bot : randomBots) {
+                if (!handler.haveIStep(board, bot.getPlayerColor())) {
                     continue;
                 }
                 while (true) {
                     try {
                         final StringWriter writer = new StringWriter();
                         final ObjectMapper mapper = new ObjectMapper();
-                        mapper.writeValue(writer, new PlayerRequest(board, rb.getPlayerColor()));
+                        mapper.writeValue(writer, new PlayerRequest(board, bot.getPlayerColor()));
                         sendMessageToAllPlayers(writer.toString());
 
-                        final Cell cell = rb.getAnswer(board);
-                        handler.makeStep(board, cell, rb.getPlayerColor());
-                        sendMessageToAllPlayers(rb.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
+                        final Cell cell = bot.getAnswer(board);
+                        handler.makeStep(board, cell, bot.getPlayerColor());
+                        sendMessageToAllPlayers(bot.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
                         System.out.println("Бот работает некорректно");
@@ -212,7 +215,7 @@ public class Server {
                     sendMessageToAllPlayers("Ничья");
                 }
 
-                for (ServerSomething player : players) {
+                for (final ServerSomething player : players) {
                     player.downService();
                 }
                 roomList.remove(this);
@@ -228,7 +231,7 @@ public class Server {
         }
 
         private void sendMessageToAllPlayers(final String message) throws IOException {
-            for (ServerSomething ss : players) {
+            for (final ServerSomething ss : players) {
                 ss.send(message);
             }
         }
@@ -268,6 +271,7 @@ public class Server {
     @SuppressWarnings("InfiniteLoopStatement")
     private void startServer() throws IOException {
         System.out.println("Сервер запущен");
+        logger.debug("Сервер запущен");
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 final Socket socket = serverSocket.accept();

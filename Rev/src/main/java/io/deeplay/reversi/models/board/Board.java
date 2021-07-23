@@ -31,7 +31,7 @@ public class Board {
     public Board() {
         this.board = new Chip[boardSize][boardSize];
 
-        for (Chip[] chips : this.board) {
+        for (final Chip[] chips : this.board) {
             for (int j = 0; j < this.board.length; j++) {
                 chips[j] = new Chip(Color.NEUTRAL);
             }
@@ -104,23 +104,23 @@ public class Board {
         final List<Cell> chipsOfOpponent = findOpponentsChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
         final Map<Cell, List<Cell>> scoreMap = new HashMap<>();
-        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.put(cell, new ArrayList<>());
             }
         }
-        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.get(cell).addAll(getListOfFlipCells(cell, entry.getKey(), turnOrder));
             }
         }
         final List<Cell> listToDelete = new ArrayList<>();
-        for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
             if (scoreMap.get(entry.getKey()).size() == 0) {
                 listToDelete.add(entry.getKey());
             }
         }
-        for (Cell cell : listToDelete) {
+        for (final Cell cell : listToDelete) {
             scoreMap.remove(cell);
         }
         return scoreMap;
@@ -153,7 +153,7 @@ public class Board {
      */
     private Map<Cell, List<Cell>> findNeighborhood(final List<Cell> listOfOpponentsChips) {
         final Map<Cell, List<Cell>> neighborhood = new HashMap<>();
-        for (Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
+        for (final Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
             final List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {

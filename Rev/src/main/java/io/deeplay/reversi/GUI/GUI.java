@@ -36,7 +36,7 @@ public class GUI extends JFrame {
         setTitle("REVERSI " + color);
         ImageIcon image = new ImageIcon(ICON);
         setIconImage(image.getImage());
-        setSize(700, 700);
+        setSize(900, 900);
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,8 +94,8 @@ public class GUI extends JFrame {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (buttons[i][j].isEnabled()) {
-                    int finalI = i;
-                    int finalJ = j;
+                    final int finalI = i;
+                    final int finalJ = j;
                     buttons[i][j].addActionListener(e -> buttons[finalI][finalJ].setEnabled(false));
                 }
             }
@@ -127,7 +127,7 @@ public class GUI extends JFrame {
         window.setLayout(new BorderLayout());
         window.add(new MenuPanel(scoreBlack, scoreWhite));
         window.pack();
-        ImageIcon image = new ImageIcon(ICON);
+        final ImageIcon image = new ImageIcon(ICON);
         window.setIconImage(image.getImage());
         window.setSize(300, 100);
         window.setLocationRelativeTo(null);

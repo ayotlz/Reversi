@@ -21,7 +21,7 @@ public class MenuPanel extends JPanel {
         final JButton button = new JButton("Выход");
         button.addActionListener(evt -> System.exit(0));
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
