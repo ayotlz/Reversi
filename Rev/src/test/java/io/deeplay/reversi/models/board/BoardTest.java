@@ -60,10 +60,10 @@ public class BoardTest {
     @Test
     void testGetScoreMap() {
         board.setChip(0, 0, Color.BLACK);
-        Cell cell1 = new Cell(0, 1);
+        final Cell cell1 = new Cell(0, 1);
         board.setChip(0, 1, Color.WHITE);
 
-        Cell cell2 = new Cell(0, 2);
+        final Cell cell2 = new Cell(0, 2);
 
         final List<Cell> chipsOfOpponent = new ArrayList<>();
         chipsOfOpponent.add(cell1);

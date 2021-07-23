@@ -132,51 +132,57 @@ public class Server {
 
         private void gameProcess() {
             while (!handler.isGameEnd(board)) {
-                for (ServerSomething player : players) {
-                    if (player.getColor() == Color.NEUTRAL) {
-                        try {
-                            final StringWriter writer = new StringWriter();
-                            final ObjectMapper mapper = new ObjectMapper();
-                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
-                            player.send(writer.toString());
-                        } catch (IOException ignored) {
-                        }
-                        continue;
-                    }
-                    if (!handler.haveIStep(board, player.getColor())) {
-                        continue;
-                    }
+                humanHandler();
+                botHandler();
+            }
+        }
 
-                    while (true) {
-                        try {
-                            final StringWriter writer = new StringWriter();
-                            final ObjectMapper mapper = new ObjectMapper();
-                            mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
-                            sendMessageToAllPlayers(writer.toString());
+        private void humanHandler() {
+            for (ServerSomething player : players) {
+                if (!handler.haveIStep(board, player.getColor()) || player.getColor() == Color.NEUTRAL) {
+                    continue;
+                }
 
-                            final String answer = player.in.readLine();
-                            final StringReader reader = new StringReader(answer);
-                            final Cell cell = mapper.readValue(reader, Cell.class);
-                            sendMessageToAllPlayers(player.getColor() + " поставил фишку на клетку: " + cell.toString() + "\n");
+                while (true) {
+                    try {
+                        final StringWriter writer = new StringWriter();
+                        final ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                        sendMessageToAllPlayers(writer.toString());
 
-                            handler.makeStep(board, cell, player.getColor());
-                            break;
-                        } catch (final ReversiException | IOException ignored) {
-                        }
+                        final String answer = player.in.readLine();
+                        final StringReader reader = new StringReader(answer);
+                        final Cell cell = mapper.readValue(reader, Cell.class);
+                        sendMessageToAllPlayers(player.getColor() + " ставит фишку на клетку: " + cell.toString() + "");
+
+                        handler.makeStep(board, cell, player.getColor());
+                        break;
+                    } catch (final ReversiException e) {
+                        sendMessageToAllPlayersWithoutException("Некорректный ход\n");
+                    } catch (final IOException ignored) {
                     }
                 }
-                for (RandomBot rb : randomBots) {
-                    if (!handler.haveIStep(board, rb.getPlayerColor())) {
-                        continue;
-                    }
-                    while (true) {
-                        try {
-                            final Cell cell = rb.getAnswer(board);
-                            handler.makeStep(board, cell, rb.getPlayerColor());
-                            break;
-                        } catch (ReversiException | IOException e) {
-                            System.out.println("Бот работае некорректно");
-                        }
+            }
+        }
+
+        private void botHandler() {
+            for (RandomBot rb : randomBots) {
+                if (!handler.haveIStep(board, rb.getPlayerColor())) {
+                    continue;
+                }
+                while (true) {
+                    try {
+                        final StringWriter writer = new StringWriter();
+                        final ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(writer, new PlayerRequest(board, rb.getPlayerColor()));
+                        sendMessageToAllPlayers(writer.toString());
+
+                        final Cell cell = rb.getAnswer(board);
+                        handler.makeStep(board, cell, rb.getPlayerColor());
+                        sendMessageToAllPlayers(rb.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
+                        break;
+                    } catch (ReversiException | IOException e) {
+                        System.out.println("Бот работает некорректно");
                     }
                 }
             }
@@ -211,6 +217,13 @@ public class Server {
                 }
                 roomList.remove(this);
             } catch (final IOException ignored) {
+            }
+        }
+
+        private void sendMessageToAllPlayersWithoutException(final String message) {
+            try {
+                sendMessageToAllPlayers(message);
+            } catch (IOException ignored) {
             }
         }
 

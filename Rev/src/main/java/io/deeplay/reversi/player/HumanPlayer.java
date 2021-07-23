@@ -1,8 +1,10 @@
 package io.deeplay.reversi.player;
 
+import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.validation.Validator;
 
 import java.io.*;
 
@@ -26,27 +28,37 @@ public class HumanPlayer extends Player {
         final Reader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        Integer x = null, y = null;
+        int x, y;
 
-        while (x == null) {
+        while (true) {
             try {
-                System.out.print("Введите значение по вертикали: ");
-                x = Integer.parseInt(bufferedReader.readLine());
-            } catch (final NumberFormatException e) {
-                System.out.println("Вы ввели некорректное значение");
-            } catch (final IOException ignore) {
+                while (true) {
+                    try {
+                        System.out.print("Введите значение по вертикали: ");
+                        x = Integer.parseInt(bufferedReader.readLine());
+                        break;
+                    } catch (final NumberFormatException e) {
+                        System.out.println("Вы ввели некорректное значение");
+                    } catch (final IOException ignore) {
+                    }
+                }
+
+                while (true) {
+                    try {
+                        System.out.print("Введите значение по горизонтали: ");
+                        y = Integer.parseInt(bufferedReader.readLine());
+                        break;
+                    } catch (final NumberFormatException e) {
+                        System.out.println("Вы ввели некорректное значение");
+                    } catch (final IOException ignore) {
+                    }
+                }
+                final Cell cell = new Cell(x, y);
+                Validator.isCellCorrect(cell, board.getBoardSize());
+                return cell;
+            } catch (final ReversiException e) {
+                System.out.println("Такой клетки на поле не существует\n");
             }
         }
-
-        while (y == null) {
-            try {
-                System.out.print("Введите значение по горизонтали: ");
-                y = Integer.parseInt(bufferedReader.readLine());
-            } catch (final NumberFormatException e) {
-                System.out.println("Вы ввели некорректное значение");
-            } catch (final IOException ignore) {
-            }
-        }
-        return new Cell(x, y);
     }
 }

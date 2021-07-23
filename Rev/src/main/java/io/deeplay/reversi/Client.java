@@ -2,6 +2,7 @@ package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.GUI.GUI;
+import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.player.HumanPlayer;
 import io.deeplay.reversi.player.Player;
 import io.deeplay.reversi.player.RandomBot;
@@ -10,12 +11,15 @@ import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
 
 public class Client {
 
+    private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private static final String IP = "127.0.0.1";
     private static final int PORT = Server.PORT;
 
@@ -44,7 +48,7 @@ public class Client {
         try {
             socket = new Socket(this.ip, this.port);
         } catch (final IOException e) {
-            System.err.println("Socket failed");
+            logger.error("Socket failed");
             return;
         }
 
@@ -57,6 +61,7 @@ public class Client {
             return;
         }
 
+        logger.debug("Клиент запущен");
         System.out.println("Клиент запущен");
         chooseRoom();
         System.out.println(player.getPlayerColor());
@@ -73,6 +78,7 @@ public class Client {
                 if (choice.equals("1") || choice.equals("2")) {
                     send(choice);
                     player = new HumanPlayer(getColor());
+                    logger.debug("Клиент запущен в комнату");
                 } else if (choice.equals("3")) {
                     send(choice);
                     player = new RandomBot(getColor());
@@ -85,7 +91,7 @@ public class Client {
 
     private Color getColor() {
         try {
-            String str = in.readLine();
+            final String str = in.readLine();
             final StringReader reader = new StringReader(str);
             final ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(reader, Color.class);
@@ -141,14 +147,7 @@ public class Client {
                 }
 
                 try {
-                    final StringReader reader = new StringReader(message);
-                    final ObjectMapper mapper = new ObjectMapper();
-                    final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
-                    final int scoreBlack = request.getScoreBlack();
-                    final int scoreWhite = request.getScoreWhite();
-                    if (gui != null) {
-                        gui.winLoseWindow(scoreBlack, scoreWhite);
-                    }
+                    parseGameEnd(message);
                     continue;
                 } catch (final IOException ignored) {
                 } catch (final NullPointerException e) {
@@ -156,9 +155,7 @@ public class Client {
                     continue;
                 }
                 try {
-                    final StringReader reader = new StringReader(message);
-                    final ObjectMapper mapper = new ObjectMapper();
-                    final PlayerRequest request = mapper.readValue(reader, PlayerRequest.class);
+                    final PlayerRequest request = parsePlayerRequest(message);
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
                     System.out.println(board.toString());
@@ -169,20 +166,7 @@ public class Client {
                         continue;
                     }
 
-                    if (turnOrder == player.getPlayerColor()) {
-                        final StringWriter writer = new StringWriter();
-                        Cell cell;
-                        if (player.getClass() != RandomBot.class && gui != null) {
-                            cell = gui.getAnswerCell(board);
-                            while (cell == null) {
-                                cell = gui.getAnswerCell(board);
-                            }
-                        } else {
-                            cell = player.getAnswer(board);
-                        }
-                        mapper.writeValue(writer, cell);
-                        send(writer.toString());
-                    }
+                    sendAnswer(board, turnOrder);
                     continue;
                 } catch (final IOException ignored) {
                 } catch (final NullPointerException e) {
@@ -190,6 +174,41 @@ public class Client {
                     continue;
                 }
                 System.out.println(message);
+            }
+        }
+
+        private void parseGameEnd(final String message) throws IOException {
+            final StringReader reader = new StringReader(message);
+            final ObjectMapper mapper = new ObjectMapper();
+            final GameEndRequest request = mapper.readValue(reader, GameEndRequest.class);
+            final int scoreBlack = request.getScoreBlack();
+            final int scoreWhite = request.getScoreWhite();
+            if (gui != null) {
+                gui.winLoseWindow(scoreBlack, scoreWhite);
+            }
+        }
+
+        private PlayerRequest parsePlayerRequest(final String message) throws IOException {
+            final StringReader reader = new StringReader(message);
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(reader, PlayerRequest.class);
+        }
+
+        private void sendAnswer(Board board, Color turnOrder) throws IOException {
+            if (turnOrder == player.getPlayerColor()) {
+                final ObjectMapper mapper = new ObjectMapper();
+                final StringWriter writer = new StringWriter();
+                Cell cell;
+                if (player.getClass() != RandomBot.class && gui != null) {
+                    cell = gui.getAnswerCell(board);
+                    while (cell == null) {
+                        cell = gui.getAnswerCell(board);
+                    }
+                } else {
+                    cell = player.getAnswer(board);
+                }
+                mapper.writeValue(writer, cell);
+                send(writer.toString());
             }
         }
     }

@@ -26,7 +26,7 @@ public class GUI extends JFrame {
      */
     public GUI(final Color color) {
 
-        Board board = new Board();
+        final Board board = new Board();
         buttons = new JButton[board.getBoardSize()][board.getBoardSize()];
 
         createButtons();
