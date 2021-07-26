@@ -162,13 +162,23 @@ public class Server {
                         final Cell cell = mapper.readValue(reader, Cell.class);
                         sendMessageToAllPlayers(player.getColor() + " ставит фишку на клетку: " + cell.toString() + "");
 
-                        String flipCells = String.valueOf(board.getScoreMap(player.getColor()).get(cell).size());
+                        final String flipCells = String.valueOf(board.getScoreMap(player.getColor()).get(cell).size());
                         handler.makeStep(board, cell, player.getColor());
 
-                        String room = String.valueOf(roomID);
-                        String whiteScore = String.valueOf(handler.getScoreWhite(board));
-                        String blackScore = String.valueOf(handler.getScoreBlack(board));
-                        csvWriter.writeStep(room, player.getColor().getString(), cell.toString(), flipCells, whiteScore, blackScore);
+                        String gameStatus = "Не определён";
+                        if (handler.isGameEnd(board)) {
+                            if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
+                                gameStatus = "Победа белых";
+                            } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
+                                gameStatus = "Победа чёрных";
+                            } else {
+                                gameStatus = "Ничья";
+                            }
+                        }
+                        final String room = String.valueOf(roomID);
+                        final String whiteScore = String.valueOf(handler.getScoreWhite(board));
+                        final String blackScore = String.valueOf(handler.getScoreBlack(board));
+                        csvWriter.writeStep(room, player.getColor().getString(), cell.toString(), flipCells, whiteScore, blackScore, gameStatus);
                         break;
                     } catch (final ReversiException e) {
                         sendMessageToAllPlayersWithoutException("Некорректный ход\n");
@@ -197,7 +207,17 @@ public class Server {
                         String room = String.valueOf(roomID);
                         String whiteScore = String.valueOf(handler.getScoreWhite(board));
                         String blackScore = String.valueOf(handler.getScoreBlack(board));
-                        csvWriter.writeStep(room, bot.getPlayerColor().getString(), cell.toString(), flipCells, whiteScore, blackScore);
+                        String gameStatus = "Не определён";
+                        if (handler.isGameEnd(board)) {
+                            if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
+                                gameStatus = "Победа белых";
+                            } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
+                                gameStatus = "Победа чёрных";
+                            } else {
+                                gameStatus = "Ничья";
+                            }
+                        }
+                        csvWriter.writeStep(room, bot.getPlayerColor().getString(), cell.toString(), flipCells, whiteScore, blackScore, gameStatus);
                         sendMessageToAllPlayers(bot.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {

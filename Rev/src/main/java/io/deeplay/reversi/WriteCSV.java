@@ -14,7 +14,8 @@ public class WriteCSV {
         }
     }
 
-    public void writeStep(String roomID, String color, String coordinates, String countOfFlip, String whiteScore, String blackScore) {
+    public void writeStep(final String roomID, final String color, final String coordinates, final String countOfFlip,
+                          final String whiteScore, final String blackScore, final String gameStatus) {
         pw.print(roomID);
         pw.print(";");
         pw.print(color);
@@ -25,6 +26,8 @@ public class WriteCSV {
         pw.print(";");
         pw.print(whiteScore);
         pw.print(";");
-        pw.println(blackScore);
+        pw.print(blackScore);
+        pw.print(";");
+        pw.println(gameStatus);
     }
 }
