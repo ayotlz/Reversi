@@ -26,6 +26,8 @@ public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
     private final List<Room> roomList = new ArrayList<>();
+    private final WriteCSV csvWriter = new WriteCSV();
+    private int countOfMadeRoom = 0;
 
     private class ServerSomething extends Thread {
         private final Server server;
@@ -71,7 +73,7 @@ public class Server {
                     return room;
                 }
             }
-            Room newRoom = new Room(rt);
+            Room newRoom = new Room(rt, ++countOfMadeRoom);
             roomList.add(newRoom);
             return newRoom;
         }
@@ -103,13 +105,15 @@ public class Server {
     }
 
     private class Room extends Thread {
+        private final int roomID;
         private final List<ServerSomething> players;
         private final List<RandomBot> randomBots;
         private final Handler handler;
         private final Board board;
         private final RoomType roomType;
 
-        private Room(final RoomType roomType) {
+        private Room(final RoomType roomType, final int roomID) {
+            this.roomID = roomID;
             players = new ArrayList<>();
             handler = new Handler();
             board = new Board();
@@ -158,7 +162,13 @@ public class Server {
                         final Cell cell = mapper.readValue(reader, Cell.class);
                         sendMessageToAllPlayers(player.getColor() + " ставит фишку на клетку: " + cell.toString() + "");
 
+                        String flipCells = String.valueOf(board.getScoreMap(player.getColor()).get(cell).size());
                         handler.makeStep(board, cell, player.getColor());
+
+                        String room = String.valueOf(roomID);
+                        String whiteScore = String.valueOf(handler.getScoreWhite(board));
+                        String blackScore = String.valueOf(handler.getScoreBlack(board));
+                        csvWriter.writeStep(room, player.getColor().getString(), cell.toString(), flipCells, whiteScore, blackScore);
                         break;
                     } catch (final ReversiException e) {
                         sendMessageToAllPlayersWithoutException("Некорректный ход\n");
@@ -181,7 +191,13 @@ public class Server {
                         sendMessageToAllPlayers(writer.toString());
 
                         final Cell cell = bot.getAnswer(board);
+                        String flipCells = String.valueOf(board.getScoreMap(bot.getPlayerColor()).get(cell).size());
                         handler.makeStep(board, cell, bot.getPlayerColor());
+
+                        String room = String.valueOf(roomID);
+                        String whiteScore = String.valueOf(handler.getScoreWhite(board));
+                        String blackScore = String.valueOf(handler.getScoreBlack(board));
+                        csvWriter.writeStep(room, bot.getPlayerColor().getString(), cell.toString(), flipCells, whiteScore, blackScore);
                         sendMessageToAllPlayers(bot.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
@@ -197,7 +213,6 @@ public class Server {
                 final ObjectMapper mapper = new ObjectMapper();
                 mapper.writeValue(writerPlayerRequest, new PlayerRequest(board, Color.NEUTRAL));
                 sendMessageToAllPlayers(writerPlayerRequest.toString());
-                sendMessageToAllPlayers("Игра закончилась");
 
                 final StringWriter writerGameEndRequest = new StringWriter();
                 final int scoreBlack = handler.getScoreBlack(board);
@@ -214,6 +229,7 @@ public class Server {
                 } else {
                     sendMessageToAllPlayers("Ничья");
                 }
+                sendMessageToAllPlayers("Игра закончилась");
 
                 for (final ServerSomething player : players) {
                     player.downService();
