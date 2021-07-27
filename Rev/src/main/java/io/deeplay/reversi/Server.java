@@ -1,12 +1,13 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.deeplay.reversi.player.RandomBot;
+import io.deeplay.reversi.exceptions.ReversiErrorCode;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
 import org.slf4j.Logger;
@@ -146,7 +147,8 @@ public class Server {
 
         private void humanHandler() {
             for (final ServerSomething player : players) {
-                if (!handler.haveIStep(board, player.getColor()) || player.getColor() == Color.NEUTRAL) {
+                final Color playerColor = player.getColor();
+                if (!handler.haveIStep(board, playerColor) || playerColor == Color.NEUTRAL) {
                     continue;
                 }
 
@@ -154,31 +156,15 @@ public class Server {
                     try {
                         final StringWriter writer = new StringWriter();
                         final ObjectMapper mapper = new ObjectMapper();
-                        mapper.writeValue(writer, new PlayerRequest(board, player.getColor()));
+                        mapper.writeValue(writer, new PlayerRequest(board, playerColor));
                         sendMessageToAllPlayers(writer.toString());
 
                         final String answer = player.in.readLine();
                         final StringReader reader = new StringReader(answer);
                         final Cell cell = mapper.readValue(reader, Cell.class);
-                        sendMessageToAllPlayers(player.getColor() + " ставит фишку на клетку: " + cell.toString() + "");
+                        sendMessageToAllPlayers(playerColor + " ставит фишку на клетку: " + cell.toString() + "");
 
-                        final String flipCells = String.valueOf(board.getScoreMap(player.getColor()).get(cell).size());
-                        handler.makeStep(board, cell, player.getColor());
-
-                        String gameStatus = "Не определён";
-                        if (handler.isGameEnd(board)) {
-                            if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
-                                gameStatus = "Победа белых";
-                            } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
-                                gameStatus = "Победа чёрных";
-                            } else {
-                                gameStatus = "Ничья";
-                            }
-                        }
-                        final String room = String.valueOf(roomID);
-                        final String whiteScore = String.valueOf(handler.getScoreWhite(board));
-                        final String blackScore = String.valueOf(handler.getScoreBlack(board));
-                        csvWriter.writeStep(room, player.getColor().getString(), cell.toString(), flipCells, whiteScore, blackScore, gameStatus);
+                        formatCsv(playerColor, cell);
                         break;
                     } catch (final ReversiException e) {
                         sendMessageToAllPlayersWithoutException("Некорректный ход\n");
@@ -190,41 +176,54 @@ public class Server {
 
         private void botHandler() {
             for (final RandomBot bot : randomBots) {
-                if (!handler.haveIStep(board, bot.getPlayerColor())) {
+                final Color botColor = bot.getPlayerColor();
+                if (!handler.haveIStep(board, botColor)) {
                     continue;
                 }
                 while (true) {
                     try {
                         final StringWriter writer = new StringWriter();
                         final ObjectMapper mapper = new ObjectMapper();
-                        mapper.writeValue(writer, new PlayerRequest(board, bot.getPlayerColor()));
+                        mapper.writeValue(writer, new PlayerRequest(board, botColor));
                         sendMessageToAllPlayers(writer.toString());
 
                         final Cell cell = bot.getAnswer(board);
-                        String flipCells = String.valueOf(board.getScoreMap(bot.getPlayerColor()).get(cell).size());
-                        handler.makeStep(board, cell, bot.getPlayerColor());
-
-                        String room = String.valueOf(roomID);
-                        String whiteScore = String.valueOf(handler.getScoreWhite(board));
-                        String blackScore = String.valueOf(handler.getScoreBlack(board));
-                        String gameStatus = "Не определён";
-                        if (handler.isGameEnd(board)) {
-                            if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
-                                gameStatus = "Победа белых";
-                            } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
-                                gameStatus = "Победа чёрных";
-                            } else {
-                                gameStatus = "Ничья";
-                            }
-                        }
-                        csvWriter.writeStep(room, bot.getPlayerColor().getString(), cell.toString(), flipCells, whiteScore, blackScore, gameStatus);
-                        sendMessageToAllPlayers(bot.getPlayerColor() + " ставит фишку на клетку: " + cell.toString() + "");
+                        formatCsv(botColor, cell);
+                        sendMessageToAllPlayers(botColor + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
                         System.out.println("Бот работает некорректно");
                     }
                 }
             }
+        }
+
+        private void formatCsv(final Color color, final Cell cell) throws ReversiException {
+            final String flipCells;
+            try {
+                flipCells = String.valueOf(board.getScoreMap(color).get(cell).size());
+            } catch (final NullPointerException e){
+                throw new ReversiException(ReversiErrorCode.INCORRECT_PLACE_FOR_CHIP);
+            }
+            handler.makeStep(board, cell, color);
+
+            final String gameStatus;
+            if (handler.isGameEnd(board)) {
+                if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
+                    gameStatus = "Победа белых";
+                } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
+                    gameStatus = "Победа чёрных";
+                } else {
+                    gameStatus = "Ничья";
+                }
+            } else {
+                gameStatus = "Не определён";
+            }
+            final String room = String.valueOf(roomID);
+            final String whiteScore = String.valueOf(handler.getScoreWhite(board));
+            final String blackScore = String.valueOf(handler.getScoreBlack(board));
+            csvWriter.writeStep(room, color.getString(), cell.toString(),
+                    flipCells, whiteScore, blackScore, gameStatus);
         }
 
         private void gameEnd() {
