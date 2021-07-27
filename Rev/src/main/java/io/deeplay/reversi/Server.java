@@ -1,5 +1,4 @@
 package io.deeplay.reversi;
-TESTTESTETSTETSTETSTE
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.exceptions.ReversiErrorCode;
