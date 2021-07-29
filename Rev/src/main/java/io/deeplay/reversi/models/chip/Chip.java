@@ -11,11 +11,12 @@ import java.util.Objects;
  */
 @JsonPropertyOrder
 public class Chip {
+
     /**
      * поле цвета фишки
      */
     @JsonProperty
-    private Color color;
+    private final Color color;
 
     /**
      * Конструктор - создание фишки по её цвету
@@ -23,7 +24,7 @@ public class Chip {
      * @param color - цвет
      */
     @JsonCreator
-    public Chip(@JsonProperty("color") Color color) {
+    public Chip(@JsonProperty("color") final Color color) {
         this.color = color;
     }
 
@@ -32,35 +33,19 @@ public class Chip {
      *
      * @return возвращает цвет фишки
      */
-    public Color getColor() {
+    public final Color getColor() {
         return color;
     }
 
-    /**
-     * Функция установки цвета (разрешены только чёрный и белый)
-     *
-     * @param color - цвет
-     */
-    public void setColor(Color color) {
-        if (color == Color.BLACK) {
-            this.color = Color.BLACK;
-        } else if (color == Color.WHITE) {
-            this.color = Color.WHITE;
-        }
-    }
-
-    /**
-     * Функция переворота фишки
-     */
-    public void reverseChip() {
-        color = color.reverseColor();
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Chip chip = (Chip) o;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Chip chip = (Chip) o;
         return color == chip.color;
     }
 
@@ -68,5 +53,4 @@ public class Chip {
     public int hashCode() {
         return Objects.hash(color);
     }
-
 }

@@ -31,7 +31,7 @@ public class Board {
     public Board() {
         this.board = new Chip[boardSize][boardSize];
 
-        for (Chip[] chips : this.board) {
+        for (final Chip[] chips : this.board) {
             for (int j = 0; j < this.board.length; j++) {
                 chips[j] = new Chip(Color.NEUTRAL);
             }
@@ -40,6 +40,8 @@ public class Board {
 
     /**
      * Конкструктор копирования доски
+     *
+     * @param board - исходная доска
      */
     @JsonCreator
     public Board(@JsonProperty("board") final Chip[][] board) {
@@ -57,7 +59,7 @@ public class Board {
      * @param y - координата y
      * @return возвращает Color
      */
-    public Color getColor(int x, int y) {
+    public final Color getChipColor(final int x, final int y) {
         return board[x][y].getColor();
     }
 
@@ -66,7 +68,7 @@ public class Board {
      *
      * @return возвращает boardSize
      */
-    public int getBoardSize() {
+    public final int getBoardSize() {
         return boardSize;
     }
 
@@ -77,7 +79,7 @@ public class Board {
      * @param y     - координата x
      * @param color - цвет фишки
      */
-    public void setColor(int x, int y, Color color) {
+    public final void setChip(final int x, final int y, final Color color) {
         board[x][y] = new Chip(color);
     }
 
@@ -87,8 +89,8 @@ public class Board {
      * @param x - координата x
      * @param y - координата y
      */
-    public void reverseChip(int x, int y) {
-        board[x][y].reverseChip();
+    public final void reverseChip(final int x, final int y) {
+        setChip(x, y, board[x][y].getColor().reverseColor());
     }
 
     /**
@@ -98,37 +100,31 @@ public class Board {
      * @return возвращает Map: ключ - клетка, куда можно походить; значение - список клеток, фишки в которых будут
      * перевёрнуты, в случае хода в клетку из ключа
      */
-    public Map<Cell, List<Cell>> getScoreMap(Color turnOrder) {
+    public final Map<Cell, List<Cell>> getScoreMap(final Color turnOrder) {
         final List<Cell> chipsOfOpponent = findOpponentsChips(turnOrder);
         final Map<Cell, List<Cell>> mapNeighborhood = findNeighborhood(chipsOfOpponent);
-
         final Map<Cell, List<Cell>> scoreMap = new HashMap<>();
-        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.put(cell, new ArrayList<>());
             }
         }
-
-        for (Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : mapNeighborhood.entrySet()) {
             for (Cell cell : entry.getValue()) {
                 scoreMap.get(cell).addAll(getListOfFlipCells(cell, entry.getKey(), turnOrder));
             }
         }
-
         final List<Cell> listToDelete = new ArrayList<>();
-        for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
+        for (final Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
             if (scoreMap.get(entry.getKey()).size() == 0) {
                 listToDelete.add(entry.getKey());
             }
         }
-
-        for (Cell cell : listToDelete) {
+        for (final Cell cell : listToDelete) {
             scoreMap.remove(cell);
         }
-
         return scoreMap;
     }
-
 
     /**
      * Функция поиска всех фишек противника
@@ -136,7 +132,7 @@ public class Board {
      * @param turnOrder - цвет, который совершает ход в данный момент
      * @return возвращает список клеток, в которых расположены фишки противника
      */
-    private List<Cell> findOpponentsChips(Color turnOrder) {
+    private List<Cell> findOpponentsChips(final Color turnOrder) {
         final ArrayList<Cell> listOfWhiteOrBlackChips = new ArrayList<>();
         final Color findColor = turnOrder.reverseColor();
         for (int i = 0; i < boardSize; i++) {
@@ -146,7 +142,6 @@ public class Board {
                 }
             }
         }
-
         return listOfWhiteOrBlackChips;
     }
 
@@ -156,17 +151,18 @@ public class Board {
      * @param listOfOpponentsChips - список клеток, в которых расположены фишки противника
      * @return возвращает Map: ключ - клетка противника; значение - список пустых клеток вокруг
      */
-    private Map<Cell, List<Cell>> findNeighborhood(List<Cell> listOfOpponentsChips) {
+    private Map<Cell, List<Cell>> findNeighborhood(final List<Cell> listOfOpponentsChips) {
         final Map<Cell, List<Cell>> neighborhood = new HashMap<>();
-        for (Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
+        for (final Cell listOfWhiteOrBlackChip : listOfOpponentsChips) {
             final List<Cell> tempList = new ArrayList<>();
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
-                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < 8 &&
-                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < 8) {
+                    if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < boardSize &&
+                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < boardSize ) {
                         final Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
-                            final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(), k + listOfWhiteOrBlackChip.getY());
+                            final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(),
+                                    k + listOfWhiteOrBlackChip.getY());
                             tempList.add(tempCell);
                         }
                     }
@@ -185,14 +181,12 @@ public class Board {
      * @param turnOrder     - цвет, который совершает ход в данный момент
      * @return возвращается список клеток одного конкретного направления, которые могут быть перевёрнуты
      */
-    private List<Cell> getListOfFlipCells(Cell neighbourCell, Cell mainCell, Color turnOrder) {
+    private List<Cell> getListOfFlipCells(final Cell neighbourCell, final Cell mainCell, final Color turnOrder) {
         if (neighbourCell.equals(mainCell)) {
             return new ArrayList<>();
         }
-
         final int differenceX = mainCell.getX() - neighbourCell.getX();
         final int differenceY = mainCell.getY() - neighbourCell.getY();
-
         final List<Cell> cells = new ArrayList<>();
 
         int neighbourX = neighbourCell.getX();
@@ -201,17 +195,16 @@ public class Board {
         while (true) {
             neighbourX += differenceX;
             neighbourY += differenceY;
-
             if (neighbourX >= boardSize || neighbourX < 0 || neighbourY >= boardSize || neighbourY < 0) {
                 return new ArrayList<>();
             }
-            if (getColor(neighbourX, neighbourY) == Color.NEUTRAL) {
+            if (getChipColor(neighbourX, neighbourY) == Color.NEUTRAL) {
                 return new ArrayList<>();
             }
-            if (getColor(neighbourX, neighbourY) == turnOrder.reverseColor()) {
+            if (getChipColor(neighbourX, neighbourY) == turnOrder.reverseColor()) {
                 cells.add(new Cell(neighbourX, neighbourY));
             }
-            if (getColor(neighbourX, neighbourY) == turnOrder) {
+            if (getChipColor(neighbourX, neighbourY) == turnOrder) {
                 return cells;
             }
         }
@@ -221,7 +214,8 @@ public class Board {
     public String toString() {
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i < boardSize; i++) {
-            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append(" ").append(BoardColor.RESET.getColor());
+            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append(" ").append(
+                    BoardColor.RESET.getColor());
         }
         b.append("\n");
 
@@ -237,8 +231,8 @@ public class Board {
                     b.append(BoardColor.CYAN.getColor()).append(" . ").append(BoardColor.RESET.getColor());
                 }
             }
-            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append("\n").append(BoardColor.RESET.getColor());
-
+            b.append(BoardColor.PURPLE.getColor()).append(" ").append(i).append("\n").append(
+                    BoardColor.RESET.getColor());
         }
         return b.toString();
     }

@@ -1,21 +1,18 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.handler;
 
-import io.deeplay.reversi.handler.Handler;
+import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.exceptions.ReversiException;
+import org.apache.log4j.BasicConfigurator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.apache.log4j.BasicConfigurator;
-
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestHandler {
-    Board board;
-    Handler handler;
+public class HandlerTest {
+    private Board board;
+    private Handler handler;
 
     @BeforeEach
     public void init() throws ReversiException {
@@ -27,18 +24,18 @@ public class TestHandler {
 
 
     @Test
-    public void testInitializationBoard() {
-        assertEquals(board.getColor(3, 3), Color.WHITE);
-        assertEquals(board.getColor(4, 4), Color.WHITE);
-        assertEquals(board.getColor(3, 4), Color.BLACK);
-        assertEquals(board.getColor(4, 3), Color.BLACK);
+    void testInitializationBoard() {
+        assertEquals(board.getChipColor(3, 3), Color.WHITE);
+        assertEquals(board.getChipColor(4, 4), Color.WHITE);
+        assertEquals(board.getChipColor(3, 4), Color.BLACK);
+        assertEquals(board.getChipColor(4, 3), Color.BLACK);
     }
 
     @Test
-    public void testGameEndWithFullBoard() throws ReversiException {
+    void testGameEndWithFullBoard() throws ReversiException {
         assertFalse(handler.isGameEnd(board));
 
-        int[][] arr =
+        final int[][] arr =
                 {
                         // 0   1   2   3   4   5   6   7
                         {42, 51, 52, 7, 6, 5, 55, 9}, //0
@@ -71,7 +68,7 @@ public class TestHandler {
     }
 
     @Test
-    public void testGameEndWithNoFullBoard() throws ReversiException {
+    void testGameEndWithNoFullBoard() throws ReversiException {
         assertFalse(handler.isGameEnd(board));
 
         handler.makeStep(board, new Cell(3, 2), Color.BLACK);
@@ -100,20 +97,30 @@ public class TestHandler {
         handler.makeStep(board, new Cell(4, 6), Color.WHITE);
         handler.makeStep(board, new Cell(3, 7), Color.BLACK);
         handler.makeStep(board, new Cell(6, 5), Color.WHITE);
+        assertFalse(handler.isGameEnd(board));
         handler.makeStep(board, new Cell(6, 6), Color.BLACK);
 
+        assertFalse(handler.haveIStep(board, Color.BLACK));
+        assertFalse(handler.haveIStep(board, Color.WHITE));
         assertTrue(handler.isGameEnd(board));
         assertEquals(handler.getScoreBlack(board), 31);
         assertEquals(handler.getScoreWhite(board), 0);
     }
 
     @Test
-    public void testWrongStep() {
+    void testWrongStep() {
         assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(0, 0), Color.BLACK));
     }
 
     @Test
-    public void testIncorrectStep() {
+    void testIncorrectStep() {
         assertThrows(ReversiException.class, () -> handler.makeStep(board, new Cell(-1, 8), Color.BLACK));
     }
+
+    @Test
+    void testHaveIStep() {
+        assertTrue(handler.haveIStep(board, Color.BLACK));
+        assertTrue(handler.haveIStep(board, Color.WHITE));
+    }
+
 }

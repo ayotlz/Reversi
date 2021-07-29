@@ -1,5 +1,6 @@
 package io.deeplay.reversi.models.board;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -8,11 +9,13 @@ import java.util.Objects;
  * Класс Cell - класс клетки
  */
 public class Cell {
+
     /**
      * переменная координаты x
      */
     @JsonProperty
     private final int x;
+
     /**
      * переменная координаты y
      */
@@ -25,7 +28,8 @@ public class Cell {
      * @param x - координата x
      * @param y - координата y
      */
-    public Cell(int x, int y) {
+    @JsonCreator
+    public Cell(@JsonProperty("x") final int x, @JsonProperty("y") final int y) {
         this.x = x;
         this.y = y;
     }
@@ -33,7 +37,7 @@ public class Cell {
     /**
      * Конструктор копирования клетки
      */
-    public Cell(Cell cell) {
+    public Cell(final Cell cell) {
         this.x = cell.getX();
         this.y = cell.getY();
     }
@@ -43,7 +47,7 @@ public class Cell {
      *
      * @return возвращает координату x
      */
-    public int getX() {
+    public final int getX() {
         return x;
     }
 
@@ -53,20 +57,29 @@ public class Cell {
      * @return возвращает координату y
      */
 
-    public int getY() {
+    public final int getY() {
         return y;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cell cell = (Cell) o;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Cell cell = (Cell) o;
         return x == cell.x && y == cell.y;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "{" + x + ", " + y + '}';
     }
 }

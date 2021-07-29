@@ -16,6 +16,7 @@ import java.util.Map;
  * Класс Validator - класс валидации
  */
 public class Validator {
+
     /**
      * Поле логгера
      */
@@ -28,7 +29,7 @@ public class Validator {
      * @param boardSize - размеры доски
      * @throws ReversiException выбрасиывает исключение, если клетка вылезает за границы доски или равна null
      */
-    public static void isCellCorrect(Cell cell, int boardSize) throws ReversiException {
+    public static void isCellCorrect(final Cell cell, final int boardSize) throws ReversiException {
         if (cell == null) {
             throw new ReversiException(ReversiErrorCode.CELL_IS_NULL);
         }
@@ -44,7 +45,7 @@ public class Validator {
      * @param board - доска
      * @throws ReversiException выбрасывает исключение, если размер доски - нечётное число или доска равна null
      */
-    public static void isBoardCorrect(Board board) throws ReversiException {
+    public static void isBoardCorrect(final Board board) throws ReversiException {
         if (board == null) {
             throw new ReversiException(ReversiErrorCode.BOARD_IS_NULL);
         }
@@ -62,11 +63,12 @@ public class Validator {
      * @param turnOrder - цвет, который совершает ход в данный момент
      * @throws ReversiException выбрасывает исключение, если игрок не может совершить ход в данную клетку
      */
-    public static void canIMakeStep(Board board, Cell cell, Color turnOrder) throws ReversiException {
+    public static void canIMakeStep(final Board board, final Cell cell, final Color turnOrder) throws ReversiException {
         final Map<Cell, List<Cell>> map = board.getScoreMap(turnOrder);
 
         if (map.get(cell) == null || map.get(cell).size() == 0) {
-            logger.warn("{} не может быть установлен в клетку = ({}, {})", turnOrder.getString(), cell.getX(), cell.getY());
+            logger.warn("{} не может быть установлен в клетку = ({}, {})",
+                    turnOrder.getString(), cell.getX(), cell.getY());
             throw new ReversiException(ReversiErrorCode.INCORRECT_PLACE_FOR_CHIP);
         }
     }

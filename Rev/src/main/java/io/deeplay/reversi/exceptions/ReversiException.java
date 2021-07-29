@@ -1,7 +1,7 @@
 package io.deeplay.reversi.exceptions;
 
 public class ReversiException extends Exception {
-    public ReversiException(ReversiErrorCode errorCode) {
+    public ReversiException(final ReversiErrorCode errorCode) {
         super(errorCode.getErrorString());
     }
 }

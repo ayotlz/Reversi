@@ -1,14 +1,16 @@
-package io.deeplay.reversi.bot;
+package io.deeplay.reversi.player;
 
-import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+
+import java.io.IOException;
 
 /**
  * Класс Player - класс абстрактного игрока
  */
 public abstract class Player {
+
     /**
      * поле цвета, которым ходит игрок
      */
@@ -19,7 +21,7 @@ public abstract class Player {
      *
      * @param color - цвет игрока
      */
-    public Player(Color color) {
+    public Player(final Color color) {
         this.color = color;
     }
 
@@ -28,7 +30,7 @@ public abstract class Player {
      *
      * @return возвращается цвет игрока
      */
-    public Color getPlayerColor() {
+    public final Color getPlayerColor() {
         return color;
     }
 
@@ -37,7 +39,6 @@ public abstract class Player {
      *
      * @param board - доска
      * @return возвращается ответ от игрока
-     * @throws ReversiException выбрасывает исключение при нарушении игровой логики
      */
-    public abstract Cell getAnswer(Board board) throws ReversiException;
+    public abstract Cell getAnswer(final Board board) throws IOException;
 }
