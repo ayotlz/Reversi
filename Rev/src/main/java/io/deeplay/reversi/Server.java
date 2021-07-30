@@ -7,6 +7,8 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.AyotlzBot;
+import io.deeplay.reversi.player.Player;
 import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
@@ -54,6 +56,8 @@ public class Server {
                         case "1" -> RoomType.HumanVsBot;
                         case "2" -> RoomType.HumanVsHuman;
                         case "3" -> RoomType.BotVsBot;
+                        case "4" -> RoomType.HumanVsAyotlz;
+                        case "5" -> RoomType.BotVsAyotlz;
                         default -> null;
                     };
                 }
@@ -102,13 +106,13 @@ public class Server {
     }
 
     private enum RoomType {
-        HumanVsHuman, HumanVsBot, BotVsBot
+        HumanVsHuman, HumanVsBot, BotVsBot, HumanVsAyotlz, BotVsAyotlz;
     }
 
     private class Room extends Thread {
         private final int roomID;
         private final List<ServerSomething> players;
-        private final List<RandomBot> randomBots;
+        private final List<Player> bots;
         private final Handler handler;
         private final Board board;
         private final RoomType roomType;
@@ -119,12 +123,17 @@ public class Server {
             handler = new Handler();
             board = new Board();
             this.roomType = roomType;
-            randomBots = new ArrayList<>();
+            bots = new ArrayList<>();
             if (roomType == RoomType.BotVsBot) {
-                randomBots.add(new RandomBot(Color.BLACK));
-                randomBots.add(new RandomBot(Color.WHITE));
+                bots.add(new RandomBot(Color.BLACK));
+                bots.add(new RandomBot(Color.WHITE));
             } else if (roomType == RoomType.HumanVsBot) {
-                randomBots.add(new RandomBot(Color.WHITE));
+                bots.add(new RandomBot(Color.WHITE));
+            } else if (roomType == RoomType.HumanVsAyotlz) {
+                bots.add(new AyotlzBot(Color.WHITE));
+            } else if (roomType == RoomType.BotVsAyotlz) {
+                bots.add(new RandomBot(Color.WHITE));
+                bots.add(new AyotlzBot(Color.BLACK));
             }
         }
 
@@ -175,7 +184,7 @@ public class Server {
         }
 
         private void botHandler() {
-            for (final RandomBot bot : randomBots) {
+            for (final Player bot : bots) {
                 final Color botColor = bot.getPlayerColor();
                 if (!handler.haveIStep(board, botColor)) {
                     continue;
@@ -202,7 +211,7 @@ public class Server {
             final String flipCells;
             try {
                 flipCells = String.valueOf(board.getScoreMap(color).get(cell).size());
-            } catch (final NullPointerException e){
+            } catch (final NullPointerException e) {
                 throw new ReversiException(ReversiErrorCode.INCORRECT_PLACE_FOR_CHIP);
             }
             handler.makeStep(board, cell, color);
@@ -276,17 +285,17 @@ public class Server {
         }
 
         private boolean isRoomHasPlace() {
-            if (roomType == RoomType.HumanVsBot) return players.size() < 1;
+            if (roomType == RoomType.HumanVsBot || roomType == RoomType.HumanVsAyotlz) return players.size() < 1;
             if (roomType == RoomType.HumanVsHuman) return players.size() < 2;
             return false;
         }
 
         private Color joinRoom(final ServerSomething ss) {
-            if (roomType == RoomType.BotVsBot) {
+            if (roomType == RoomType.BotVsBot || roomType == RoomType.BotVsAyotlz) {
                 players.add(ss);
                 start();
                 return Color.NEUTRAL;
-            } else if (roomType == RoomType.HumanVsBot) {
+            } else if (roomType == RoomType.HumanVsBot || roomType == RoomType.HumanVsAyotlz) {
                 players.add(ss);
                 start();
                 return Color.BLACK;

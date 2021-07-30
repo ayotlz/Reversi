@@ -6,7 +6,6 @@ import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +31,6 @@ public class RandomBot extends Player {
 
         final Random random = new Random();
         final List<Cell> keys = new ArrayList<>(scoreMap.keySet());
-        final Cell randomCell = keys.get(random.nextInt(keys.size()));
-        final StringWriter writer = new StringWriter();
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(writer, randomCell);
-
-        return randomCell;
+        return keys.get(random.nextInt(keys.size()));
     }
 }

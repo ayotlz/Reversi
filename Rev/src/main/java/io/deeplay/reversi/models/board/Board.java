@@ -38,6 +38,13 @@ public class Board {
         }
     }
 
+    public Board(final Board b) {
+        board = new Chip[boardSize][boardSize];
+        for (int i = 0; i < b.board.length; i++) {
+            System.arraycopy(b.board[i], 0, board[i], 0, b.board[i].length);
+        }
+    }
+
     /**
      * Конкструктор копирования доски
      *
@@ -158,7 +165,7 @@ public class Board {
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
                     if (j + listOfWhiteOrBlackChip.getX() >= 0 && j + listOfWhiteOrBlackChip.getX() < boardSize &&
-                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < boardSize ) {
+                            k + listOfWhiteOrBlackChip.getY() >= 0 && k + listOfWhiteOrBlackChip.getY() < boardSize) {
                         final Chip chip = board[j + listOfWhiteOrBlackChip.getX()][k + listOfWhiteOrBlackChip.getY()];
                         if (chip.getColor() == Color.NEUTRAL) {
                             final Cell tempCell = new Cell(j + listOfWhiteOrBlackChip.getX(),

@@ -69,17 +69,17 @@ public class Client {
     }
 
     private void chooseRoom() {
-        System.out.println("1: Human Vs Bot\n2: Human Vs Human\n3: Bot Vs Bot");
+        System.out.println("1: Human Vs Bot\n2: Human Vs Human\n3: Bot Vs Bot\n4: Human Vs Ayotlz\n5: Bot Vs Ayotlz");
         try {
             String choice = "0";
-            while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3")) {
+            while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("5")) {
                 choice = inputUser.readLine();
 
-                if (choice.equals("1") || choice.equals("2")) {
+                if (choice.equals("1") || choice.equals("2") || choice.equals("4")) {
                     send(choice);
                     player = new HumanPlayer(getColor());
                     logger.debug("Клиент запущен в комнату");
-                } else if (choice.equals("3")) {
+                } else if (choice.equals("3") || choice.equals("5")) {
                     send(choice);
                     player = new RandomBot(getColor());
                 }
