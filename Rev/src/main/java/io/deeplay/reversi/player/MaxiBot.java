@@ -5,10 +5,12 @@ import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class MaxiBot extends Player{
+public class MaxiBot extends Player {
     public MaxiBot(final Color color) {
         super(color);
     }
@@ -18,6 +20,15 @@ public class MaxiBot extends Player{
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         int maxValue = 0;
         Cell answer = null;
+
+        Map<Cell, List<Cell>> copyMap = new HashMap<>(scoreMap);
+        Set<Cell> cellSet = copyMap.keySet();
+        deleteAboutCorner(cellSet);
+
+        if (cellSet.size() > 0) {
+            scoreMap.keySet().removeIf(k -> !cellSet.contains(k));
+        }
+
         for (Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
             if (entry.getKey().equals(new Cell(0, 0)) ||
                     entry.getKey().equals(new Cell(0, board.getBoardSize() - 1)) ||
@@ -31,5 +42,26 @@ public class MaxiBot extends Player{
             }
         }
         return answer;
+    }
+
+    public void deleteAboutCorner(Set<Cell> cellSet) {
+        cellSet.removeIf(this::isCornerCell);
+    }
+
+    public boolean isCornerCell(Cell cell) {
+        if (cell.getX() == 1 && cell.getY() == 0) return true;
+        if (cell.getX() == 0 && cell.getY() == 1) return true;
+        if (cell.getX() == 1 && cell.getY() == 1) return true;
+        if (cell.getX() == 0 && cell.getY() == 6) return true;
+        if (cell.getX() == 1 && cell.getY() == 6) return true;
+        if (cell.getX() == 1 && cell.getY() == 7) return true;
+        if (cell.getX() == 6 && cell.getY() == 0) return true;
+        if (cell.getX() == 6 && cell.getY() == 1) return true;
+        if (cell.getX() == 7 && cell.getY() == 1) return true;
+        if (cell.getX() == 6 && cell.getY() == 6) return true;
+        if (cell.getX() == 6 && cell.getY() == 7) return true;
+        if (cell.getX() == 7 && cell.getY() == 6) return true;
+
+        return false;
     }
 }

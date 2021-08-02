@@ -5,16 +5,13 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.player.AyotlzBot;
-import io.deeplay.reversi.player.MaxiBot;
-import io.deeplay.reversi.player.Player;
-import io.deeplay.reversi.player.RandomBot;
+import io.deeplay.reversi.player.*;
 
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        final int numberOfGames = 100;
+        final int numberOfGames = 50;
         int wins = 0;
         int loss = 0;
         int draws = 0;
@@ -39,7 +36,7 @@ public class Main {
     public static int game() {
         final Handler handler = new Handler();
         final Board board = new Board();
-        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        final Player[] players = new Player[]{new MiniMaxBot(Color.BLACK), new AyotlzBot(Color.WHITE)};
 
         try {
             handler.initializationBoard(board);
