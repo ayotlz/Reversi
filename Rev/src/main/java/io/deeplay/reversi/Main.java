@@ -36,7 +36,7 @@ public class Main {
     public static int game() {
         final Handler handler = new Handler();
         final Board board = new Board();
-        final Player[] players = new Player[]{new MiniMaxBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
 
         try {
             handler.initializationBoard(board);
