@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        final int numberOfGames = 50;
+        final int numberOfGames = 100;
         int wins = 0;
         int loss = 0;
         int draws = 0;

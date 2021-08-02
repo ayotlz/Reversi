@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
-public class AyotlzBot extends Player {
-    private final int deep = 12;
-
-    public AyotlzBot(final Color color) {
+public class Ayotlz2 extends Player {
+    public Ayotlz2(final Color color) {
         super(color);
     }
 
@@ -29,7 +27,7 @@ public class AyotlzBot extends Player {
             return player.getAnswer(board);
         }
 
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 54) {
+        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 58) {
             final Player player = new MaxiBot(getPlayerColor());
             return player.getAnswer(board);
         }
@@ -42,7 +40,7 @@ public class AyotlzBot extends Player {
                 handler.makeStep(copy, entry.getKey(), getPlayerColor());
             } catch (ReversiException ignored) {
             }
-            final double win = getWinByGameTree(copy, getPlayerColor().reverseColor(), deep);
+            final double win = getWinByGameTree(copy, getPlayerColor().reverseColor());
             awList.add(new AnswerAndWin(entry.getKey(), win));
         }
         return getGreedyDecision(awList, aw -> aw.win).answer;
@@ -61,7 +59,7 @@ public class AyotlzBot extends Player {
         }
     }
 
-    public double getWinByGameTree(Board board, Color turnOrder, int deepOfTree) {
+    public double getWinByGameTree(Board board, Color turnOrder) {
         final ToDoubleFunction<AnswerAndWin> winCalculator;
         if (turnOrder == getPlayerColor()) {
             winCalculator = aw -> aw.win;
@@ -69,8 +67,8 @@ public class AyotlzBot extends Player {
             winCalculator = aw -> -aw.win;
         }
         final WinnerType winnerType = detectWinner(board);
-        if (winnerType != WinnerType.NONE || deepOfTree < 1) {
-            return computeWin(board, winnerType);
+        if (winnerType != WinnerType.NONE) {
+            return computeWin(winnerType);
         }
         final Handler handler = new Handler();
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(turnOrder);
@@ -78,7 +76,7 @@ public class AyotlzBot extends Player {
 
         if (!handler.haveIStep(board, turnOrder)) {
             final Board copy = new Board(board);
-            final double win = getWinByGameTree(copy, turnOrder.reverseColor(), deepOfTree - 1);
+            final double win = getWinByGameTree(copy, turnOrder.reverseColor());
             awList.add(new AnswerAndWin(null, win));
         }
         for (final Map.Entry<Cell, List<Cell>> entry : scoreMap.entrySet()) {
@@ -87,14 +85,8 @@ public class AyotlzBot extends Player {
                 handler.makeStep(copy, entry.getKey(), turnOrder);
             } catch (ReversiException ignored) {
             }
-            final double win = getWinByGameTree(copy, turnOrder.reverseColor(), deepOfTree - 1);
+            final double win = getWinByGameTree(copy, turnOrder.reverseColor());
             awList.add(new AnswerAndWin(entry.getKey(), win));
-            if (turnOrder == getPlayerColor() && win >= 1) {
-                break;
-            }
-            if (turnOrder != getPlayerColor() && win <= -1) {
-                break;
-            }
         }
         return getGreedyDecision(awList, winCalculator).win;
     }
@@ -114,24 +106,8 @@ public class AyotlzBot extends Player {
     }
 
 
-    private double computeWin(final Board board, final WinnerType winnerType) {
-        final Handler handler = new Handler();
-
-        if (winnerType == WinnerType.NONE) {
-            double ratioWhite = (double) handler.getScoreWhite(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
-            double ratioBlack = (double) handler.getScoreBlack(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
-            if (getPlayerColor() == Color.BLACK && ratioBlack > ratioWhite) {
-                return ratioBlack;
-            } else if (getPlayerColor() == Color.BLACK && ratioBlack < ratioWhite) {
-                return -ratioWhite;
-            } else if (getPlayerColor() == Color.WHITE && ratioBlack > ratioWhite) {
-                return -ratioBlack;
-            } else if (getPlayerColor() == Color.WHITE && ratioBlack < ratioWhite) {
-                return ratioWhite;
-            } else {
-                return 0;
-            }
-        } else if (winnerType == WinnerType.DRAW) {
+    private double computeWin(final WinnerType winnerType) {
+        if (winnerType == WinnerType.DRAW) {
             return 0;
         } else if (winnerType == WinnerType.BLACK && getPlayerColor() == Color.BLACK
                 || winnerType == WinnerType.WHITE && getPlayerColor() == Color.WHITE) {
