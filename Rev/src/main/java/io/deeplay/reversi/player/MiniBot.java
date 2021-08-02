@@ -49,19 +49,17 @@ public class MiniBot extends Player {
     }
 
     public boolean isCornerCell(Cell cell) {
-        if (cell.getX() == 1 && cell.getY() == 0) return true;
-        if (cell.getX() == 0 && cell.getY() == 1) return true;
-        if (cell.getX() == 1 && cell.getY() == 1) return true;
-        if (cell.getX() == 0 && cell.getY() == 6) return true;
-        if (cell.getX() == 1 && cell.getY() == 6) return true;
-        if (cell.getX() == 1 && cell.getY() == 7) return true;
-        if (cell.getX() == 6 && cell.getY() == 0) return true;
-        if (cell.getX() == 6 && cell.getY() == 1) return true;
-        if (cell.getX() == 7 && cell.getY() == 1) return true;
-        if (cell.getX() == 6 && cell.getY() == 6) return true;
-        if (cell.getX() == 6 && cell.getY() == 7) return true;
-        if (cell.getX() == 7 && cell.getY() == 6) return true;
-
-        return false;
+        return cell.getX() == 1 && cell.getY() == 0
+                || cell.getX() == 0 && cell.getY() == 1
+                || cell.getX() == 1 && cell.getY() == 1
+                || cell.getX() == 0 && cell.getY() == 6
+                || cell.getX() == 1 && cell.getY() == 6
+                || cell.getX() == 1 && cell.getY() == 7
+                || cell.getX() == 6 && cell.getY() == 0
+                || cell.getX() == 6 && cell.getY() == 1
+                || cell.getX() == 7 && cell.getY() == 1
+                || cell.getX() == 6 && cell.getY() == 6
+                || cell.getX() == 6 && cell.getY() == 7
+                || cell.getX() == 7 && cell.getY() == 6;
     }
 }

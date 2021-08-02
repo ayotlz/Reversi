@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
 public class MiniMaxBot extends Player {
-    private final int deep = 5;
+    private final int deep = 4;
 
     public MiniMaxBot(Color color) {
         super(color);
@@ -35,6 +35,9 @@ public class MiniMaxBot extends Player {
             }
             final double win = getWinByGameTree(copy, getPlayerColor().reverseColor(), deep);
             awList.add(new AnswerAndWin(entry.getKey(), win));
+            if (win >= 1) {
+                return getGreedyDecision(awList, aw -> aw.win).answer;
+            }
         }
         return getGreedyDecision(awList, aw -> aw.win).answer;
     }
@@ -60,7 +63,7 @@ public class MiniMaxBot extends Player {
             winCalculator = aw -> -aw.win;
         }
         final WinnerType winnerType = detectWinner(board);
-        if (winnerType != WinnerType.NONE || deepOfTree <= 1) {
+        if (winnerType != WinnerType.NONE || deepOfTree < 1) {
             return computeWin(board, winnerType);
         }
         final Handler handler = new Handler();
@@ -80,6 +83,9 @@ public class MiniMaxBot extends Player {
             }
             final double win = getWinByGameTree(copy, turnOrder.reverseColor(), --deepOfTree);
             awList.add(new AnswerAndWin(entry.getKey(), win));
+            if (win >= 1) {
+                return getGreedyDecision(awList, winCalculator).win;
+            }
         }
         return getGreedyDecision(awList, winCalculator).win;
     }
@@ -101,17 +107,21 @@ public class MiniMaxBot extends Player {
     private double computeWin(final Board board, final WinnerType winnerType) {
         final Handler handler = new Handler();
 
-        if (!handler.isGameEnd(board)) {
-            double ratioWhite = (double) handler.getScoreWhite(board) / board.getBoardSize();
-            double ratioBlack = (double) handler.getScoreBlack(board) / board.getBoardSize();
-            if (getPlayerColor() == Color.BLACK) {
-                return ratioBlack / ratioWhite;
-            } else if (getPlayerColor() == Color.WHITE) {
-                return -ratioWhite / ratioBlack;
+        if (winnerType == WinnerType.NONE) {
+            double ratioWhite = (double) handler.getScoreWhite(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
+            double ratioBlack = (double) handler.getScoreBlack(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
+            if (getPlayerColor() == Color.BLACK && ratioBlack > ratioWhite) {
+                return ratioBlack;
+            } else if (getPlayerColor() == Color.BLACK && ratioBlack < ratioWhite) {
+                return -ratioWhite;
+            } else if (getPlayerColor() == Color.WHITE && ratioBlack > ratioWhite) {
+                return -ratioBlack;
+            } else if (getPlayerColor() == Color.WHITE && ratioBlack < ratioWhite) {
+                return ratioWhite;
+            } else {
+                return 0;
             }
-        }
-
-        if (winnerType == WinnerType.DRAW) {
+        } else if (winnerType == WinnerType.DRAW) {
             return 0;
         } else if (winnerType == WinnerType.BLACK && getPlayerColor() == Color.BLACK
                 || winnerType == WinnerType.WHITE && getPlayerColor() == Color.WHITE) {

@@ -9,9 +9,7 @@ import io.deeplay.reversi.player.minimax.AnswerAndWin;
 import io.deeplay.reversi.player.minimax.WinnerType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
 
 public class AyotlzBot extends Player {
@@ -27,7 +25,7 @@ public class AyotlzBot extends Player {
             return player.getAnswer(board);
         }
 
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 58) {
+        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 56) {
             final Player player = new MaxiBot(getPlayerColor());
             return player.getAnswer(board);
         }
