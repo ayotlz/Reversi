@@ -23,7 +23,7 @@ public class Board {
     /**
      * Поле размера доски
      */
-    private final int boardSize = 8;
+    private final int boardSize = 4;
 
     /**
      * Конкструктор - создание доски размера boardSize с нейтральными фишками по умолчанию
@@ -49,6 +49,16 @@ public class Board {
 
         for (int i = 0; i < board.length; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, board.length);
+        }
+    }
+
+    public Board(final Board board) {
+        this.board = new Chip[board.getBoardSize()][board.getBoardSize()];
+
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                this.board[i][j] = new Chip(board.getChipColor(i,j));
+            }
         }
     }
 
