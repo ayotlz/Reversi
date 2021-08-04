@@ -16,7 +16,7 @@ public class KirillBot extends Player {
     private Color turnOrder = getPlayerColor();
     private final Handler handler = new Handler();
     private int activeRecLevel = -1;
-    private final int maxRecLevel = 2;
+    private static final int MAXRECLEVEL = 3;
 
     /**
      * Конструктор - создание игрока по цвету
@@ -55,35 +55,26 @@ public class KirillBot extends Player {
             final Board copyBoard = new Board(board);
             try {
                 handler.makeStep(copyBoard, key, getPlayerColor());
-            } catch (final ReversiException ignored) {
+            } catch (ReversiException ignored) {
             }
-
             System.out.println("Предположение " + key + " " + getPlayerColor());
-            System.out.println(copyBoard);
-
-//            if (handler.haveIStep(copyBoard, getPlayerColor().reverseColor())) {
-//                turnOrder = getPlayerColor().reverseColor();
-//            } else {
-//                turnOrder = getPlayerColor();
-//            }
+            System.out.println(board);
 
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
         }
-//        System.out.println(awList);
         return getGreedyDecision(awList, aw -> aw.win).cell;
     }
 
     private double getWinByGameTree(final Board board, final int recLevel) {
-
-        System.out.print(board);
-        System.out.println(turnOrder);
+        final Color curPlayer = board.getNextPlayer();
+        System.out.println(curPlayer.reverseColor());
         System.out.println(recLevel);
+        System.out.print(board);
         System.out.println();
         System.out.println();
-
         ToDoubleFunction<AnswerAndWin> winCalculator;
-        if (turnOrder == getPlayerColor()) {
+        if (curPlayer == getPlayerColor()) {
             winCalculator = aw -> aw.win;
         } else {
             winCalculator = aw -> -aw.win;
@@ -93,38 +84,34 @@ public class KirillBot extends Player {
             return computeWin(board);
         }
 
-        if (recLevel == maxRecLevel) {
+        if (recLevel == MAXRECLEVEL) {
             return getWinScore(board);
         }
 
-        if (activeRecLevel != recLevel) {
-            if (handler.haveIStep(board, turnOrder.reverseColor())) {
-                turnOrder = turnOrder.reverseColor();
-            } else {
-                turnOrder = turnOrder;
-            }
-            activeRecLevel = recLevel;
-        }
-
-        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(turnOrder);
+        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(curPlayer);
         final List<AnswerAndWin> awList = new ArrayList<>();
         final List<Cell> cellsToAct = new ArrayList<>() {
         };
         cellsToAct.addAll(scoreMap.keySet());
-
-
-
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
             try {
-                handler.makeStep(copyBoard, key, getPlayerColor());
-            } catch (final ReversiException ignored) {
+                handler.makeStep(copyBoard, key, curPlayer);
+            } catch (ReversiException reversiException) {
+                reversiException.printStackTrace();
             }
+
+//            if (activeRecLevel != recLevel) {
+//                if (handler.haveIStep(board, turnOrder.reverseColor())) {
+//                    turnOrder = turnOrder.reverseColor();
+//                }
+//                activeRecLevel = recLevel;
+//            }
 
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
             awList.add(new AnswerAndWin(key, win));
-//            System.out.println(awList);
         }
+
         return getGreedyDecision(awList, winCalculator).win;
     }
 

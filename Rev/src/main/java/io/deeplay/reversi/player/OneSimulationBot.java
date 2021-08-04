@@ -87,7 +87,7 @@ public class OneSimulationBot extends Player {
         int scoreBot1 = 0;
         int scoreBot2 = 0;
         int scoreDraw = 0;
-        int iterations = 1;
+        int iterations = 100;
 
         for (int i = 0; i < iterations; i++) {
             Handler handler = new Handler();

@@ -20,6 +20,21 @@ public class Board {
     @JsonProperty
     private final Chip[][] board;
 
+    public Chip[][] getBoard() {
+        return board;
+    }
+
+    public Color getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer() {
+        this.nextPlayer = nextPlayer.reverseColor();
+    }
+
+    @JsonProperty
+    private Color nextPlayer;
+
     /**
      * Поле размера доски
      */
@@ -36,6 +51,7 @@ public class Board {
                 chips[j] = new Chip(Color.NEUTRAL);
             }
         }
+        nextPlayer = Color.BLACK;
     }
 
     /**
@@ -44,12 +60,13 @@ public class Board {
      * @param board - исходная доска
      */
     @JsonCreator
-    public Board(@JsonProperty("board") final Chip[][] board) {
+    public Board(@JsonProperty("board") final Chip[][] board, @JsonProperty("nextPlayer") final Color nextPlayer) {
         this.board = new Chip[boardSize][boardSize];
 
         for (int i = 0; i < board.length; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, board.length);
         }
+        this.nextPlayer = nextPlayer;
     }
 
     public Board(final Board board) {
@@ -60,6 +77,7 @@ public class Board {
                 this.board[i][j] = new Chip(board.getChipColor(i,j));
             }
         }
+        nextPlayer = board.nextPlayer;
     }
 
     /**
