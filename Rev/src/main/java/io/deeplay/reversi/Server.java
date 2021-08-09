@@ -7,6 +7,7 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.Player;
 import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.requests.GameEndRequest;
 import io.deeplay.reversi.requests.PlayerRequest;
@@ -108,7 +109,7 @@ public class Server {
     private class Room extends Thread {
         private final int roomID;
         private final List<ServerSomething> players;
-        private final List<RandomBot> randomBots;
+        private final List<Player> bots;
         private final Handler handler;
         private final Board board;
         private final RoomType roomType;
@@ -119,12 +120,12 @@ public class Server {
             handler = new Handler();
             board = new Board();
             this.roomType = roomType;
-            randomBots = new ArrayList<>();
+            bots = new ArrayList<>();
             if (roomType == RoomType.BotVsBot) {
-                randomBots.add(new RandomBot(Color.BLACK));
-                randomBots.add(new RandomBot(Color.WHITE));
+                bots.add(new RandomBot(Color.BLACK));
+                bots.add(new RandomBot(Color.WHITE));
             } else if (roomType == RoomType.HumanVsBot) {
-                randomBots.add(new RandomBot(Color.WHITE));
+                bots.add(new RandomBot(Color.WHITE));
             }
         }
 
@@ -175,7 +176,7 @@ public class Server {
         }
 
         private void botHandler() {
-            for (final RandomBot bot : randomBots) {
+            for (final Player bot : bots) {
                 final Color botColor = bot.getPlayerColor();
                 if (!handler.haveIStep(board, botColor)) {
                     continue;
@@ -189,7 +190,7 @@ public class Server {
 
                         final Cell cell = bot.getAnswer(board);
                         formatCsv(botColor, cell);
-                        sendMessageToAllPlayers(botColor + " ставит фишку на клетку: " + cell.toString() + "");
+                        sendMessageToAllPlayers(botColor + bot.getClass().toString() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
                         System.out.println("Бот работает некорректно");
