@@ -17,6 +17,7 @@ import java.util.function.ToDoubleFunction;
 public class Ayotlz2 extends Player {
     public Ayotlz2(final Color color) {
         super(color);
+        setName("Ayotlz2");
     }
 
     @Override

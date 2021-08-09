@@ -22,6 +22,7 @@ public class ExpectiMaxBot extends Player {
 
     public ExpectiMaxBot(Color color) {
         super(color);
+        setName("AyotlzExpectiMaxBot");
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.Set;
 public class MiniBot extends Player {
     public MiniBot(Color color) {
         super(color);
+        setName("AyotlzMiniBot");
     }
 
     @Override

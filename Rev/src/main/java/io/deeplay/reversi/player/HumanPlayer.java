@@ -14,6 +14,7 @@ import java.io.*;
 public class HumanPlayer extends Player {
     public HumanPlayer(final Color color) {
         super(color);
+        setName("HumanPlayer");
     }
 
     /**

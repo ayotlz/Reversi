@@ -14,6 +14,7 @@ import java.util.Set;
 public class MaxiBot extends Player {
     public MaxiBot(final Color color) {
         super(color);
+        setName("AyotlzMaxiBot");
     }
 
     @Override

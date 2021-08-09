@@ -22,6 +22,7 @@ public class AyotlzBot extends Player {
 
     public AyotlzBot(final Color color) {
         super(color);
+        setName("AyotlzBot");
     }
 
     @Override

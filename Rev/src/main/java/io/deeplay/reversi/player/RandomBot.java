@@ -15,6 +15,7 @@ import java.util.Random;
 public class RandomBot extends Player {
     public RandomBot(final Color color) {
         super(color);
+        setName("RandomBot");
     }
 
     /**

@@ -17,6 +17,11 @@ public abstract class Player {
     private final Color color;
 
     /**
+     * поле имени игрока
+     */
+    private String name;
+
+    /**
      * Конструктор - создание игрока по цвету
      *
      * @param color - цвет игрока
@@ -32,6 +37,25 @@ public abstract class Player {
      */
     public final Color getPlayerColor() {
         return color;
+    }
+
+    /**
+     * Функция возврата имени игрока
+     *
+     * @return возвращается имя игрока
+     */
+    public String getName() {
+        return name;
+    }
+
+
+    /**
+     * Функция установки имени игрока
+     *
+     * @param name - имя игрока
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

@@ -63,8 +63,19 @@ public class Client {
 
         logger.debug("Клиент запущен");
         System.out.println("Клиент запущен");
+        enterNickName();
         chooseRoom();
         new ProcessingMessage().start();
+    }
+
+    private void enterNickName() {
+        System.out.println("Введите ваше имя");
+        try {
+            final String nick = inputUser.readLine();
+            send(nick);
+        } catch (final IOException e) {
+            downService();
+        }
     }
 
     private void chooseRoom() {
@@ -108,7 +119,6 @@ public class Client {
         }
     }
 
-
     /**
      * отсылка одного сообщения клиенту
      *
@@ -140,47 +150,49 @@ public class Client {
     private class ProcessingMessage extends Thread {
         @Override
         public void run() {
-            String message;
-            if (player.getClass() != RandomBot.class) {
-                gui = new GUI(player.getPlayerColor());
-            }
-
             while (true) {
-                try {
-                    message = in.readLine();
-                } catch (final IOException e) {
-                    downService();
-                    break;
+                String message;
+                if (player.getClass() != RandomBot.class) {
+                    gui = new GUI(player.getPlayerColor());
                 }
 
-                try {
-                    parseGameEnd(message);
-                    continue;
-                } catch (final IOException ignored) {
-                } catch (final NullPointerException e) {
-                    downService();
-                    continue;
-                }
-                try {
-                    final PlayerRequest request = parsePlayerRequest(message);
-                    final Board board = request.getBoard();
-                    final Color turnOrder = request.getColor();
-                    System.out.println(board.toString());
-                    if (gui != null) {
-                        gui.drawActiveBoard(board);
+                while (true) {
+                    try {
+                        message = in.readLine();
+                    } catch (final IOException e) {
+                        downService();
+                        break;
                     }
-                    if (player.getPlayerColor() == Color.NEUTRAL) {
+
+                    try {
+                        parseGameEnd(message);
+                        break;
+                    } catch (final IOException ignored) {
+                    } catch (final NullPointerException e) {
+                        downService();
                         continue;
                     }
+                    try {
+                        final PlayerRequest request = parsePlayerRequest(message);
+                        final Board board = request.getBoard();
+                        final Color turnOrder = request.getColor();
+                        System.out.println(board.toString());
+                        if (gui != null) {
+                            gui.drawActiveBoard(board);
+                        }
+                        if (player.getPlayerColor() == Color.NEUTRAL) {
+                            continue;
+                        }
 
-                    sendAnswer(board, turnOrder);
-                    continue;
-                } catch (final IOException ignored) {
-                } catch (final NullPointerException e) {
-                    downService();
-                    continue;
+                        sendAnswer(board, turnOrder);
+                        continue;
+                    } catch (final IOException ignored) {
+                    } catch (final NullPointerException e) {
+                        downService();
+                        continue;
+                    }
+                    System.out.println(message);
                 }
-                System.out.println(message);
             }
         }
 

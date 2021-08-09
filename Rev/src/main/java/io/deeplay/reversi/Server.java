@@ -36,6 +36,7 @@ public class Server {
         private final Socket socket;
         private final BufferedReader in;
         private final BufferedWriter out;
+        private String nickName;
         private Color color;
 
         private ServerSomething(final Server server, final Socket socket) throws IOException {
@@ -48,6 +49,8 @@ public class Server {
         @Override
         public void run() {
             try {
+                nickName = in.readLine();
+
                 RoomType roomType = null;
                 while (roomType == null) {
                     final String rt = in.readLine();
@@ -121,26 +124,30 @@ public class Server {
         private final List<ServerSomething> players;
         private final List<Player> bots;
         private final Handler handler;
-        private final Board board;
         private final RoomType roomType;
+        private final int countOfGames = 10;
+        private Board board;
 
         private Room(final RoomType roomType, final int roomID) {
             this.roomID = roomID;
             players = new ArrayList<>();
             handler = new Handler();
-            board = new Board();
             this.roomType = roomType;
             bots = new ArrayList<>();
         }
 
         @Override
         public void run() {
-            try {
-                handler.initializationBoard(board);
-            } catch (final ReversiException ignored) {
+            for (int i = 0; i < countOfGames; i++) {
+                board = new Board();
+                try {
+                    handler.initializationBoard(board);
+                } catch (final ReversiException ignored) {
+                }
+                gameProcess();
+                gameEnd();
             }
-            gameProcess();
-            gameEnd();
+            exit();
         }
 
         private void gameProcess() {
@@ -167,7 +174,7 @@ public class Server {
                         final String answer = player.in.readLine();
                         final StringReader reader = new StringReader(answer);
                         final Cell cell = mapper.readValue(reader, Cell.class);
-                        sendMessageToAllPlayers(playerColor + " ставит фишку на клетку: " + cell.toString() + "");
+                        sendMessageToAllPlayers("[" + playerColor + "] " + player.nickName + " ставит фишку на клетку: " + cell.toString() + "");
 
                         handler.makeStep(board, cell, playerColor);
                         break;
@@ -194,7 +201,7 @@ public class Server {
 
                         final Cell cell = bot.getAnswer(board);
                         handler.makeStep(board, cell, botColor);
-                        sendMessageToAllPlayers(botColor + bot.getClass().toString() + " ставит фишку на клетку: " + cell.toString() + "");
+                        sendMessageToAllPlayers("[" + botColor + "] " + bot.getName() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
                         System.out.println("Бот работает некорректно");
@@ -219,7 +226,7 @@ public class Server {
             }
 
             csvWriter.writeStep(bot.getClass().toString(), Integer.toString(whiteWins),
-                    Integer.toString(blackWins), Integer.toString(whiteWins+blackWins));
+                    Integer.toString(blackWins), Integer.toString(whiteWins + blackWins));
         }
 
         private void gameEnd() {
@@ -249,12 +256,15 @@ public class Server {
                 for (final Player bot : bots) {
                     formatCsv(bot, scoreBlack, scoreWhite);
                 }
-                for (final ServerSomething player : players) {
-                    player.downService();
-                }
-                roomList.remove(this);
             } catch (final IOException ignored) {
             }
+        }
+
+        private void exit() {
+            for (final ServerSomething player : players) {
+                player.downService();
+            }
+            roomList.remove(this);
         }
 
         private void sendMessageToAllPlayersWithoutException(final String message) {
