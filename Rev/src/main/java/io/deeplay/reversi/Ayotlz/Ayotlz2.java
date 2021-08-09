@@ -1,11 +1,12 @@
-package io.deeplay.reversi.player;
+package io.deeplay.reversi.Ayotlz;
 
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.player.minimax.AnswerAndWin;
+import io.deeplay.reversi.Ayotlz.minimax.AnswerAndWin;
+import io.deeplay.reversi.player.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;

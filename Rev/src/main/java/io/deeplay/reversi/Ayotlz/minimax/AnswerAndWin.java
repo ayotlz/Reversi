@@ -1,4 +1,4 @@
-package io.deeplay.reversi.player.minimax;
+package io.deeplay.reversi.Ayotlz.minimax;
 
 import io.deeplay.reversi.models.board.Cell;
 
