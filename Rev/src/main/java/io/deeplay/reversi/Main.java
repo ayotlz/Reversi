@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 
 public class Main {
     public static void main(String[] args) {
-        final int numberOfGames = 100;
+        final int numberOfGames = 1;
         int wins = 0;
         int loss = 0;
         int draws = 0;
@@ -24,7 +24,6 @@ public class Main {
         } catch (IOException e) {
             return;
         }
-
         pw.print("step;");
         pw.print("time;");
         pw.println("color");
@@ -33,8 +32,10 @@ public class Main {
             System.out.println("Game №" + (i + 1));
             final int game = game();
             if (game == 1) {
+                System.out.println("win");
                 wins++;
             } else if (game == -1) {
+                System.out.println("loss");
                 loss++;
             } else {
                 draws++;
@@ -50,8 +51,9 @@ public class Main {
     public static int game() {
         final Handler handler = new Handler();
         final Board board = new Board();
-        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
-        int chips = 4;
+        final Player[] players = new Player[]{new ExpectiMaxBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        int order = 4;
+
         final PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter("time.csv", true), true);
@@ -75,12 +77,12 @@ public class Main {
                 }
                 while (true) {
                     try {
-                        double before = System.currentTimeMillis();
+                        double time_before = System.currentTimeMillis();
                         final Cell cell = player.getAnswer(board);
-                        chips++;
-                        double after = (System.currentTimeMillis() - before) / 1000;
-                        pw.print(chips + ";");
-                        pw.print(after + ";");
+                        order++;
+                        double time_after = (System.currentTimeMillis() - time_before) / 1000;
+                        pw.print(order + ";");
+                        pw.print(time_after + ";");
                         pw.println(player.getPlayerColor().getString());
                         handler.makeStep(board, cell, player.getPlayerColor());
                         break;

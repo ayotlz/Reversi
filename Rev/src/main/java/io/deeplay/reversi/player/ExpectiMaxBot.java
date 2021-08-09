@@ -15,29 +15,16 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.ToDoubleFunction;
 
-public class AyotlzBot extends Player {
-    private int deep = 1;
+public class ExpectiMaxBot extends Player {
+    private final int deep = 3;
 
-    public AyotlzBot(final Color color) {
+    public ExpectiMaxBot(Color color) {
         super(color);
     }
 
     @Override
-    public Cell getAnswer(final Board board) throws IOException {
+    public Cell getAnswer(Board board) throws IOException {
         final Handler handler = new Handler();
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 24) {
-            final Player player = new MiniBot(getPlayerColor());
-            return player.getAnswer(board);
-        }
-
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 40) {
-            final Player player = new MaxiBot(getPlayerColor());
-            return player.getAnswer(board);
-        }
-
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 50) {
-            deep = 14;
-        }
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         final List<AnswerAndWin> awList = new ArrayList<>();
@@ -99,16 +86,11 @@ public class AyotlzBot extends Player {
                 final GameTree subTask = new GameTree(copy, turnOrder.reverseColor(), deepOfTree - 1);
                 final double win = subTask.fork().join();
                 awList.add(new AnswerAndWin(entry.getKey(), win));
-                if (win >= 0.9 || win <= -0.9) {
-                    break;
-                }
-                if (win >= -0.1 && win <= 0.1) {
-                    break;
-                }
             }
             return getGreedyDecision(awList, winCalculator).win;
         }
     }
+
 
     private double computeWin(final Board board) {
         final Handler handler = new Handler();
@@ -122,10 +104,12 @@ public class AyotlzBot extends Player {
         }
     }
 
+    // double
     private AnswerAndWin getGreedyDecision(final List<AnswerAndWin> awList, final ToDoubleFunction<AnswerAndWin> winCalculator) {
         AnswerAndWin bestAW = awList.get(0);
         double bestWin = winCalculator.applyAsDouble(bestAW);
         for (int i = 1; i < awList.size(); i++) {
+            System.out.println(winCalculator.applyAsDouble(awList.get(i)));
             final AnswerAndWin currentAW = awList.get(i);
             final double currentWin = winCalculator.applyAsDouble(currentAW);
             if (currentWin > bestWin) {
@@ -133,10 +117,10 @@ public class AyotlzBot extends Player {
                 bestWin = currentWin;
             }
         }
+        System.out.println();
         return bestAW;
     }
 
-    //todo(Вынести функцию оценивания в интерфейс)
     private double monteCarlo(final Board b, final Color turnOrder) {
         final int games = 25;
         double ratio = 0;

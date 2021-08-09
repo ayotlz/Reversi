@@ -6,7 +6,6 @@ import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.player.minimax.AnswerAndWin;
-import io.deeplay.reversi.player.minimax.WinnerType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,19 +41,6 @@ public class MiniMaxBot extends Player {
         return getGreedyDecision(awList, aw -> aw.win).answer;
     }
 
-    private WinnerType detectWinner(Board board) {
-        Handler handler = new Handler();
-        if (!handler.isGameEnd(board)) {
-            return WinnerType.NONE;
-        } else if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
-            return WinnerType.WHITE;
-        } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
-            return WinnerType.BLACK;
-        } else {
-            return WinnerType.DRAW;
-        }
-    }
-
     public double getWinByGameTree(Board board, Color turnOrder, int deepOfTree) {
         final ToDoubleFunction<AnswerAndWin> winCalculator;
         if (turnOrder == getPlayerColor()) {
@@ -62,11 +48,10 @@ public class MiniMaxBot extends Player {
         } else {
             winCalculator = aw -> -aw.win;
         }
-        final WinnerType winnerType = detectWinner(board);
-        if (winnerType != WinnerType.NONE || deepOfTree < 1) {
-            return computeWin(board, winnerType);
-        }
         final Handler handler = new Handler();
+        if (handler.isGameEnd(board) || deepOfTree < 1) {
+            return computeWin(board);
+        }
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(turnOrder);
         final List<AnswerAndWin> awList = new ArrayList<>();
 
@@ -104,10 +89,10 @@ public class MiniMaxBot extends Player {
         return bestAW;
     }
 
-    private double computeWin(final Board board, final WinnerType winnerType) {
+    private double computeWin(final Board board) {
         final Handler handler = new Handler();
 
-        if (winnerType == WinnerType.NONE) {
+        if (!handler.isGameEnd(board)) {
             double ratioWhite = (double) handler.getScoreWhite(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
             double ratioBlack = (double) handler.getScoreBlack(board) / (handler.getScoreBlack(board) + handler.getScoreWhite(board));
             if (getPlayerColor() == Color.BLACK && ratioBlack > ratioWhite) {
@@ -121,10 +106,10 @@ public class MiniMaxBot extends Player {
             } else {
                 return 0;
             }
-        } else if (winnerType == WinnerType.DRAW) {
+        } else if (handler.getScoreBlack(board) == handler.getScoreWhite(board)) {
             return 0;
-        } else if (winnerType == WinnerType.BLACK && getPlayerColor() == Color.BLACK
-                || winnerType == WinnerType.WHITE && getPlayerColor() == Color.WHITE) {
+        } else if (handler.getScoreBlack(board) > handler.getScoreWhite(board) && getPlayerColor() == Color.BLACK
+                || handler.getScoreBlack(board) < handler.getScoreWhite(board) && getPlayerColor() == Color.WHITE) {
             return 1;
         } else {
             return -1;
