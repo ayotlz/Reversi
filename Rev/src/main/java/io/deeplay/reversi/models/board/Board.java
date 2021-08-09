@@ -54,13 +54,6 @@ public class Board {
         nextPlayer = Color.BLACK;
     }
 
-    public Board(final Board b) {
-        board = new Chip[boardSize][boardSize];
-        for (int i = 0; i < b.board.length; i++) {
-            System.arraycopy(b.board[i], 0, board[i], 0, b.board[i].length);
-        }
-    }
-
     /**
      * Конкструктор копирования доски
      *
