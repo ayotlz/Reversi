@@ -1,8 +1,9 @@
-package io.deeplay.reversi.player;
+package io.deeplay.reversi.KIrill;
 
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;

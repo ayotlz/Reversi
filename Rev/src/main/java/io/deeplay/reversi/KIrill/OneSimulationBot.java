@@ -1,10 +1,12 @@
-package io.deeplay.reversi.player;
+package io.deeplay.reversi.KIrill;
 
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.Player;
+import io.deeplay.reversi.player.RandomBot;
 
 import java.io.IOException;
 import java.util.*;
@@ -87,6 +89,8 @@ public class OneSimulationBot extends Player {
         int scoreBot1 = 0;
         int scoreBot2 = 0;
         int scoreDraw = 0;
+        int countBlackWin = 0;
+        int countWhiteWin = 0;
         int iterations = 100;
 
         for (int i = 0; i < iterations; i++) {
@@ -105,9 +109,9 @@ public class OneSimulationBot extends Player {
 
 //            System.out.println(playerColor);
 //            Player bot1 = new OneSimulationBot(playerColor);
-            Player bot1 = new KirillBot(Color.BLACK);
+            Player bot1 = new MiniMaxBot(playerColor);
 //            Player bot2 = new ReflectionBot(playerColor.reverseColor());
-            Player bot2 = new RandomBot(Color.WHITE);
+            Player bot2 = new RandomBot(playerColor.reverseColor());
 
             if (bot1.getPlayerColor() == Color.BLACK) {
                 while (!handler.isGameEnd(board)) {
@@ -136,24 +140,27 @@ public class OneSimulationBot extends Player {
                     }
                 }
             }
-            if (handler.getScoreBlack(board) > handler.getScoreWhite(board)) {
+
+            if (handler.getScoreBlack(board) == handler.getScoreWhite(board)) {
+                scoreDraw++;
+            } else if (handler.getScoreBlack(board) > handler.getScoreWhite(board)) {
+                countBlackWin++;
                 if (bot1.getPlayerColor() == Color.BLACK) {
                     scoreBot1++;
                 } else {
                     scoreBot2++;
                 }
-//                System.out.println("Чёрные победили");
-            } else if (handler.getScoreBlack(board) < handler.getScoreWhite(board)) {
+            } else {
+                countWhiteWin++;
                 if (bot1.getPlayerColor() == Color.WHITE) {
                     scoreBot1++;
                 } else {
                     scoreBot2++;
                 }
-//                System.out.println("Белые победили");
-            } else {
-                scoreDraw++;
-//                System.out.println("Ничья");
             }
+
+            System.out.println(countBlackWin);
+            System.out.println(countWhiteWin);
             System.out.println("Чёрные");
             System.out.println(handler.getScoreBlack(board));
             System.out.println("Белые");
@@ -162,8 +169,3 @@ public class OneSimulationBot extends Player {
         }
     }
 }
-
-//OSB с функцией разности очков на 1 уровне или функция больше в целом фишек vs Reflection 5142:4858:0 зависит от цвета
-//RandomBot vs Reflection 3447:6217:336
-//OSB функция больше в целом фишек vs RandomBot 5973:3674:353
-//OSB с функцией разности очков на 1 уровне vs RandomBot 5821:3812:367

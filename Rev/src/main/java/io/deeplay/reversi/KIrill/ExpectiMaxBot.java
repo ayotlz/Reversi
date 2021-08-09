@@ -1,29 +1,24 @@
-package io.deeplay.reversi.player;
+package io.deeplay.reversi.KIrill;
 
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
+import io.deeplay.reversi.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
-public class KirillBot extends Player {
+public class ExpectiMaxBot extends Player {
 
-    private Color turnOrder = getPlayerColor();
     private final Handler handler = new Handler();
-    private int activeRecLevel = -1;
-    private static final int MAXRECLEVEL = 3;
+    private static final int MAXRECLEVEL = 7;
+    private int countRoots = 0;
 
-    /**
-     * Конструктор - создание игрока по цвету
-     *
-     * @param color - цвет игрока
-     */
-    public KirillBot(Color color) {
+    public ExpectiMaxBot(Color color) {
         super(color);
     }
 
@@ -44,12 +39,10 @@ public class KirillBot extends Player {
 
     @Override
     public Cell getAnswer(final Board board) {
+
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         final List<AnswerAndWin> awList = new ArrayList<>();
-        final List<Cell> cellsToAct = new ArrayList<>() {
-        };
-        cellsToAct.addAll(scoreMap.keySet());
-        System.out.println(cellsToAct);
+        final List<Cell> cellsToAct = new ArrayList<>(scoreMap.keySet());
 
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
@@ -57,27 +50,24 @@ public class KirillBot extends Player {
                 handler.makeStep(copyBoard, key, getPlayerColor());
             } catch (ReversiException ignored) {
             }
-            System.out.println("Предположение " + key + " " + getPlayerColor());
-            System.out.println(board);
 
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
         }
+        System.out.println(countRoots);
         return getGreedyDecision(awList, aw -> aw.win).cell;
     }
 
     private double getWinByGameTree(final Board board, final int recLevel) {
-        final Color curPlayer = board.getNextPlayer();
-        System.out.println(curPlayer.reverseColor());
-        System.out.println(recLevel);
-        System.out.print(board);
-        System.out.println();
-        System.out.println();
+        countRoots++;
+
+        final Color currentPlayer = board.getNextPlayer();
+
         ToDoubleFunction<AnswerAndWin> winCalculator;
-        if (curPlayer == getPlayerColor()) {
-            winCalculator = aw -> aw.win;
+        if (currentPlayer == getPlayerColor()) {
+            winCalculator = (aw -> aw.win);
         } else {
-            winCalculator = aw -> -aw.win;
+            winCalculator = (aw -> -aw.win);
         }
 
         if (handler.isGameEnd(board)) {
@@ -88,27 +78,26 @@ public class KirillBot extends Player {
             return getWinScore(board);
         }
 
-        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(curPlayer);
+        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(currentPlayer);
         final List<AnswerAndWin> awList = new ArrayList<>();
         final List<Cell> cellsToAct = new ArrayList<>() {
         };
         cellsToAct.addAll(scoreMap.keySet());
+
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
             try {
-                handler.makeStep(copyBoard, key, curPlayer);
-            } catch (ReversiException reversiException) {
-                reversiException.printStackTrace();
+                handler.makeStep(copyBoard, key, currentPlayer);
+            } catch (ReversiException ignored) {
             }
 
-//            if (activeRecLevel != recLevel) {
-//                if (handler.haveIStep(board, turnOrder.reverseColor())) {
-//                    turnOrder = turnOrder.reverseColor();
-//                }
-//                activeRecLevel = recLevel;
-//            }
-
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
+            if (currentPlayer == getPlayerColor().reverseColor()) {
+                double p = 1;
+                p = 1 / cellsToAct.size();
+                return win * p;
+            }
+
             awList.add(new AnswerAndWin(key, win));
         }
 
@@ -142,25 +131,81 @@ public class KirillBot extends Player {
         return score;
     }
 
+    private double getScoreFromPriorityBoardAndColor(final Board board, final Color color) {
+        double score = 0;
+        double[][] priorityBoard = getPriorityBoard(board);
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (board.getChipColor(i, j) == color) {
+                    score++;
+                    score += priorityBoard[i][j];
+                }
+            }
+        }
+        return score;
+    }
+
+    private double[][] getPriorityBoard(final Board board) {
+        final double[][] priorityBoard = new double[board.getBoardSize()][board.getBoardSize()];
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                priorityBoard[i][j] = 1;
+            }
+        }
+
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if ((i == 0) || (i == board.getBoardSize() - 1)) {
+                    priorityBoard[i][j] += 2;
+                }
+                if ((j == 0) || (j == board.getBoardSize() - 1)) {
+                    priorityBoard[i][j] += 2;
+                }
+            }
+        }
+
+        for (int i = 0; i < board.getBoardSize() / 2; i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (i % 2 == 1) {
+                    priorityBoard[i][j] -= 1;
+                }
+            }
+        }
+
+        for (int i = board.getBoardSize() / 2; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize(); j++) {
+                if (i % 2 == 0) {
+                    priorityBoard[i][j] -= 1;
+                }
+            }
+        }
+
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = 0; j < board.getBoardSize() / 2; j++) {
+                if (j % 2 == 1) {
+                    priorityBoard[i][j] -= 1;
+                }
+            }
+        }
+
+        for (int i = 0; i < board.getBoardSize(); i++) {
+            for (int j = board.getBoardSize() / 2; j < board.getBoardSize(); j++) {
+                if (j % 2 == 0) {
+                    priorityBoard[i][j] -= 1;
+                }
+            }
+        }
+        return priorityBoard;
+    }
+
     private double getWinScore(final Board board) {
-        final double resultScore = getColorScore(board, getPlayerColor()) -
+        return getColorScore(board, getPlayerColor()) -
                 getColorScore(board, getPlayerColor().reverseColor());
-        if (resultScore > 0) {
-            return 1;
-        } else if (resultScore < 0) {
-            return -1;
-        } else
-            return 0;
     }
 
     private double computeWin(final Board board) {
-        if (handler.getScoreBlack(board) == handler.getScoreWhite(board)) {
-            return 0;
-        } else if (getColorScore(board, getPlayerColor()) > getColorScore(board, getPlayerColor().reverseColor())) {
-            return 1;
-        } else {
-            return -1;
-        }
+        return Double.compare(getColorScore(board, getPlayerColor()),
+                getColorScore(board, getPlayerColor().reverseColor()));
     }
 
 }

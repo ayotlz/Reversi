@@ -38,7 +38,7 @@ public class Board {
     /**
      * Поле размера доски
      */
-    private final int boardSize = 4;
+    private final int boardSize = 8;
 
     /**
      * Конкструктор - создание доски размера boardSize с нейтральными фишками по умолчанию

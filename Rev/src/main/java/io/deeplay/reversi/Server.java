@@ -7,8 +7,6 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.player.OneSimulationBot;
-import io.deeplay.reversi.player.ReflectionBot;
 import io.deeplay.reversi.player.Player;
 import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.requests.GameEndRequest;
@@ -125,9 +123,9 @@ public class Server {
             bots = new ArrayList<>();
             if (roomType == RoomType.BotVsBot) {
                 bots.add(new RandomBot(Color.BLACK));
-                bots.add(new OneSimulationBot(Color.WHITE));
+                bots.add(new RandomBot(Color.WHITE));
             } else if (roomType == RoomType.HumanVsBot) {
-                bots.add(new ReflectionBot(Color.WHITE));
+                bots.add(new RandomBot(Color.WHITE));
             }
         }
 
