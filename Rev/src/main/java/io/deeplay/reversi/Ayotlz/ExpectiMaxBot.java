@@ -18,7 +18,7 @@ import java.util.concurrent.RecursiveTask;
 import java.util.function.ToDoubleFunction;
 
 public class ExpectiMaxBot extends Player {
-    private final int deep = 3;
+    private final int deep = 2;
 
     public ExpectiMaxBot(Color color) {
         super(color);
@@ -65,7 +65,7 @@ public class ExpectiMaxBot extends Player {
 
             final Handler handler = new Handler();
             if (!handler.isGameEnd(board) && deepOfTree < 1) {
-                return monteCarlo(board, turnOrder);
+                return funcOfUseless(board, turnOrder);
             }
             if (handler.isGameEnd(board)) {
                 return computeWin(board);
@@ -106,25 +106,35 @@ public class ExpectiMaxBot extends Player {
         }
     }
 
-    // double
     private AnswerAndWin getGreedyDecision(final List<AnswerAndWin> awList, final ToDoubleFunction<AnswerAndWin> winCalculator) {
         AnswerAndWin bestAW = awList.get(0);
+        double sumOfWin = awList.get(0).win;
+
         double bestWin = winCalculator.applyAsDouble(bestAW);
         for (int i = 1; i < awList.size(); i++) {
-            System.out.println(winCalculator.applyAsDouble(awList.get(i)));
             final AnswerAndWin currentAW = awList.get(i);
             final double currentWin = winCalculator.applyAsDouble(currentAW);
+            sumOfWin += currentWin;
             if (currentWin > bestWin) {
                 bestAW = currentAW;
                 bestWin = currentWin;
             }
         }
-        System.out.println();
+        bestAW.win = sumOfWin;
         return bestAW;
     }
 
+    private double funcOfUseless(final Board b, final Color turnOrder) {
+        final Handler handler = new Handler();
+        if (turnOrder == getPlayerColor()) {
+            return (double) handler.getScoreWhite(b) / (double) (handler.getScoreBlack(b) + handler.getScoreWhite(b));
+        } else {
+            return -(double) handler.getScoreBlack(b) / (double) (handler.getScoreBlack(b) + handler.getScoreWhite(b));
+        }
+    }
+
     private double monteCarlo(final Board b, final Color turnOrder) {
-        final int games = 25;
+        final int games = 5;
         double ratio = 0;
         for (int i = 0; i < games; i++) {
             final Handler handler = new Handler();
