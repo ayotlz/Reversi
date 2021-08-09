@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 
 public class Main {
     public static void main(String[] args) {
-        final int numberOfGames = 1;
+        final int numberOfGames = 10;
         int wins = 0;
         int loss = 0;
         int draws = 0;
