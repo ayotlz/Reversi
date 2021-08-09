@@ -1,4 +1,4 @@
-package io.deeplay.reversi.KIrill;
+package io.deeplay.reversi.Kirill;
 
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
@@ -8,17 +8,21 @@ import io.deeplay.reversi.models.chip.Color;
 import io.deeplay.reversi.player.Player;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.ToDoubleFunction;
 
-public class ExpectiMaxBot extends Player {
+public class MiniMaxBot extends Player {
 
     private final Handler handler = new Handler();
-    private static final int MAXRECLEVEL = 7;
+    private double alpha = Double.MIN_VALUE;
+    private double beta = Double.MAX_VALUE;
+    private static final int MAXRECLEVEL = 5;
     private int countRoots = 0;
 
-    public ExpectiMaxBot(Color color) {
+    public MiniMaxBot(Color color) {
         super(color);
     }
 
@@ -40,9 +44,14 @@ public class ExpectiMaxBot extends Player {
     @Override
     public Cell getAnswer(final Board board) {
 
+        List<Cell> subTasks = new LinkedList<>();
+        final ForkJoinPool pool = new ForkJoinPool(4);
+
+
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         final List<AnswerAndWin> awList = new ArrayList<>();
         final List<Cell> cellsToAct = new ArrayList<>(scoreMap.keySet());
+
 
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
@@ -50,6 +59,9 @@ public class ExpectiMaxBot extends Player {
                 handler.makeStep(copyBoard, key, getPlayerColor());
             } catch (ReversiException ignored) {
             }
+//            Cell task = new Cell(key);
+//            task.fork(); // запустим асинхронно
+//            subTasks.add(task);
 
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
@@ -92,10 +104,16 @@ public class ExpectiMaxBot extends Player {
             }
 
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
-            if (currentPlayer == getPlayerColor().reverseColor()) {
-                double p = 1;
-                p = 1 / cellsToAct.size();
-                return win * p;
+            if (currentPlayer == getPlayerColor()) {
+                if (win >= beta) {
+                    return win;
+                }
+                alpha = Math.max(alpha, win);
+            } else {
+                if (win <= alpha) {
+                    return win;
+                }
+                beta = Math.min(beta, win);
             }
 
             awList.add(new AnswerAndWin(key, win));

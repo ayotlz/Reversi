@@ -1,4 +1,4 @@
-package io.deeplay.reversi.KIrill;
+package io.deeplay.reversi.Kirill;
 
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;

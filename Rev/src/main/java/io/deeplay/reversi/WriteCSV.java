@@ -14,20 +14,14 @@ public class WriteCSV {
         }
     }
 
-    public void writeStep(final String roomID, final String color, final String coordinates, final String countOfFlip,
-                          final String whiteScore, final String blackScore, final String gameStatus) {
-        pw.print(roomID);
+    public void writeStep(final String botClass, final String scoreWhiteWins,
+                          final String scoreBlackWins, final String wins) {
+        pw.print(botClass);
         pw.print(";");
-        pw.print(color);
+        pw.print(scoreWhiteWins);
         pw.print(";");
-        pw.print(coordinates);
+        pw.print(scoreBlackWins);
         pw.print(";");
-        pw.print(countOfFlip);
-        pw.print(";");
-        pw.print(whiteScore);
-        pw.print(";");
-        pw.print(blackScore);
-        pw.print(";");
-        pw.println(gameStatus);
+        pw.println(wins);
     }
 }
