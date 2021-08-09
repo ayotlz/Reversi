@@ -1,11 +1,9 @@
 package io.deeplay.reversi.player;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +24,7 @@ public class RandomBot extends Player {
      * @return возвращается ответ от игрока
      */
     @Override
-    public final Cell getAnswer(final Board board) throws IOException {
+    public final Cell getAnswer(final Board board) {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         final Random random = new Random();

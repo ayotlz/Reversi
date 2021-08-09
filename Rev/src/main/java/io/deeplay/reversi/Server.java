@@ -7,7 +7,6 @@ import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
 import io.deeplay.reversi.models.board.Cell;
 import io.deeplay.reversi.models.chip.Color;
-import io.deeplay.reversi.player.AyotlzBot;
 import io.deeplay.reversi.player.Player;
 import io.deeplay.reversi.player.RandomBot;
 import io.deeplay.reversi.requests.GameEndRequest;
@@ -56,8 +55,6 @@ public class Server {
                         case "1" -> RoomType.HumanVsBot;
                         case "2" -> RoomType.HumanVsHuman;
                         case "3" -> RoomType.BotVsBot;
-                        case "4" -> RoomType.HumanVsAyotlz;
-                        case "5" -> RoomType.BotVsAyotlz;
                         default -> null;
                     };
                 }
@@ -106,7 +103,7 @@ public class Server {
     }
 
     private enum RoomType {
-        HumanVsHuman, HumanVsBot, BotVsBot, HumanVsAyotlz, BotVsAyotlz;
+        HumanVsHuman, HumanVsBot, BotVsBot
     }
 
     private class Room extends Thread {
@@ -129,11 +126,6 @@ public class Server {
                 bots.add(new RandomBot(Color.WHITE));
             } else if (roomType == RoomType.HumanVsBot) {
                 bots.add(new RandomBot(Color.WHITE));
-            } else if (roomType == RoomType.HumanVsAyotlz) {
-                bots.add(new AyotlzBot(Color.WHITE));
-            } else if (roomType == RoomType.BotVsAyotlz) {
-                bots.add(new RandomBot(Color.WHITE));
-                bots.add(new AyotlzBot(Color.BLACK));
             }
         }
 
@@ -198,7 +190,7 @@ public class Server {
 
                         final Cell cell = bot.getAnswer(board);
                         formatCsv(botColor, cell);
-                        sendMessageToAllPlayers(botColor + " ставит фишку на клетку: " + cell.toString() + "");
+                        sendMessageToAllPlayers(botColor + bot.getClass().toString() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
                         System.out.println("Бот работает некорректно");
@@ -285,17 +277,17 @@ public class Server {
         }
 
         private boolean isRoomHasPlace() {
-            if (roomType == RoomType.HumanVsBot || roomType == RoomType.HumanVsAyotlz) return players.size() < 1;
+            if (roomType == RoomType.HumanVsBot) return players.size() < 1;
             if (roomType == RoomType.HumanVsHuman) return players.size() < 2;
             return false;
         }
 
         private Color joinRoom(final ServerSomething ss) {
-            if (roomType == RoomType.BotVsBot || roomType == RoomType.BotVsAyotlz) {
+            if (roomType == RoomType.BotVsBot) {
                 players.add(ss);
                 start();
                 return Color.NEUTRAL;
-            } else if (roomType == RoomType.HumanVsBot || roomType == RoomType.HumanVsAyotlz) {
+            } else if (roomType == RoomType.HumanVsBot) {
                 players.add(ss);
                 start();
                 return Color.BLACK;

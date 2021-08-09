@@ -54,6 +54,9 @@ public class Handler {
 
         checkStep(board, cell, turnOrder);
         setChips(board, cell, turnOrder);
+        if(haveIStep(board, turnOrder.reverseColor())) {
+            board.setNextPlayer();
+        }
     }
 
     /**
