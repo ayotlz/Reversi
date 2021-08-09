@@ -1,4 +1,4 @@
-package io.deeplay.reversi.KIrill;
+package io.deeplay.reversi.Kirill;
 
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;

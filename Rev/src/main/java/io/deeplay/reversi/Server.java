@@ -165,7 +165,7 @@ public class Server {
                         final Cell cell = mapper.readValue(reader, Cell.class);
                         sendMessageToAllPlayers(playerColor + " ставит фишку на клетку: " + cell.toString() + "");
 
-                        formatCsv(playerColor, cell);
+                        handler.makeStep(board, cell, playerColor);
                         break;
                     } catch (final ReversiException e) {
                         sendMessageToAllPlayersWithoutException("Некорректный ход\n");
@@ -189,7 +189,7 @@ public class Server {
                         sendMessageToAllPlayers(writer.toString());
 
                         final Cell cell = bot.getAnswer(board);
-                        formatCsv(botColor, cell);
+                        handler.makeStep(board, cell, botColor);
                         sendMessageToAllPlayers(botColor + bot.getClass().toString() + " ставит фишку на клетку: " + cell.toString() + "");
                         break;
                     } catch (ReversiException | IOException e) {
@@ -199,32 +199,21 @@ public class Server {
             }
         }
 
-        private void formatCsv(final Color color, final Cell cell) throws ReversiException {
-            final String flipCells;
-            try {
-                flipCells = String.valueOf(board.getScoreMap(color).get(cell).size());
-            } catch (final NullPointerException e){
-                throw new ReversiException(ReversiErrorCode.INCORRECT_PLACE_FOR_CHIP);
-            }
-            handler.makeStep(board, cell, color);
-
-            final String gameStatus;
-            if (handler.isGameEnd(board)) {
-                if (handler.getScoreWhite(board) > handler.getScoreBlack(board)) {
-                    gameStatus = "Победа белых";
-                } else if (handler.getScoreWhite(board) < handler.getScoreBlack(board)) {
-                    gameStatus = "Победа чёрных";
-                } else {
-                    gameStatus = "Ничья";
+        private void formatCsv(final Player bot, final int scoreBlack, final int scoreWhite) {
+            int whiteWins = 0;
+            int blackWins = 0;
+            if (scoreBlack > scoreWhite) {
+                if (bot.getPlayerColor() == Color.BLACK) {
+                    blackWins = 1;
                 }
-            } else {
-                gameStatus = "Не определён";
+            } else if (scoreBlack < scoreWhite) {
+                if (bot.getPlayerColor() == Color.WHITE) {
+                    whiteWins = 1;
+                }
             }
-            final String room = String.valueOf(roomID);
-            final String whiteScore = String.valueOf(handler.getScoreWhite(board));
-            final String blackScore = String.valueOf(handler.getScoreBlack(board));
-            csvWriter.writeStep(room, color.getString(), cell.toString(),
-                    flipCells, whiteScore, blackScore, gameStatus);
+
+            csvWriter.writeStep(bot.getClass().toString(), Integer.toString(whiteWins),
+                    Integer.toString(blackWins), Integer.toString(whiteWins+blackWins));
         }
 
         private void gameEnd() {
@@ -251,6 +240,9 @@ public class Server {
                 }
                 sendMessageToAllPlayers("Игра закончилась");
 
+                for (final Player bot : bots) {
+                    formatCsv(bot, scoreBlack, scoreWhite);
+                }
                 for (final ServerSomething player : players) {
                     player.downService();
                 }
