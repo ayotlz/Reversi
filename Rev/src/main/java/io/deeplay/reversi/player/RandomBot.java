@@ -29,7 +29,6 @@ public class RandomBot extends Player {
 
         final Random random = new Random();
         final List<Cell> keys = new ArrayList<>(scoreMap.keySet());
-
         return keys.get(random.nextInt(keys.size()));
     }
 }

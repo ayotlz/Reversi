@@ -64,7 +64,6 @@ public class Client {
         logger.debug("Клиент запущен");
         System.out.println("Клиент запущен");
         chooseRoom();
-        System.out.println(player.getPlayerColor());
         new ProcessingMessage().start();
     }
 
@@ -77,11 +76,11 @@ public class Client {
 
                 if (choice.equals("1") || choice.equals("2")) {
                     send(choice);
-                    player = new HumanPlayer(getColor());
+                    player = new HumanPlayer(chooseColor());
                     logger.debug("Клиент запущен в комнату");
                 } else if (choice.equals("3")) {
                     send(choice);
-                    player = new RandomBot(getColor());
+                    player = new RandomBot(Color.NEUTRAL);
                 }
             }
         } catch (IOException e) {
@@ -89,18 +88,26 @@ public class Client {
         }
     }
 
-    private Color getColor() {
-        try {
-            final String str = in.readLine();
-            final StringReader reader = new StringReader(str);
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(reader, Color.class);
-        } catch (final IOException e) {
-            downService();
+    private Color chooseColor() {
+        System.out.println("1: Black\n2: White");
+        while (true) {
+            try {
+                String choice = inputUser.readLine();
+
+                if (choice.equals("1")) {
+                    send(choice);
+                    return Color.BLACK;
+                }
+                if (choice.equals("2")) {
+                    send(choice);
+                    return Color.WHITE;
+                }
+            } catch (IOException e) {
+                downService();
+            }
         }
-        downService();
-        return null;
     }
+
 
     /**
      * отсылка одного сообщения клиенту

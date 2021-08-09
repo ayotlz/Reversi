@@ -50,28 +50,38 @@ public class Server {
             try {
                 RoomType roomType = null;
                 while (roomType == null) {
-                    final String tr = in.readLine();
-                    roomType = switch (tr) {
+                    final String rt = in.readLine();
+                    roomType = switch (rt) {
                         case "1" -> RoomType.HumanVsBot;
                         case "2" -> RoomType.HumanVsHuman;
                         case "3" -> RoomType.BotVsBot;
                         default -> null;
                     };
                 }
+                Color pColor = null;
+                if (roomType == RoomType.BotVsBot) {
+                    pColor = Color.NEUTRAL;
+                } else {
+                    while (pColor == null) {
+                        final String pc = in.readLine();
+                        pColor = switch (pc) {
+                            case "1" -> Color.BLACK;
+                            case "2" -> Color.WHITE;
+                            default -> null;
+                        };
+                    }
+                }
                 serverList.add(this);
-                color = chooseRoom(roomType).joinRoom(this);
-                final StringWriter writer = new StringWriter();
-                final ObjectMapper mapper = new ObjectMapper();
-                mapper.writeValue(writer, color);
-                send(writer.toString());
+                color = pColor;
+                chooseRoom(roomType, pColor).joinRoom(this);
             } catch (final IOException e) {
                 this.downService();
             }
         }
 
-        private Room chooseRoom(final RoomType rt) {
+        private Room chooseRoom(final RoomType rt, final Color pColor) {
             for (final Room room : roomList) {
-                if (room.getRoomType() == rt && room.isRoomHasPlace()) {
+                if (room.getRoomType() == rt && room.isRoomHasPlace(pColor)) {
                     return room;
                 }
             }
@@ -121,12 +131,6 @@ public class Server {
             board = new Board();
             this.roomType = roomType;
             bots = new ArrayList<>();
-            if (roomType == RoomType.BotVsBot) {
-                bots.add(new RandomBot(Color.BLACK));
-                bots.add(new RandomBot(Color.WHITE));
-            } else if (roomType == RoomType.HumanVsBot) {
-                bots.add(new RandomBot(Color.WHITE));
-            }
         }
 
         @Override
@@ -149,7 +153,7 @@ public class Server {
         private void humanHandler() {
             for (final ServerSomething player : players) {
                 final Color playerColor = player.getColor();
-                if (!handler.haveIStep(board, playerColor) || playerColor == Color.NEUTRAL) {
+                if (!handler.haveIStep(board, playerColor) || playerColor == Color.NEUTRAL || playerColor != board.getNextPlayer()) {
                     continue;
                 }
 
@@ -178,7 +182,7 @@ public class Server {
         private void botHandler() {
             for (final Player bot : bots) {
                 final Color botColor = bot.getPlayerColor();
-                if (!handler.haveIStep(board, botColor)) {
+                if (!handler.haveIStep(board, botColor) || botColor != board.getNextPlayer()) {
                     continue;
                 }
                 while (true) {
@@ -199,6 +203,7 @@ public class Server {
             }
         }
 
+
         private void formatCsv(final Player bot, final int scoreBlack, final int scoreWhite) {
             int whiteWins = 0;
             int blackWins = 0;
@@ -209,6 +214,7 @@ public class Server {
             } else if (scoreBlack < scoreWhite) {
                 if (bot.getPlayerColor() == Color.WHITE) {
                     whiteWins = 1;
+
                 }
             }
 
@@ -268,30 +274,51 @@ public class Server {
             return roomType;
         }
 
-        private boolean isRoomHasPlace() {
-            if (roomType == RoomType.HumanVsBot) return players.size() < 1;
-            if (roomType == RoomType.HumanVsHuman) return players.size() < 2;
+        private boolean isRoomHasPlace(Color pColor) {
+            if (roomType == RoomType.HumanVsBot) {
+                for (ServerSomething ss : players) {
+                    if (ss.getColor() == pColor) {
+                        return false;
+                    }
+                }
+                for (Player player : bots) {
+                    if (player.getPlayerColor() == pColor) {
+                        return false;
+                    }
+                }
+                return players.size() < 1;
+            }
+            if (roomType == RoomType.HumanVsHuman) {
+                for (ServerSomething ss : players) {
+                    if (ss.getColor() == pColor) {
+                        return false;
+                    }
+                }
+                for (Player player : bots) {
+                    if (player.getPlayerColor() == pColor) {
+                        return false;
+                    }
+                }
+                return players.size() < 2;
+            }
             return false;
         }
 
-        private Color joinRoom(final ServerSomething ss) {
+        private void joinRoom(final ServerSomething ss) {
             if (roomType == RoomType.BotVsBot) {
                 players.add(ss);
+                bots.add(new RandomBot(Color.BLACK));
+                bots.add(new RandomBot(Color.WHITE));
                 start();
-                return Color.NEUTRAL;
             } else if (roomType == RoomType.HumanVsBot) {
                 players.add(ss);
+                bots.add(new RandomBot(ss.getColor().reverseColor()));
                 start();
-                return Color.BLACK;
             } else {
                 players.add(ss);
-                if (players.size() == 1) {
-                    return Color.BLACK;
-                } else if (players.size() == 2) {
+                if (players.size() == 2) {
                     start();
-                    return Color.WHITE;
                 }
-                return null;
             }
         }
     }
