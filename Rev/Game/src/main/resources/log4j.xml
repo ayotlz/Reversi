@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="HANDLER_APPENDER_DEBUG" class="org.apache.log4j.RollingFileAppender">
+        <param name="maxFileSize" value="15KB" />
+        <param name="maxBackupIndex" value="5" />
+        <param name="file" value="target/game_progress_debug.log" />
+        <param name="Threshold" value="DEBUG" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%c] %m%n" />
+        </layout>
+    </appender>
+
+    <category name="handler">
+        <priority value="debug"/>
+        <appender-ref ref="HANDLER_APPENDER_DEBUG"/>
+    </category>
+
+</log4j:configuration>

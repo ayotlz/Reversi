@@ -1,0 +1,8 @@
+package Kirill.UtilityFunctions;
+
+import models.board.Board;
+import models.chip.Color;
+
+public interface IFunctions {
+     double getScore(final Board board, final Color color);
+}
