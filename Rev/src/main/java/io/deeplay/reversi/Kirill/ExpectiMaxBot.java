@@ -20,6 +20,7 @@ public class ExpectiMaxBot extends Player {
 
     public ExpectiMaxBot(Color color) {
         super(color);
+        setName("KirillExpectiMaxBot");
     }
 
     private static final class AnswerAndWin {

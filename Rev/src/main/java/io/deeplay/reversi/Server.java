@@ -1,7 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.deeplay.reversi.exceptions.ReversiErrorCode;
+import io.deeplay.reversi.CSV.WriteCSV;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
 import io.deeplay.reversi.models.board.Board;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server {
-    static final int PORT = 8082;
+    static final int PORT = 9998;
 
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
@@ -225,7 +225,7 @@ public class Server {
                 }
             }
 
-            csvWriter.writeStep(bot.getClass().toString(), Integer.toString(whiteWins),
+            csvWriter.writeStep(bot.getName(), Integer.toString(whiteWins),
                     Integer.toString(blackWins), Integer.toString(whiteWins + blackWins));
         }
 

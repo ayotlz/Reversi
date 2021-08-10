@@ -24,6 +24,7 @@ public class MiniMaxBot extends Player {
 
     public MiniMaxBot(Color color) {
         super(color);
+        setName("KirillMiniMaxBot");
     }
 
     private static final class AnswerAndWin {

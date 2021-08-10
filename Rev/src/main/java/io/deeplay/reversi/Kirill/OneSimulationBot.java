@@ -18,6 +18,7 @@ public class OneSimulationBot extends Player {
 
     public OneSimulationBot(final Color color) {
         super(color);
+        setName("KirillOneSimulationBot");
     }
 
     /**

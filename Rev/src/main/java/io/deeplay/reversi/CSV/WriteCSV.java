@@ -1,4 +1,4 @@
-package io.deeplay.reversi;
+package io.deeplay.reversi.CSV;
 
 import java.io.*;
 
@@ -14,9 +14,9 @@ public class WriteCSV {
         }
     }
 
-    public void writeStep(final String botClass, final String scoreWhiteWins,
+    public void writeStep(final String name, final String scoreWhiteWins,
                           final String scoreBlackWins, final String wins) {
-        pw.print(botClass);
+        pw.print(name);
         pw.print(";");
         pw.print(scoreWhiteWins);
         pw.print(";");

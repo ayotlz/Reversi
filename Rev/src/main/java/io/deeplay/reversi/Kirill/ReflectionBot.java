@@ -18,6 +18,7 @@ public class ReflectionBot extends Player {
 
     public ReflectionBot(final Color color) {
         super(color);
+        setName("KirillReflectionMaxBot");
     }
 
     /**
