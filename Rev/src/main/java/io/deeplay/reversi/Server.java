@@ -66,12 +66,10 @@ public class Server {
                     pColor = Color.NEUTRAL;
                 } else {
                     while (pColor == null) {
-                        final String pc = in.readLine();
-                        pColor = switch (pc) {
-                            case "1" -> Color.BLACK;
-                            case "2" -> Color.WHITE;
-                            default -> null;
-                        };
+                        final String message = in.readLine();
+                        final StringReader reader = new StringReader(message);
+                        final ObjectMapper mapper = new ObjectMapper();
+                        pColor = mapper.readValue(reader, Color.class);
                     }
                 }
                 serverList.add(this);
@@ -262,6 +260,10 @@ public class Server {
 
         private void exit() {
             for (final ServerSomething player : players) {
+                try {
+                    player.send("down service");
+                } catch (IOException ignored) {
+                }
                 player.downService();
             }
             roomList.remove(this);

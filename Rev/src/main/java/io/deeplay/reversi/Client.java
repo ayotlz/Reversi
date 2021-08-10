@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Random;
 
 public class Client {
 
@@ -101,18 +102,39 @@ public class Client {
     }
 
     private Color chooseColor() {
-        System.out.println("1: Black\n2: White");
+        System.out.println("1: Black\n2: White\n3: Any color");
         while (true) {
             try {
+                final ObjectMapper mapper = new ObjectMapper();
+                final StringWriter writer = new StringWriter();
+
                 String choice = inputUser.readLine();
 
                 if (choice.equals("1")) {
-                    send(choice);
-                    return Color.BLACK;
+                    final Color color = Color.BLACK;
+                    mapper.writeValue(writer, color);
+                    send(writer.toString());
+                    return color;
                 }
                 if (choice.equals("2")) {
-                    send(choice);
-                    return Color.WHITE;
+                    final Color color = Color.WHITE;
+                    mapper.writeValue(writer, color);
+                    send(writer.toString());
+                    return color;
+                }
+                if (choice.equals("3")) {
+                    final Random random = new Random();
+                    final int ch = random.nextInt(2);
+                    Color color;
+                    if (ch == 0) {
+                        color = Color.BLACK;
+                    } else {
+                        color = Color.WHITE;
+                    }
+                    mapper.writeValue(writer, color);
+                    send(writer.toString());
+                    System.out.println(color.getString());
+                    return color;
                 }
             } catch (IOException e) {
                 downService();
@@ -160,6 +182,10 @@ public class Client {
                 while (true) {
                     try {
                         message = in.readLine();
+                        if (message.equals("down service")) {
+                            downService();
+                            System.exit(0);
+                        }
                     } catch (final IOException e) {
                         downService();
                         break;

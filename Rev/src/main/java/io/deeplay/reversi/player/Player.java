@@ -19,7 +19,7 @@ public abstract class Player {
     /**
      * поле имени игрока
      */
-    private String name;
+    private String name = "Player";
 
     /**
      * Конструктор - создание игрока по цвету
