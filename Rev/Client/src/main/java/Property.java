@@ -3,9 +3,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Property {
+    private static final String propertyPath = "./Client/src/main/resources/config.properties";
+
     public static String getIP() {
         try {
-            final FileInputStream fis = new FileInputStream("./Client/src/main/resources/config.properties");
+            final FileInputStream fis = new FileInputStream(propertyPath);
             final Properties property = new Properties();
             property.load(fis);
             return property.getProperty("IP");
