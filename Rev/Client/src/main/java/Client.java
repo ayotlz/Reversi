@@ -19,8 +19,7 @@ import java.util.Random;
 public class Client {
 
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
-//    private static final String IP = "192.168.7.79";
-    private static final String IP = "127.0.0.1";
+    private static final String IP = Property.getIP();
     private static final int PORT = 9998;
 
     private final String ip;
