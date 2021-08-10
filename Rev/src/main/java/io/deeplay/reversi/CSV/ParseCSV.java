@@ -14,8 +14,7 @@ public class ParseCSV {
     public ParseCSV() {
         String file = "parsedLogs.csv";
         try {
-            pw = new PrintWriter(new FileWriter(file, true), true);
-            pw.println();
+            pw = new PrintWriter(new FileWriter(file, false), true);
         } catch (IOException ignored) {
         }
     }

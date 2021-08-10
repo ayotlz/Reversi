@@ -1,6 +1,7 @@
 package io.deeplay.reversi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.deeplay.reversi.Ayotlz.AyotlzBot;
 import io.deeplay.reversi.CSV.WriteCSV;
 import io.deeplay.reversi.exceptions.ReversiException;
 import io.deeplay.reversi.handler.Handler;
@@ -123,7 +124,7 @@ public class Server {
         private final List<Player> bots;
         private final Handler handler;
         private final RoomType roomType;
-        private final int countOfGames = 10;
+        private final int countOfGames = 1;
         private Board board;
 
         private Room(final RoomType roomType, final int roomID) {
@@ -209,21 +210,21 @@ public class Server {
         }
 
 
-        private void formatCsv(final Player bot, final int scoreBlack, final int scoreWhite) {
+        private void formatCsv(final String name, final Color color, final int scoreBlack, final int scoreWhite) {
             int whiteWins = 0;
             int blackWins = 0;
             if (scoreBlack > scoreWhite) {
-                if (bot.getPlayerColor() == Color.BLACK) {
+                if (color == Color.BLACK) {
                     blackWins = 1;
                 }
             } else if (scoreBlack < scoreWhite) {
-                if (bot.getPlayerColor() == Color.WHITE) {
+                if (color == Color.WHITE) {
                     whiteWins = 1;
 
                 }
             }
 
-            csvWriter.writeStep(bot.getName(), Integer.toString(whiteWins),
+            csvWriter.writeStep(name, Integer.toString(whiteWins),
                     Integer.toString(blackWins), Integer.toString(whiteWins + blackWins));
         }
 
@@ -251,8 +252,11 @@ public class Server {
                 }
                 sendMessageToAllPlayers("Игра закончилась");
 
+                for (final ServerSomething ss : serverList) {
+                    formatCsv(ss.nickName, ss.getColor(), scoreBlack, scoreWhite);
+                }
                 for (final Player bot : bots) {
-                    formatCsv(bot, scoreBlack, scoreWhite);
+                    formatCsv(bot.getName(), bot.getPlayerColor(), scoreBlack, scoreWhite);
                 }
             } catch (final IOException ignored) {
             }
@@ -320,7 +324,7 @@ public class Server {
             if (roomType == RoomType.BotVsBot) {
                 players.add(ss);
                 bots.add(new RandomBot(Color.BLACK));
-                bots.add(new RandomBot(Color.WHITE));
+                bots.add(new AyotlzBot(Color.WHITE));
                 start();
             } else if (roomType == RoomType.HumanVsBot) {
                 players.add(ss);
