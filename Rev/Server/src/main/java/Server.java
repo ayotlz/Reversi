@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server {
-    static final int PORT = 9998;
+    static final int PORT = Property.getPort();
 
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
@@ -125,7 +125,8 @@ public class Server {
         private final List<Player> bots;
         private final Handler handler;
         private final RoomType roomType;
-        private final int countOfGames = 10;
+
+        private final int countOfGames = Property.getCountOfGames();
         private Board board;
 
         private Room(final RoomType roomType, final int roomID) {
