@@ -1,6 +1,3 @@
-import Kirill.MiniMaxBot;
-import Kirill.UtilityFunctions.ExpertTableScoreFunction;
-import Kirill.UtilityFunctions.PetrozavodskStateUniversityExpertTableScoreFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import CSV.WriteCSV;
 import exceptions.ReversiException;
@@ -324,8 +321,8 @@ public class Server {
         private void joinRoom(final ServerSomething ss) {
             if (roomType == RoomType.BotVsBot) {
                 players.add(ss);
-                bots.add(new MiniMaxBot(Color.WHITE, new ExpertTableScoreFunction()));
-                bots.add(new MiniMaxBot(Color.BLACK, new PetrozavodskStateUniversityExpertTableScoreFunction()));
+                bots.add(new RandomBot(Color.WHITE));
+                bots.add(new RandomBot(Color.BLACK));
                 start();
             } else if (roomType == RoomType.HumanVsBot) {
                 players.add(ss);
