@@ -2,7 +2,6 @@ import Kirill.MiniMaxBot;
 import Kirill.UtilityFunctions.ExpertTableScoreFunction;
 import Kirill.UtilityFunctions.PetrozavodskStateUniversityExpertTableScoreFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import Ayotlz.AyotlzBot;
 import CSV.WriteCSV;
 import exceptions.ReversiException;
 import handler.Handler;

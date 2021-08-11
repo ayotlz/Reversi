@@ -16,6 +16,8 @@
         <module>GUI</module>
         <module>Kirill</module>
         <module>Server</module>
+        <module>CSV</module>
+        <module>CSV</module>
     </modules>
     <dependencies>
         <dependency>

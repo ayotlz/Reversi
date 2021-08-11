@@ -60,7 +60,6 @@ public class ExpectiMaxBot extends Player {
             } catch (final ReversiException ignored) {
             }
 
-//            final ForkJoinPool forkJoinPool = new ForkJoinPool(4);
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
         }
