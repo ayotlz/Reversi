@@ -3,7 +3,7 @@ package Kirill.UtilityFunctions;
 import models.board.Board;
 import models.chip.Color;
 
-public class SimpleScoreFunction implements IFunctions {
+public class SimpleScoreFunction implements IFunction {
     @Override
     public double getScore(final Board board, final Color color) {
         double score = 0;
@@ -15,5 +15,10 @@ public class SimpleScoreFunction implements IFunctions {
             }
         }
         return score;
+    }
+
+    @Override
+    public final String toString() {
+        return "SimpleScoreFunction";
     }
 }

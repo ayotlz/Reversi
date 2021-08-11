@@ -1,3 +1,6 @@
+import Kirill.MiniMaxBot;
+import Kirill.UtilityFunctions.ExpertTableScoreFunction;
+import Kirill.UtilityFunctions.PetrozavodskStateUniversityExpertTableScoreFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Ayotlz.AyotlzBot;
 import CSV.WriteCSV;
@@ -122,7 +125,7 @@ public class Server {
         private final List<Player> bots;
         private final Handler handler;
         private final RoomType roomType;
-        private final int countOfGames = 1;
+        private final int countOfGames = 10;
         private Board board;
 
         private Room(final RoomType roomType, final int roomID) {
@@ -321,8 +324,8 @@ public class Server {
         private void joinRoom(final ServerSomething ss) {
             if (roomType == RoomType.BotVsBot) {
                 players.add(ss);
-                bots.add(new RandomBot(Color.BLACK));
-                bots.add(new AyotlzBot(Color.WHITE));
+                bots.add(new MiniMaxBot(Color.WHITE, new ExpertTableScoreFunction()));
+                bots.add(new MiniMaxBot(Color.BLACK, new PetrozavodskStateUniversityExpertTableScoreFunction()));
                 start();
             } else if (roomType == RoomType.HumanVsBot) {
                 players.add(ss);
