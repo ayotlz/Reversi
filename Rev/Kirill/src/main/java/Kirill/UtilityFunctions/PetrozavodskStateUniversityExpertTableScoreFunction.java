@@ -5,7 +5,7 @@ import models.chip.Color;
 
 public class PetrozavodskStateUniversityExpertTableScoreFunction implements IFunction {
     @Override
-    public double getScore(final Board board, final Color color) {
+    public final double getScore(final Board board, final Color color) {
         double score = 0;
         final double[][] expertBoard = getPriorityBoard(board);
         for (int i = 0; i < board.getBoardSize(); i++) {

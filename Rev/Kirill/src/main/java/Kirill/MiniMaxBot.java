@@ -51,10 +51,6 @@ public class MiniMaxBot extends Player {
     @Override
     public final Cell getAnswer(final Board board) {
 
-//        List<Cell> subTasks = new LinkedList<>();
-//        final ForkJoinPool pool = new ForkJoinPool(4);
-
-
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         final List<AnswerAndWin> awList = new ArrayList<>();
         final List<Cell> cellsToAct = new ArrayList<>(scoreMap.keySet());
@@ -66,9 +62,6 @@ public class MiniMaxBot extends Player {
                 handler.makeStep(copyBoard, key, getPlayerColor());
             } catch (final ReversiException ignored) {
             }
-//            Cell task = new Cell(key);
-//            task.fork(); // запустим асинхронно
-//            subTasks.add(task);
 
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
