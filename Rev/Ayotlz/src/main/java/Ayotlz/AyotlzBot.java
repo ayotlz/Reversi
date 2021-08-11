@@ -38,8 +38,8 @@ public class AyotlzBot extends Player {
             return player.getAnswer(board);
         }
 
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 50) {
-            deep = 14;
+        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 54) {
+            deep = 10;
         }
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());

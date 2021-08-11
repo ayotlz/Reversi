@@ -1,5 +1,7 @@
 package Kirill;
 
+import Kirill.UtilityFunctions.IFunction;
+import Kirill.UtilityFunctions.SimpleScoreFunction;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -8,23 +10,27 @@ import models.chip.Color;
 import player.Player;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.ToDoubleFunction;
 
 public class MiniMaxBot extends Player {
 
+    private IFunction utilityFunction = new SimpleScoreFunction();
     private final Handler handler = new Handler();
     private double alpha = Double.MIN_VALUE;
     private double beta = Double.MAX_VALUE;
     private static final int MAXRECLEVEL = 5;
-    private int countRoots = 0;
 
-    public MiniMaxBot(Color color) {
+    public MiniMaxBot(final Color color) {
         super(color);
         setName("KirillMiniMaxBot");
+    }
+
+    public MiniMaxBot(final Color color, final IFunction function) {
+        super(color);
+        setName("KirillMiniMaxBot "+function.toString());
+        this.utilityFunction = function;
     }
 
     private static final class AnswerAndWin {
@@ -37,16 +43,16 @@ public class MiniMaxBot extends Player {
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return cell.toString() + " " + win;
         }
     }
 
     @Override
-    public Cell getAnswer(final Board board) {
+    public final Cell getAnswer(final Board board) {
 
-        List<Cell> subTasks = new LinkedList<>();
-        final ForkJoinPool pool = new ForkJoinPool(4);
+//        List<Cell> subTasks = new LinkedList<>();
+//        final ForkJoinPool pool = new ForkJoinPool(4);
 
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
@@ -58,7 +64,7 @@ public class MiniMaxBot extends Player {
             final Board copyBoard = new Board(board);
             try {
                 handler.makeStep(copyBoard, key, getPlayerColor());
-            } catch (ReversiException ignored) {
+            } catch (final ReversiException ignored) {
             }
 //            Cell task = new Cell(key);
 //            task.fork(); // запустим асинхронно
@@ -67,12 +73,10 @@ public class MiniMaxBot extends Player {
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
         }
-        System.out.println(countRoots);
         return getGreedyDecision(awList, aw -> aw.win).cell;
     }
 
     private double getWinByGameTree(final Board board, final int recLevel) {
-        countRoots++;
 
         final Color currentPlayer = board.getNextPlayer();
 
@@ -93,15 +97,13 @@ public class MiniMaxBot extends Player {
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(currentPlayer);
         final List<AnswerAndWin> awList = new ArrayList<>();
-        final List<Cell> cellsToAct = new ArrayList<>() {
-        };
-        cellsToAct.addAll(scoreMap.keySet());
+        final List<Cell> cellsToAct = new ArrayList<>(scoreMap.keySet());
 
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
             try {
                 handler.makeStep(copyBoard, key, currentPlayer);
-            } catch (ReversiException ignored) {
+            } catch (final ReversiException ignored) {
             }
 
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
@@ -116,10 +118,8 @@ public class MiniMaxBot extends Player {
                 }
                 beta = Math.min(beta, win);
             }
-
             awList.add(new AnswerAndWin(key, win));
         }
-
         return getGreedyDecision(awList, winCalculator).win;
     }
 
@@ -138,93 +138,13 @@ public class MiniMaxBot extends Player {
         return bestAW;
     }
 
-    private double getColorScore(final Board board, final Color color) {
-        double score = 0;
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getChipColor(i, j) == color) {
-                    score++;
-                }
-            }
-        }
-        return score;
-    }
-
-    private double getScoreFromPriorityBoardAndColor(final Board board, final Color color) {
-        double score = 0;
-        double[][] priorityBoard = getPriorityBoard(board);
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getChipColor(i, j) == color) {
-                    score++;
-                    score += priorityBoard[i][j];
-                }
-            }
-        }
-        return score;
-    }
-
-    private double[][] getPriorityBoard(final Board board) {
-        final double[][] priorityBoard = new double[board.getBoardSize()][board.getBoardSize()];
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                priorityBoard[i][j] = 1;
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if ((i == 0) || (i == board.getBoardSize() - 1)) {
-                    priorityBoard[i][j] += 2;
-                }
-                if ((j == 0) || (j == board.getBoardSize() - 1)) {
-                    priorityBoard[i][j] += 2;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize() / 2; i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (i % 2 == 1) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = board.getBoardSize() / 2; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (i % 2 == 0) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize() / 2; j++) {
-                if (j % 2 == 1) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = board.getBoardSize() / 2; j < board.getBoardSize(); j++) {
-                if (j % 2 == 0) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-        return priorityBoard;
-    }
-
     private double getWinScore(final Board board) {
-        return getColorScore(board, getPlayerColor()) -
-                getColorScore(board, getPlayerColor().reverseColor());
+        return utilityFunction.getScore(board, getPlayerColor()) -
+                utilityFunction.getScore(board, getPlayerColor().reverseColor());
     }
 
     private double computeWin(final Board board) {
-        return Double.compare(getColorScore(board, getPlayerColor()),
-                getColorScore(board, getPlayerColor().reverseColor()));
+        return Double.compare(utilityFunction.getScore(board, getPlayerColor()),
+                utilityFunction.getScore(board, getPlayerColor().reverseColor()));
     }
-
 }
