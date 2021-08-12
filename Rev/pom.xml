@@ -16,6 +16,7 @@
         <module>GUI</module>
         <module>Kirill</module>
         <module>Server</module>
+        <module>Service</module>
     </modules>
     <dependencies>
         <dependency>

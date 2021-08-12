@@ -7,6 +7,7 @@ import player.RandomBot;
 import models.board.Board;
 import models.board.Cell;
 import models.chip.Color;
+import property.Property;
 import requests.GameEndRequest;
 import requests.PlayerRequest;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class Client {
 
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private static final String IP = Property.getIP();
-    private static final int PORT = 9998;
+    private static final int PORT = Property.getPort();
 
     private final String ip;
     private final int port;
