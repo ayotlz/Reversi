@@ -30,7 +30,7 @@ public class ReflectionBot extends Player {
     @Override
     public final Cell getAnswer(final Board board) {
 
-        final Map<Cell,Integer> utilityMap = new HashMap<>(getUtilityMap(board));
+        final Map<Cell, Integer> utilityMap = new HashMap<>(getUtilityMap(board));
 
         final Cell answerCell;
 
@@ -38,7 +38,7 @@ public class ReflectionBot extends Player {
 
         int tempInt = 0;
 
-        for (Cell cell: utilityMap.keySet()){
+        for (final Cell cell : utilityMap.keySet()) {
             if (utilityMap.get(cell) > tempInt) {
                 tempInt = utilityMap.get(cell);
                 tempCell = cell;
@@ -49,14 +49,14 @@ public class ReflectionBot extends Player {
         return answerCell;
     }
 
-    private Map<Cell,Integer> getUtilityMap(final Board board){
+    private Map<Cell, Integer> getUtilityMap(final Board board) {
         //Клетки в которые можно походить и список которые перевернутся
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
 
         //Клетки в которые можно походить
         final List<Cell> keys = new ArrayList<>(scoreMap.keySet());
 
-        final Map<Cell,Integer> utility = new HashMap<>();
+        final Map<Cell, Integer> utility = new HashMap<>();
 
         for (int i = 0; i < scoreMap.keySet().size(); i++) {
             utility.put(keys.get(i), scoreMap.get(keys.get(i)).size());

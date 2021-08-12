@@ -1,5 +1,7 @@
 package Kirill;
 
+import Kirill.UtilityFunctions.IFunction;
+import Kirill.UtilityFunctions.SimpleScoreFunction;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -14,13 +16,19 @@ import java.util.function.ToDoubleFunction;
 
 public class ExpectiMaxBot extends Player {
 
+    private IFunction utilityFunction = new SimpleScoreFunction();
     private final Handler handler = new Handler();
-    private static final int MAXRECLEVEL = 7;
-    private int countRoots = 0;
+    private static final int MAXRECLEVEL = 4;
 
-    public ExpectiMaxBot(Color color) {
+    public ExpectiMaxBot(final Color color) {
         super(color);
         setName("KirillExpectiMaxBot");
+    }
+
+    public ExpectiMaxBot(final Color color, final IFunction function) {
+        super(color);
+        setName("KirillExpectiMaxBot "+function.toString());
+        this.utilityFunction = function;
     }
 
     private static final class AnswerAndWin {
@@ -33,13 +41,13 @@ public class ExpectiMaxBot extends Player {
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return cell.toString() + " " + win;
         }
     }
 
     @Override
-    public Cell getAnswer(final Board board) {
+    public final Cell getAnswer(final Board board) {
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
         final List<AnswerAndWin> awList = new ArrayList<>();
@@ -49,18 +57,16 @@ public class ExpectiMaxBot extends Player {
             final Board copyBoard = new Board(board);
             try {
                 handler.makeStep(copyBoard, key, getPlayerColor());
-            } catch (ReversiException ignored) {
+            } catch (final ReversiException ignored) {
             }
 
             final double win = getWinByGameTree(copyBoard, 0);
             awList.add(new AnswerAndWin(key, win));
         }
-        System.out.println(countRoots);
         return getGreedyDecision(awList, aw -> aw.win).cell;
     }
 
     private double getWinByGameTree(final Board board, final int recLevel) {
-        countRoots++;
 
         final Color currentPlayer = board.getNextPlayer();
 
@@ -81,27 +87,22 @@ public class ExpectiMaxBot extends Player {
 
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(currentPlayer);
         final List<AnswerAndWin> awList = new ArrayList<>();
-        final List<Cell> cellsToAct = new ArrayList<>() {
-        };
-        cellsToAct.addAll(scoreMap.keySet());
+        final List<Cell> cellsToAct = new ArrayList<>(scoreMap.keySet());
 
         for (final Cell key : cellsToAct) {
             final Board copyBoard = new Board(board);
             try {
                 handler.makeStep(copyBoard, key, currentPlayer);
-            } catch (ReversiException ignored) {
+            } catch (final ReversiException ignored) {
             }
 
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
             if (currentPlayer == getPlayerColor().reverseColor()) {
-                double p = 1;
-                p = 1 / cellsToAct.size();
+                double p = 1.0 / cellsToAct.size();
                 return win * p;
             }
-
             awList.add(new AnswerAndWin(key, win));
         }
-
         return getGreedyDecision(awList, winCalculator).win;
     }
 
@@ -120,93 +121,13 @@ public class ExpectiMaxBot extends Player {
         return bestAW;
     }
 
-    private double getColorScore(final Board board, final Color color) {
-        double score = 0;
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getChipColor(i, j) == color) {
-                    score++;
-                }
-            }
-        }
-        return score;
-    }
-
-    private double getScoreFromPriorityBoardAndColor(final Board board, final Color color) {
-        double score = 0;
-        double[][] priorityBoard = getPriorityBoard(board);
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (board.getChipColor(i, j) == color) {
-                    score++;
-                    score += priorityBoard[i][j];
-                }
-            }
-        }
-        return score;
-    }
-
-    private double[][] getPriorityBoard(final Board board) {
-        final double[][] priorityBoard = new double[board.getBoardSize()][board.getBoardSize()];
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                priorityBoard[i][j] = 1;
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if ((i == 0) || (i == board.getBoardSize() - 1)) {
-                    priorityBoard[i][j] += 2;
-                }
-                if ((j == 0) || (j == board.getBoardSize() - 1)) {
-                    priorityBoard[i][j] += 2;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize() / 2; i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (i % 2 == 1) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = board.getBoardSize() / 2; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize(); j++) {
-                if (i % 2 == 0) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = 0; j < board.getBoardSize() / 2; j++) {
-                if (j % 2 == 1) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-
-        for (int i = 0; i < board.getBoardSize(); i++) {
-            for (int j = board.getBoardSize() / 2; j < board.getBoardSize(); j++) {
-                if (j % 2 == 0) {
-                    priorityBoard[i][j] -= 1;
-                }
-            }
-        }
-        return priorityBoard;
-    }
-
     private double getWinScore(final Board board) {
-        return getColorScore(board, getPlayerColor()) -
-                getColorScore(board, getPlayerColor().reverseColor());
+        return utilityFunction.getScore(board, getPlayerColor()) -
+                utilityFunction.getScore(board, getPlayerColor().reverseColor());
     }
 
     private double computeWin(final Board board) {
-        return Double.compare(getColorScore(board, getPlayerColor()),
-                getColorScore(board, getPlayerColor().reverseColor()));
+        return Double.compare(utilityFunction.getScore(board, getPlayerColor()),
+                utilityFunction.getScore(board, getPlayerColor().reverseColor()));
     }
-
 }
