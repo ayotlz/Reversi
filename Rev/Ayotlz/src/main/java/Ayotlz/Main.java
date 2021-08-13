@@ -1,6 +1,5 @@
 package Ayotlz;
 
-import Ayotlz.ExpectiMaxBot;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -12,9 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class Main {
-    public static void main(String[] args) {
-        final int numberOfGames = 10;
+public final class Main {
+    public static void main(final String[] args) {
+        final int numberOfGames = 200;
         int wins = 0;
         int loss = 0;
         int draws = 0;
@@ -22,7 +21,7 @@ public class Main {
         final PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter("time.csv", false), true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return;
         }
         pw.print("step;");
@@ -52,24 +51,24 @@ public class Main {
     public static int game() {
         final Handler handler = new Handler();
         final Board board = new Board();
-        final Player[] players = new Player[]{new ExpectiMaxBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
         int order = 4;
 
         final PrintWriter pw;
         try {
             pw = new PrintWriter(new FileWriter("time.csv", true), true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return 0;
         }
 
         try {
             handler.initializationBoard(board);
-        } catch (ReversiException e) {
+        } catch (final ReversiException e) {
             System.out.println(e.getMessage());
         }
 
         while (!handler.isGameEnd(board)) {
-            for (Player player : players) {
+            for (final Player player : players) {
                 if (handler.isGameEnd(board)) {
                     break;
                 }
@@ -78,10 +77,10 @@ public class Main {
                 }
                 while (true) {
                     try {
-                        double time_before = System.currentTimeMillis();
+                        final double time_before = System.currentTimeMillis();
                         final Cell cell = player.getAnswer(board);
                         order++;
-                        double time_after = (System.currentTimeMillis() - time_before) / 1000;
+                        final double time_after = (System.currentTimeMillis() - time_before) / 1000;
                         pw.print(order + ";");
                         pw.print(time_after + ";");
                         pw.println(player.getPlayerColor().getString());

@@ -1,14 +1,12 @@
 package rooms;
 
-import clients.ServerSomething;
+import clients.AbstractPlayer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
 import models.board.Cell;
 import models.chip.Color;
-import player.Player;
-import player.RandomBot;
 import property.Property;
 import requests.GameEndRequest;
 import requests.PlayerRequest;
@@ -27,8 +25,8 @@ public class Room extends Thread {
     private final int roomID;
     private final int countOfGames = Property.getCountOfGames();
     private final WriteCSV csvWriter = new WriteCSV();
-    private final List<ServerSomething> players = new ArrayList<>();
-    private final List<Player> bots = new ArrayList<>();
+    private final List<AbstractPlayer> players = new ArrayList<>();
+    private final List<AbstractPlayer> observers = new ArrayList<>();
     private final Handler handler = new Handler();
     private Board board;
 
@@ -53,7 +51,7 @@ public class Room extends Thread {
         server.closeRoom(this);
     }
 
-    public List<ServerSomething> getPlayers() {
+    public List<AbstractPlayer> getPlayers() {
         return players;
     }
 
@@ -63,63 +61,33 @@ public class Room extends Thread {
 
     private void gameProcess() {
         while (!handler.isGameEnd(board)) {
-            humanHandler();
-            botHandler();
-        }
-    }
-
-    private void humanHandler() {
-        for (final ServerSomething player : players) {
-            final Color playerColor = player.getColor();
-            if (!handler.haveIStep(board, playerColor) || playerColor == Color.NEUTRAL || playerColor != board.getNextPlayer()) {
-                continue;
-            }
-
-            while (true) {
-                try {
-                    final StringWriter writer = new StringWriter();
-                    final ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(writer, new PlayerRequest(board, playerColor));
-                    sendMessageToAllPlayers(writer.toString());
-
-                    final String answer = player.readMessage();
-                    final StringReader reader = new StringReader(answer);
-                    final Cell cell = mapper.readValue(reader, Cell.class);
-                    sendMessageToAllPlayers("[" + playerColor + "] " + player.getNickName() + " ставит фишку на клетку: " + cell.toString() + "");
-
-                    handler.makeStep(board, cell, playerColor);
-                    break;
-                } catch (final ReversiException e) {
-                    try {
-                        sendMessageToAllPlayers("Некорректный ход\n");
-                    } catch (IOException ignored) {
-                    }
-                } catch (final IOException ignored) {
+            for (final AbstractPlayer player : players) {
+                final Color playerColor = player.getColor();
+                if (!handler.haveIStep(board, playerColor) || playerColor == Color.NEUTRAL || playerColor != board.getNextPlayer()) {
+                    continue;
                 }
-            }
-        }
-    }
 
-    private void botHandler() {
-        for (final Player bot : bots) {
-            final Color botColor = bot.getPlayerColor();
-            if (!handler.haveIStep(board, botColor) || botColor != board.getNextPlayer()) {
-                continue;
-            }
-            while (true) {
-                try {
-                    final StringWriter writer = new StringWriter();
-                    final ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(writer, new PlayerRequest(board, botColor));
-                    sendMessageToAllPlayers(writer.toString());
+                while (true) {
+                    try {
+                        final StringWriter writer = new StringWriter();
+                        final ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(writer, new PlayerRequest(board, playerColor));
+                        sendMessageToAllPlayers(writer.toString());
 
-                    final Cell cell = bot.getAnswer(board);
-                    handler.makeStep(board, cell, botColor);
-                    sendMessageToAllPlayers("[" + botColor + "] " + bot.getName() + " ставит фишку на клетку: " + cell.toString() + "");
-                    break;
-                } catch (ReversiException | IOException e) {
-                    System.out.println("Бот работает некорректно");
-                    server.closeRoom(this);
+                        final String answer = player.readMessage();
+                        final StringReader reader = new StringReader(answer);
+                        final Cell cell = mapper.readValue(reader, Cell.class);
+                        sendMessageToAllPlayers("[" + playerColor + "] " + player.getNickName() + " ставит фишку на клетку: " + cell.toString() + "");
+
+                        handler.makeStep(board, cell, playerColor);
+                        break;
+                    } catch (final ReversiException e) {
+                        try {
+                            sendMessageToAllPlayers("Некорректный ход\n");
+                        } catch (IOException ignored) {
+                        }
+                    } catch (final IOException ignored) {
+                    }
                 }
             }
         }
@@ -167,21 +135,18 @@ public class Room extends Thread {
             }
             sendMessageToAllPlayers("Игра закончилась");
 
-            for (final ServerSomething ss : players) {
-                if (ss.getColor() != Color.NEUTRAL) {
-                    formatCsv(ss.getNickName(), ss.getColor(), scoreBlack, scoreWhite);
+            for (final AbstractPlayer ap : players) {
+                if (ap.getColor() != Color.NEUTRAL) {
+                    formatCsv(ap.getNickName(), ap.getColor(), scoreBlack, scoreWhite);
                 }
-            }
-            for (final Player bot : bots) {
-                formatCsv(bot.getName(), bot.getPlayerColor(), scoreBlack, scoreWhite);
             }
         } catch (final IOException ignored) {
         }
     }
 
     private void sendMessageToAllPlayers(final String message) throws IOException {
-        for (final ServerSomething ss : players) {
-            ss.send(message);
+        for (final AbstractPlayer cp : players) {
+            cp.send(message);
         }
     }
 
@@ -191,26 +156,16 @@ public class Room extends Thread {
 
     public boolean isRoomHasPlace(Color pColor) {
         if (roomType == RoomType.HumanVsBot) {
-            for (ServerSomething ss : players) {
-                if (ss.getColor() == pColor) {
-                    return false;
-                }
-            }
-            for (Player player : bots) {
-                if (player.getPlayerColor() == pColor) {
+            for (AbstractPlayer ap : players) {
+                if (ap.getColor() == pColor) {
                     return false;
                 }
             }
             return players.size() < 1;
         }
         if (roomType == RoomType.HumanVsHuman) {
-            for (ServerSomething ss : players) {
-                if (ss.getColor() == pColor) {
-                    return false;
-                }
-            }
-            for (Player player : bots) {
-                if (player.getPlayerColor() == pColor) {
+            for (AbstractPlayer ap : players) {
+                if (ap.getColor() == pColor) {
                     return false;
                 }
             }
@@ -219,19 +174,19 @@ public class Room extends Thread {
         return false;
     }
 
-    public void joinRoom(final ServerSomething ss) {
-        if (roomType == RoomType.BotVsBot) {
-            players.add(ss);
-            bots.add(Property.getBot1(Color.BLACK));
-            bots.add(Property.getBot2(Color.WHITE));
+    public void joinRoom(final AbstractPlayer ap) {
+        if (roomType == RoomType.BotVsBot && ap.getColor() == Color.NEUTRAL) {
+            observers.add(ap);
+            players.add(server.getBot("RandomBot"));
+            players.add(server.getBot("RandomBot"));
             start();
         } else if (roomType == RoomType.HumanVsBot) {
-            players.add(ss);
-            bots.add(new RandomBot(ss.getColor().reverseColor()));
+            players.add(ap);
+            players.add(server.getBot("RandomBot"));
             start();
-        } else {
-            players.add(ss);
-            if (players.size() == 2) {
+        } else if (roomType == RoomType.HumanVsHuman) {
+            players.add(ap);
+            if (players.size() >= 2) {
                 start();
             }
         }

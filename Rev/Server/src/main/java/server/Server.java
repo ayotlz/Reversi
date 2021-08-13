@@ -1,6 +1,8 @@
 package server;
 
-import clients.ServerSomething;
+import clients.BotClient;
+import clients.AbstractPlayer;
+import clients.RealClient;
 import property.Property;
 import rooms.Room;
 import rooms.RoomType;
@@ -14,9 +16,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server {
-    static final int PORT = Property.getPort();
+    private static final int PORT = Property.getPort();
 
-    private final ConcurrentLinkedQueue<ServerSomething> serverList = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<AbstractPlayer> serverList = new ConcurrentLinkedQueue<>();
     private final List<Room> roomList = new ArrayList<>();
     private int countOfMadeRooms = 0;
 
@@ -27,9 +29,9 @@ public class Server {
             while (true) {
                 final Socket socket = serverSocket.accept();
                 try {
-                    final ServerSomething ss = new ServerSomething(this, socket);
-                    serverList.add(ss);
-                    ss.start();
+                    final RealClient rc = new RealClient(this, socket);
+                    serverList.add(rc);
+                    rc.start();
                 } catch (final IOException e) {
                     socket.close();
                 }
@@ -47,7 +49,7 @@ public class Server {
     }
 
     public void closeRoom(final Room room) {
-        for (final ServerSomething player : room.getPlayers()) {
+        for (final AbstractPlayer player : room.getPlayers()) {
             try {
                 player.send(Command.DOWN_CLIENT.getCommand());
             } catch (IOException ignored) {
@@ -58,12 +60,16 @@ public class Server {
         roomList.remove(room);
     }
 
+    public BotClient getBot(String name) {
+        return null;
+    }
+
     public List<Room> getRoomList() {
         return roomList;
     }
 
-    public void removeClient(final ServerSomething ss) {
-        serverList.remove(ss);
+    public void removeClient(final AbstractPlayer cs) {
+        serverList.remove(cs);
     }
 
     public static void main(final String[] args) throws IOException {

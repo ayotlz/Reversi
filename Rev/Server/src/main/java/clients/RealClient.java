@@ -9,26 +9,15 @@ import server.Server;
 import java.io.*;
 import java.net.Socket;
 
-public class ServerSomething extends Thread {
-    private final Server server;
-    private final Socket socket;
-    private final BufferedReader in;
-    private final BufferedWriter out;
-    private String nickName;
-    private Color color;
-
-    public ServerSomething(final Server server, final Socket socket) throws IOException {
-        this.server = server;
-        this.socket = socket;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+public class RealClient extends AbstractPlayer {
+    public RealClient(final Server server, final Socket socket) throws IOException {
+        super(server, socket);
     }
 
     @Override
     public void run() {
         try {
             nickName = in.readLine();
-            System.out.printf("Подключился новый игрок [%s]%n", nickName);
 
             final RoomType roomType = requestRoomType();
             if (roomType == RoomType.BotVsBot) {
@@ -41,10 +30,6 @@ public class ServerSomething extends Thread {
         } catch (final IOException e) {
             this.downService();
         }
-    }
-
-    public String getNickName() {
-        return nickName;
     }
 
     private RoomType requestRoomType() {
@@ -89,31 +74,5 @@ public class ServerSomething extends Thread {
             }
         }
         return server.createRoom(type);
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void send(final String msg) throws IOException {
-        out.write(msg + "\n");
-        out.flush();
-    }
-
-    public String readMessage() throws IOException {
-        return in.readLine();
-    }
-
-    public void downService() {
-        try {
-            if (!socket.isClosed()) {
-                socket.close();
-                in.close();
-                out.close();
-                server.removeClient(this);
-                System.out.printf("%s отключился%n", this.nickName);
-            }
-        } catch (final IOException ignored) {
-        }
     }
 }

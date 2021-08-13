@@ -1,4 +1,4 @@
-package Ayotlz.minimax;
+package Ayotlz.algorithms;
 
 import models.board.Cell;
 

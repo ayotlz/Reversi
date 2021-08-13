@@ -18,7 +18,6 @@ import java.net.Socket;
 import java.util.Random;
 
 public class Client {
-
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private static final String IP = Property.getIP();
     private static final int PORT = Property.getPort();
