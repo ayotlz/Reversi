@@ -12,6 +12,7 @@ import java.util.Properties;
 
 public class Property {
     private static final String propertyPath = "./Server/src/main/resources/config.properties";
+//    private static final String propertyPath = "../src/main/resources/config.properties";
 
     public static int getPort() {
         try {
