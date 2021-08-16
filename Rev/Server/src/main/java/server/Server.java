@@ -78,10 +78,10 @@ public class Server {
         roomList.remove(room);
     }
 
-    public BotClient getBot(final Color color) {
+    public BotClient getBot(final String bot, final Color color) {
         try {
             final BotClient botClient = service.getBot();
-            botClient.setColor(color);
+            botClient.sendBotInfo(bot, color);
             return botClient;
         } catch (IOException e) {
             return null;

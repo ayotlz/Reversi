@@ -13,9 +13,10 @@ import java.awt.*;
 public class GUI extends JFrame {
 
 
-    private static final String WHITE = "./GUI/src/main/resources/White.png";
-    private static final String BLACK = "./GUI/src/main/resources/Black.png";
-    private static final String ICON = "./GUI/src/main/resources/icon.png";
+    private static final String path = "./GUI/src/main/";
+    private static final String WHITE = "resources/White.png";
+    private static final String BLACK = "resources/Black.png";
+    private static final String ICON = "resources/icon.png";
 
     /**
      * Поле GUI, которое хранит двумерный массив кнопок

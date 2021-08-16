@@ -2,6 +2,7 @@ package clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.chip.Color;
+import requests.BotRequest;
 import server.Server;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class BotClient extends AbstractPlayer {
     }
 
     @Override
-    public void run() {
+    public final void run() {
         try {
             nickName = in.readLine();
         } catch (IOException e) {
@@ -22,11 +23,13 @@ public class BotClient extends AbstractPlayer {
         }
     }
 
-    public void setColor(final Color color) throws IOException {
+    public final void sendBotInfo(final String botName, final Color color) throws IOException {
+        super.nickName = botName;
         super.color = color;
+        final BotRequest botRequest = new BotRequest(botName, color);
         final ObjectMapper mapper = new ObjectMapper();
         final StringWriter writer = new StringWriter();
-        mapper.writeValue(writer, color);
+        mapper.writeValue(writer, botRequest);
         send(writer.toString());
     }
 }

@@ -180,12 +180,12 @@ public class Room extends Thread {
     public void joinRoom(final AbstractPlayer ap) {
         if (roomType == RoomType.BotVsBot && ap.getColor() == Color.NEUTRAL) {
             observers.add(ap);
-            players.add(server.getBot(Color.BLACK));
-            players.add(server.getBot(Color.WHITE));
+            players.add(server.getBot(Property.getBot1(), Color.BLACK));
+            players.add(server.getBot(Property.getBot2(), Color.WHITE));
             start();
         } else if (roomType == RoomType.HumanVsBot) {
             players.add(ap);
-            players.add(server.getBot(ap.getColor().reverseColor()));
+            players.add(server.getBot("RandomBot", ap.getColor().reverseColor()));
             start();
         } else if (roomType == RoomType.HumanVsHuman) {
             players.add(ap);

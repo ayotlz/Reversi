@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class Property {
     private static final String propertyPath = "./Server/src/main/resources/config.properties";
-//    private static final String propertyPath = "../src/main/resources/config.properties";
+    private static final String propertyPathReserved = "resources/config.properties";
 
     public static int getPort() {
         try {
@@ -20,8 +20,15 @@ public class Property {
             final Properties property = new Properties();
             property.load(fis);
             return Integer.parseInt(property.getProperty("PORT"));
-        } catch (final IOException | NumberFormatException ignored) {
-            return -1;
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(propertyPathReserved);
+                final Properties property = new Properties();
+                property.load(fis);
+                return Integer.parseInt(property.getProperty("PORT"));
+            } catch (IOException | NumberFormatException ex) {
+                return -1;
+            }
         }
     }
 
@@ -31,41 +38,51 @@ public class Property {
             final Properties property = new Properties();
             property.load(fis);
             return Integer.parseInt(property.getProperty("games"));
-        } catch (final IOException | NumberFormatException ignored) {
-            return -1;
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(propertyPathReserved);
+                final Properties property = new Properties();
+                property.load(fis);
+                return Integer.parseInt(property.getProperty("games"));
+            } catch (IOException | NumberFormatException ex) {
+                return -1;
+            }
         }
     }
 
-    public static Player getBot1(Color color) {
-        String botName;
+    public static String getBot1() {
         try {
             final FileInputStream fis = new FileInputStream(propertyPath);
             final Properties property = new Properties();
             property.load(fis);
-            return getBot(property.getProperty("bot1"), color);
-        } catch (final IOException | NumberFormatException ignored) {
-            return null;
+            return property.getProperty("bot1");
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(propertyPathReserved);
+                final Properties property = new Properties();
+                property.load(fis);
+                return property.getProperty("bot1");
+            } catch (IOException | NumberFormatException ex) {
+                return null;
+            }
         }
     }
 
-    public static Player getBot2(Color color) {
-        String botName;
+    public static String getBot2() {
         try {
             final FileInputStream fis = new FileInputStream(propertyPath);
             final Properties property = new Properties();
             property.load(fis);
-            return getBot(property.getProperty("bot2"), color);
-        } catch (final IOException | NumberFormatException ignored) {
-            return null;
+            return property.getProperty("bot2");
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(propertyPathReserved);
+                final Properties property = new Properties();
+                property.load(fis);
+                return property.getProperty("bot2");
+            } catch (IOException | NumberFormatException ex) {
+                return null;
+            }
         }
-    }
-
-    private static Player getBot(String botName, Color color) {
-        return switch (botName) {
-            case "RandomBot" -> new RandomBot(color);
-            case "AyotlzBot" -> new AyotlzBot(color);
-//            case "" -> new MiniMaxBot(color);
-            default -> null;
-        };
     }
 }

@@ -172,8 +172,9 @@ public class Client {
         public void run() {
             while (true) {
                 String message;
-                if (player.getClass() != RandomBot.class) {
-                    gui = new GUI(player.getPlayerColor());
+                if (player.getClass() == HumanPlayer.class) {
+//                    gui = new GUI(player.getPlayerColor());
+                    gui = null;
                 }
 
                 while (true) {
