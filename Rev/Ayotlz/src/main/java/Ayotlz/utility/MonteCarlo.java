@@ -13,7 +13,7 @@ import java.io.IOException;
 public final class MonteCarlo implements IFunction {
     @Override
     public final double getScore(final Board board, final Color playerColor, final Color turnOrder) {
-        final int games = 50;
+        final int games = 25;
         double ratio = 0;
         for (int i = 0; i < games; i++) {
             final Handler handler = new Handler();

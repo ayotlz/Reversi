@@ -19,21 +19,12 @@ public final class AyotlzBot extends Player {
     }
 
     @Override
-    public final Cell getAnswer(final Board board) throws IOException {
+    public final Cell getAnswer(final Board board) {
         final Handler handler = new Handler();
-        // Минимакс бот бесполезен на первых ходах (скорее даже вреден), поэтому на первых 24 ходах используется
-        // рукописный бот, который играет по стратегии поддавков
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) < 24) {
-            final Player player = new MiniBot(getPlayerColor());
-            return player.getAnswer(board);
-        }
-
-        // С 45 хода уже можно поставить глубину побольше
         if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 45) {
             deep = 2;
         }
 
-        // После 55 хода обычно можно легко построить полное дерево игры, поэтому устанавливаю глубину 10
         if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 55) {
             deep = 10;
         }
