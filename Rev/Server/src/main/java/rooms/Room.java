@@ -145,8 +145,11 @@ public class Room extends Thread {
     }
 
     private void sendMessageToAllPlayers(final String message) throws IOException {
-        for (final AbstractPlayer cp : players) {
-            cp.send(message);
+        for (final AbstractPlayer ap : players) {
+            ap.send(message);
+        }
+        for (AbstractPlayer player : observers) {
+            player.send(message);
         }
     }
 
@@ -177,12 +180,12 @@ public class Room extends Thread {
     public void joinRoom(final AbstractPlayer ap) {
         if (roomType == RoomType.BotVsBot && ap.getColor() == Color.NEUTRAL) {
             observers.add(ap);
-            players.add(server.getBot("RandomBot"));
-            players.add(server.getBot("RandomBot"));
+            players.add(server.getBot(Color.BLACK));
+            players.add(server.getBot(Color.WHITE));
             start();
         } else if (roomType == RoomType.HumanVsBot) {
             players.add(ap);
-            players.add(server.getBot("RandomBot"));
+            players.add(server.getBot(ap.getColor().reverseColor()));
             start();
         } else if (roomType == RoomType.HumanVsHuman) {
             players.add(ap);
