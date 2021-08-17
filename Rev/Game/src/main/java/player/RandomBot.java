@@ -12,7 +12,7 @@ import java.util.Random;
 /**
  * Класс RandomBot - класс случайного игрока расширяюшего Player
  */
-public class RandomBot extends Player {
+public final class RandomBot extends Player {
     public RandomBot(final Color color) {
         super(color);
         setName("RandomBot");
@@ -27,7 +27,6 @@ public class RandomBot extends Player {
     @Override
     public final Cell getAnswer(final Board board) {
         final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(getPlayerColor());
-
         final Random random = new Random();
         final List<Cell> keys = new ArrayList<>(scoreMap.keySet());
         return keys.get(random.nextInt(keys.size()));

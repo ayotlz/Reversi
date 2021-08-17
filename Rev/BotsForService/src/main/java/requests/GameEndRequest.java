@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Класс GameEndRequest - класс запроса для сереализации/десереализации результата игры
  */
-public class GameEndRequest {
+public final class GameEndRequest {
 
     /**
      * Поле запроса, которое хранит количество чёрных фишек
@@ -29,11 +29,11 @@ public class GameEndRequest {
         this.scoreWhite = scoreWhite;
     }
 
-    public int getScoreBlack() {
+    public final int getScoreBlack() {
         return scoreBlack;
     }
 
-    public int getScoreWhite() {
+    public final int getScoreWhite() {
         return scoreWhite;
     }
 }

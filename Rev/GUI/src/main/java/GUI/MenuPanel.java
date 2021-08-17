@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Класс MenuPanel - класс для создания дополнительной панели, расширяет JPanel
  */
-public class MenuPanel extends JPanel {
+public final class MenuPanel extends JPanel {
 
     /**
      * Конкструктор панели с итоговым счетом

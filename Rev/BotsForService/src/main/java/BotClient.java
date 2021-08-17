@@ -13,7 +13,7 @@ import requests.PlayerRequest;
 import java.io.*;
 import java.net.Socket;
 
-public class BotClient {
+public final class BotClient {
     private static final String IP = Property.getIP();
     private static final int PORT = Property.getPort();
     private final String ip;
@@ -82,7 +82,7 @@ public class BotClient {
 
                 try {
                     message = in.readLine();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     downService();
                     break;
                 }
@@ -95,7 +95,7 @@ public class BotClient {
                     final BotRequest botRequest = parseBotRequest(message);
                     player = getBot(botRequest.getNameBot(), botRequest.getColor());
                     continue;
-                } catch (IOException ignored) {
+                } catch (final IOException ignored) {
                 }
 
                 try {
@@ -103,7 +103,7 @@ public class BotClient {
                     final Board board = request.getBoard();
                     final Color turnOrder = request.getColor();
                     sendAnswer(board, turnOrder);
-                } catch (IOException ignored) {
+                } catch (final IOException ignored) {
                 }
             }
         }

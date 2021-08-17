@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Класс Board - класс доски
  */
-public class Board {
+public final class Board {
     /**
      * Поле доски, которое хранит двумерный массив фишек
      */

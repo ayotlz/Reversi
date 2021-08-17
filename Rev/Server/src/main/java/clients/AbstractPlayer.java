@@ -21,24 +21,24 @@ public abstract class AbstractPlayer extends Thread {
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
-    public String getNickName() {
+    public final String getNickName() {
         return nickName;
     }
 
-    public Color getColor() {
+    public final Color getColor() {
         return color;
     }
 
-    public String readMessage() throws IOException {
+    public final String readMessage() throws IOException {
         return in.readLine();
     }
 
-    public void send(final String msg) throws IOException {
+    public final void send(final String msg) throws IOException {
         out.write(msg + "\n");
         out.flush();
     }
 
-    public void downService() {
+    public final void downService() {
         try {
             if (!socket.isClosed()) {
                 socket.close();

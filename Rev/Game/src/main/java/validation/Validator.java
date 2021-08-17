@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Класс Validator - класс валидации
  */
-public class Validator {
+public final class Validator {
 
     /**
      * Поле логгера

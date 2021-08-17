@@ -17,7 +17,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Random;
 
-public class Client {
+public final class Client {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
     private static final String IP = Property.getIP();
     private static final int PORT = Property.getPort();
@@ -93,7 +93,7 @@ public class Client {
                     player = new RandomBot(Color.NEUTRAL);
                 }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             downService();
         }
     }
@@ -133,7 +133,7 @@ public class Client {
                     System.out.println(color.getString());
                     return color;
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 downService();
             }
         }
@@ -173,7 +173,6 @@ public class Client {
             while (true) {
                 String message;
                 if (player.getClass() == HumanPlayer.class) {
-//                    gui = new GUI(player.getPlayerColor());
                     gui = null;
                 }
 
@@ -238,7 +237,7 @@ public class Client {
             return mapper.readValue(reader, PlayerRequest.class);
         }
 
-        private void sendAnswer(Board board, Color turnOrder) throws IOException {
+        private void sendAnswer(final Board board, final Color turnOrder) throws IOException {
             if (turnOrder == player.getPlayerColor()) {
                 final ObjectMapper mapper = new ObjectMapper();
                 final StringWriter writer = new StringWriter();

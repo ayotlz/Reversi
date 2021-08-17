@@ -10,7 +10,7 @@ import java.util.Objects;
  * Класс Chip - класс фишки
  */
 @JsonPropertyOrder
-public class Chip {
+public final class Chip {
 
     /**
      * поле цвета фишки

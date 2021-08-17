@@ -9,7 +9,7 @@ public enum Command {
         this.commandName = commandName;
     }
 
-    public String getCommand() {
+    public final String getCommand() {
         return commandName;
     }
 

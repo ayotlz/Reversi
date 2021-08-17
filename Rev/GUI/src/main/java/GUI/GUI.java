@@ -10,10 +10,9 @@ import java.awt.*;
 /**
  * Класс GUI - класс графического интерфейса пользователя, расширяет JFrame
  */
-public class GUI extends JFrame {
+public final class GUI extends JFrame {
 
 
-    private static final String path = "./GUI/src/main/";
     private static final String WHITE = "resources/White.png";
     private static final String BLACK = "resources/Black.png";
     private static final String ICON = "resources/icon.png";

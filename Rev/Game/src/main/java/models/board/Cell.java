@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Класс Cell - класс клетки
  */
-public class Cell {
+public final class Cell {
 
     /**
      * переменная координаты x

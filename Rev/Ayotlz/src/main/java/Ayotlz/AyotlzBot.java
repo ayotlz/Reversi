@@ -8,8 +8,6 @@ import models.board.Cell;
 import models.chip.Color;
 import player.Player;
 
-import java.io.IOException;
-
 public final class AyotlzBot extends Player {
     private int deep = 1;
 

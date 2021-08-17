@@ -35,7 +35,8 @@ public final class ExpectiMax implements IAlgorithms {
             } catch (final ReversiException ignored) {
             }
             final ForkJoinPool pool = new ForkJoinPool(2);
-            final double win = pool.invoke(new GameTree(copy, playerColor, playerColor.reverseColor(), deep - 1));
+            final double win = pool.invoke(new GameTree(copy, playerColor,
+                    playerColor.reverseColor(), deep - 1));
             awList.add(new AnswerAndWin(entry.getKey(), win));
         }
         return getGreedyDecision(awList, aw -> aw.win).answer;
@@ -75,7 +76,8 @@ public final class ExpectiMax implements IAlgorithms {
 
             if (!handler.haveIStep(board, turnOrder)) {
                 final Board copy = new Board(board);
-                final GameTree subTask = new GameTree(copy, playerColor, turnOrder.reverseColor(), deepOfTree - 1);
+                final GameTree subTask = new GameTree(copy, playerColor,
+                        turnOrder.reverseColor(), deepOfTree - 1);
                 final double win = subTask.fork().join();
                 awList.add(new AnswerAndWin(null, win));
             }
@@ -85,7 +87,8 @@ public final class ExpectiMax implements IAlgorithms {
                     handler.makeStep(copy, entry.getKey(), turnOrder);
                 } catch (final ReversiException ignored) {
                 }
-                final GameTree subTask = new GameTree(copy, playerColor, turnOrder.reverseColor(), deepOfTree - 1);
+                final GameTree subTask = new GameTree(copy, playerColor,
+                        turnOrder.reverseColor(), deepOfTree - 1);
                 final double win = subTask.fork().join();
                 awList.add(new AnswerAndWin(entry.getKey(), win));
                 if (win >= 0.9 || win <= -0.9) {
@@ -111,7 +114,8 @@ public final class ExpectiMax implements IAlgorithms {
         }
     }
 
-    private AnswerAndWin getGreedyDecision(final List<AnswerAndWin> awList, final ToDoubleFunction<AnswerAndWin> winCalculator) {
+    private AnswerAndWin getGreedyDecision(final List<AnswerAndWin> awList,
+                                           final ToDoubleFunction<AnswerAndWin> winCalculator) {
         AnswerAndWin bestAW = awList.get(0);
         double sumOfWin = awList.get(0).win;
 

@@ -11,7 +11,7 @@ import java.io.*;
 /**
  * Класс HumanPlayer - класс игрока расширяюшего Player
  */
-public class HumanPlayer extends Player {
+public final class HumanPlayer extends Player {
     public HumanPlayer(final Color color) {
         super(color);
         setName("HumanPlayer");

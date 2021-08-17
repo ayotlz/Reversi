@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.Socket;
 
-public class BotClient extends AbstractPlayer {
-    public BotClient(Server server, Socket socket) throws IOException {
+public final class BotClient extends AbstractPlayer {
+    public BotClient(final Server server, final Socket socket) throws IOException {
         super(server, socket);
     }
 
@@ -18,7 +18,7 @@ public class BotClient extends AbstractPlayer {
     public final void run() {
         try {
             nickName = in.readLine();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             this.downService();
         }
     }

@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room extends Thread {
+public final class Room extends Thread {
     private final Server server;
     private final RoomType roomType;
     private final int roomID;
@@ -37,7 +37,7 @@ public class Room extends Thread {
     }
 
     @Override
-    public void run() {
+    public final void run() {
         System.out.printf("В комнате %d начались игры%n", roomID);
         for (int i = 0; i < countOfGames; i++) {
             board = new Board();
@@ -51,15 +51,15 @@ public class Room extends Thread {
         server.closeRoom(this);
     }
 
-    public List<AbstractPlayer> getPlayers() {
+    public final List<AbstractPlayer> getPlayers() {
         return players;
     }
 
-    public List<AbstractPlayer> getObservers() {
+    public final List<AbstractPlayer> getObservers() {
         return observers;
     }
 
-    public int getID() {
+    public final int getID() {
         return roomID;
     }
 
@@ -88,7 +88,7 @@ public class Room extends Thread {
                     } catch (final ReversiException e) {
                         try {
                             sendMessageToAllPlayers("Некорректный ход\n");
-                        } catch (IOException ignored) {
+                        } catch (final IOException ignored) {
                         }
                     } catch (final IOException ignored) {
                     }
@@ -108,10 +108,8 @@ public class Room extends Thread {
         } else if (scoreBlack < scoreWhite) {
             if (color == Color.WHITE) {
                 whiteWins = 1;
-
             }
         }
-
         csvWriter.writeStep(name, Integer.toString(whiteWins),
                 Integer.toString(blackWins), Integer.toString(whiteWins + blackWins), enemyName);
     }
@@ -159,18 +157,18 @@ public class Room extends Thread {
         for (final AbstractPlayer ap : players) {
             ap.send(message);
         }
-        for (AbstractPlayer player : observers) {
+        for (final AbstractPlayer player : observers) {
             player.send(message);
         }
     }
 
-    public RoomType getRoomType() {
+    public final RoomType getRoomType() {
         return roomType;
     }
 
-    public boolean isRoomHasPlace(Color pColor) {
+    public final boolean isRoomHasPlace(final Color pColor) {
         if (roomType == RoomType.HumanVsBot) {
-            for (AbstractPlayer ap : players) {
+            for (final AbstractPlayer ap : players) {
                 if (ap.getColor() == pColor) {
                     return false;
                 }
@@ -178,7 +176,7 @@ public class Room extends Thread {
             return players.size() < 1;
         }
         if (roomType == RoomType.HumanVsHuman) {
-            for (AbstractPlayer ap : players) {
+            for (final AbstractPlayer ap : players) {
                 if (ap.getColor() == pColor) {
                     return false;
                 }
@@ -188,7 +186,7 @@ public class Room extends Thread {
         return false;
     }
 
-    public void joinRoom(final AbstractPlayer ap) {
+    public final void joinRoom(final AbstractPlayer ap) {
         if (roomType == RoomType.BotVsBot && ap.getColor() == Color.NEUTRAL) {
             observers.add(ap);
             players.add(server.getBot(Property.getBot1(), Color.BLACK));

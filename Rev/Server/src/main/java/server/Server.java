@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Server {
+public final class Server {
     private static final int PORT = Property.getPort();
 
     private final ConcurrentLinkedQueue<AbstractPlayer> serverList = new ConcurrentLinkedQueue<>();
@@ -46,14 +46,14 @@ public class Server {
         }
     }
 
-    public Room createRoom(final RoomType type) {
+    public final Room createRoom(final RoomType type) {
         final Room room = new Room(this, type, ++countOfMadeRooms);
         System.out.printf("Создана комната %d%n", room.getID());
         roomList.add(room);
         return room;
     }
 
-    public void closeRoom(final Room room) {
+    public final void closeRoom(final Room room) {
         for (final AbstractPlayer player : room.getPlayers()) {
             try {
                 player.send(Command.DOWN_CLIENT.getCommand());
@@ -76,12 +76,11 @@ public class Server {
                 service.addBot((BotClient) player);
             }
         }
-
         System.out.printf("Закрыта комната %d%n", room.getID());
         roomList.remove(room);
     }
 
-    public BotClient getBot(final String bot, final Color color) {
+    public final BotClient getBot(final String bot, final Color color) {
         try {
             final BotClient botClient = service.getBot();
             botClient.sendBotInfo(bot, color);
@@ -91,11 +90,11 @@ public class Server {
         }
     }
 
-    public List<Room> getRoomList() {
+    public final List<Room> getRoomList() {
         return roomList;
     }
 
-    public void removeClient(final AbstractPlayer ap) {
+    public final void removeClient(final AbstractPlayer ap) {
         serverList.remove(ap);
     }
 

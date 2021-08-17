@@ -8,7 +8,7 @@ import models.chip.Color;
 /**
  * Класс PlayerRequest - класс запроса для сереализации/десереализации хода игрока
  */
-public class PlayerRequest {
+public final class PlayerRequest {
 
     /**
      * Поле запроса, которое хранит количество доску

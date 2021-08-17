@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Класс OneSimulationBot - класс игрока расширяюшего Player
  */
-public class OneSimulationBot extends Player {
+public final class OneSimulationBot extends Player {
 
     private IFunction utilityFunction = new SimpleScoreFunction();
 

@@ -2,13 +2,12 @@ package requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import models.board.Board;
 import models.chip.Color;
 
 /**
  * Класс PlayerRequest - класс запроса для сереализации/десереализации хода игрока
  */
-public class BotRequest {
+public final class BotRequest {
 
     /**
      * Поле запроса, которое хранит количество доску

@@ -10,15 +10,15 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Service {
+public final class Service {
     final Map<BotClient, Integer> bots = new HashMap<>();
     final int countOfBots = Property.getCountOfBots();
 
-    public void addBot(final BotClient botClient) {
+    public final void addBot(final BotClient botClient) {
         bots.put(botClient, 0);
     }
 
-    public void awaitingBots(final Server server, final ServerSocket serverSocket) throws IOException {
+    public final void awaitingBots(final Server server, final ServerSocket serverSocket) throws IOException {
         for (int i = 0; i < countOfBots; i++) {
             final Socket socket = serverSocket.accept();
             try {
@@ -31,9 +31,9 @@ public class Service {
         }
     }
 
-    public BotClient getBot() {
+    public final BotClient getBot() {
         while (true) {
-            for (Map.Entry<BotClient, Integer> entry : bots.entrySet()) {
+            for (final Map.Entry<BotClient, Integer> entry : bots.entrySet()) {
                 if (entry.getValue() == 0) {
                     bots.put(entry.getKey(), 1);
                     return entry.getKey();

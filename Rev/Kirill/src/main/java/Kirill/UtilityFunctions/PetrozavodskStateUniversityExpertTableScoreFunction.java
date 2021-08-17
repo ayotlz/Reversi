@@ -3,7 +3,7 @@ package Kirill.UtilityFunctions;
 import models.board.Board;
 import models.chip.Color;
 
-public class PetrozavodskStateUniversityExpertTableScoreFunction implements IFunction {
+public final class PetrozavodskStateUniversityExpertTableScoreFunction implements IFunction {
     @Override
     public final double getScore(final Board board, final Color color) {
         double score = 0;

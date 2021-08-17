@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class ParseCSV {
+public final class ParseCSV {
     private PrintWriter pw;
 
     public ParseCSV() {
@@ -32,7 +32,7 @@ public class ParseCSV {
         pw.println(enemyBotClass);
     }
 
-    private Map<String, String[]> getParseMap(List<String[]> allRows) {
+    private Map<String, String[]> getParseMap(final List<String[]> allRows) {
         Map<String, String[]> mapCSV = new HashMap<>();
         for (final String[] allRow : allRows) {
             if (!"".equals(allRow[0])) {
@@ -62,9 +62,9 @@ public class ParseCSV {
         if (allRows.isEmpty()) {
             return;
         }
-        Map<String, String[]> mapCSV = parseCSV.getParseMap(allRows);
+        final Map<String, String[]> mapCSV = parseCSV.getParseMap(allRows);
 
-        Set<String> keySet = mapCSV.keySet();
+        final Set<String> keySet = mapCSV.keySet();
         ArrayList<String> keyList = new ArrayList<>();
         for (int i = 0; i < keySet.size(); i++) {
             keyList.add(keySet.toArray()[i].toString());

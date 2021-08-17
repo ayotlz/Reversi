@@ -14,7 +14,7 @@ import java.util.Map;
  * Класс ReflectionBot - класс игрока расширяюшего Player, работающего по принципу на каждом ходу
  * захватывать наибольшее количество дисков
  */
-public class ReflectionBot extends Player {
+public final class ReflectionBot extends Player {
 
     public ReflectionBot(final Color color) {
         super(color);

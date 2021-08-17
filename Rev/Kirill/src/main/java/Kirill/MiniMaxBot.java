@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
-public class MiniMaxBot extends Player {
+public final class MiniMaxBot extends Player {
 
     private IFunction utilityFunction = new SimpleScoreFunction();
     private final Handler handler = new Handler();

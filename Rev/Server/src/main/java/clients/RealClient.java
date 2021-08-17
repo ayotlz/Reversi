@@ -9,13 +9,13 @@ import server.Server;
 import java.io.*;
 import java.net.Socket;
 
-public class RealClient extends AbstractPlayer {
+public final class RealClient extends AbstractPlayer {
     public RealClient(final Server server, final Socket socket) throws IOException {
         super(server, socket);
     }
 
     @Override
-    public void run() {
+    public final void run() {
         try {
             nickName = in.readLine();
 
@@ -45,7 +45,7 @@ public class RealClient extends AbstractPlayer {
                 };
             }
             return roomType;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             downService();
             return null;
         }
@@ -61,7 +61,7 @@ public class RealClient extends AbstractPlayer {
                 pColor = mapper.readValue(reader, Color.class);
             }
             return pColor;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             downService();
             return null;
         }

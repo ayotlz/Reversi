@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Класс Handler отвечает за работу с доской и контролирует соблюдение правил
  */
-public class Handler {
+public final class Handler {
 
     /**
      * Поле логгера

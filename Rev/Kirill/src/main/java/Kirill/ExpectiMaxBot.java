@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
-public class ExpectiMaxBot extends Player {
+public final class ExpectiMaxBot extends Player {
 
     private IFunction utilityFunction = new SimpleScoreFunction();
     private final Handler handler = new Handler();

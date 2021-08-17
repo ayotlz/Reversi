@@ -44,7 +44,7 @@ public abstract class Player {
      *
      * @return возвращается имя игрока
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -54,7 +54,7 @@ public abstract class Player {
      *
      * @param name - имя игрока
      */
-    public void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
@@ -64,5 +64,5 @@ public abstract class Player {
      * @param board - доска
      * @return возвращается ответ от игрока
      */
-    public abstract Cell getAnswer(final Board board) throws IOException;
+    public  abstract Cell getAnswer(final Board board) throws IOException;
 }

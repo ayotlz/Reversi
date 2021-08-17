@@ -2,11 +2,11 @@ package CSV;
 
 import java.io.*;
 
-public class WriteCSV {
+public final class WriteCSV {
     private PrintWriter pw;
 
     public WriteCSV() {
-        String file = "log.csv";
+        final String file = "log.csv";
         try {
             pw = new PrintWriter(new FileWriter(file, true), true);
             pw.println();
@@ -14,7 +14,7 @@ public class WriteCSV {
         }
     }
 
-    public void writeStep(final String name, final String scoreWhiteWins,
+    public final void writeStep(final String name, final String scoreWhiteWins,
                           final String scoreBlackWins, final String wins, final String enemyName) {
         pw.print(name);
         pw.print(";");

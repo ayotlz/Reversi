@@ -2,7 +2,6 @@ package Ayotlz;
 
 import Ayotlz.algorithms.ExpectiMax;
 import Ayotlz.utility.MonteCarlo;
-import Ayotlz.utility.SimpleUtilityFunction;
 import models.board.Board;
 import models.board.Cell;
 import models.chip.Color;
