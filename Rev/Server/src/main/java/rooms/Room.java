@@ -55,6 +55,10 @@ public class Room extends Thread {
         return players;
     }
 
+    public List<AbstractPlayer> getObservers() {
+        return observers;
+    }
+
     public int getID() {
         return roomID;
     }

@@ -57,7 +57,7 @@ public class Server {
         for (final AbstractPlayer player : room.getPlayers()) {
             try {
                 player.send(Command.DOWN_CLIENT.getCommand());
-            } catch (IOException ignored) {
+            } catch (final IOException ignored) {
             }
             if (player.getClass() != BotClient.class) {
                 player.downService();
@@ -65,6 +65,18 @@ public class Server {
                 service.addBot((BotClient) player);
             }
         }
+        for (final AbstractPlayer player : room.getObservers()) {
+            try {
+                player.send(Command.DOWN_CLIENT.getCommand());
+            } catch (final IOException ignored) {
+            }
+            if (player.getClass() != BotClient.class) {
+                player.downService();
+            } else {
+                service.addBot((BotClient) player);
+            }
+        }
+
         System.out.printf("Закрыта комната %d%n", room.getID());
         roomList.remove(room);
     }
