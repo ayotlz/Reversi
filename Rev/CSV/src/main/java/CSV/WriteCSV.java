@@ -10,18 +10,20 @@ public class WriteCSV {
         try {
             pw = new PrintWriter(new FileWriter(file, true), true);
             pw.println();
-        } catch (IOException ignored) {
+        } catch (final IOException ignored) {
         }
     }
 
     public void writeStep(final String name, final String scoreWhiteWins,
-                          final String scoreBlackWins, final String wins) {
+                          final String scoreBlackWins, final String wins, final String enemyName) {
         pw.print(name);
         pw.print(";");
         pw.print(scoreWhiteWins);
         pw.print(";");
         pw.print(scoreBlackWins);
         pw.print(";");
-        pw.println(wins);
+        pw.print(wins);
+        pw.print(";");
+        pw.println(enemyName);
     }
 }

@@ -97,7 +97,8 @@ public class Room extends Thread {
         }
     }
 
-    private void formatCsv(final String name, final Color color, final int scoreBlack, final int scoreWhite) {
+    private void formatCsv(final String name, final Color color, final int scoreBlack,
+                           final int scoreWhite, final String enemyName) {
         int whiteWins = 0;
         int blackWins = 0;
         if (scoreBlack > scoreWhite) {
@@ -112,7 +113,7 @@ public class Room extends Thread {
         }
 
         csvWriter.writeStep(name, Integer.toString(whiteWins),
-                Integer.toString(blackWins), Integer.toString(whiteWins + blackWins));
+                Integer.toString(blackWins), Integer.toString(whiteWins + blackWins), enemyName);
     }
 
     private void gameEnd() {
@@ -139,11 +140,17 @@ public class Room extends Thread {
             }
             sendMessageToAllPlayers("Игра закончилась");
 
-            for (final AbstractPlayer ap : players) {
-                if (ap.getColor() != Color.NEUTRAL) {
-                    formatCsv(ap.getNickName(), ap.getColor(), scoreBlack, scoreWhite);
-                }
+            final String name = players.get(0).getNickName();
+            final String enemyName = players.get(1).getNickName();
+
+            if (players.get(0).getColor() != Color.NEUTRAL) {
+                formatCsv(name, players.get(0).getColor(), scoreBlack, scoreWhite, enemyName);
             }
+
+            if (players.get(1).getColor() != Color.NEUTRAL) {
+                formatCsv(enemyName, players.get(1).getColor(), scoreBlack, scoreWhite, name);
+            }
+
         } catch (final IOException ignored) {
         }
     }

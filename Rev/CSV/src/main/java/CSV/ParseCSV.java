@@ -12,36 +12,43 @@ public class ParseCSV {
     private PrintWriter pw;
 
     public ParseCSV() {
-        String file = "parsedLogs.csv";
+        final String file = "parsedLogs.csv";
         try {
             pw = new PrintWriter(new FileWriter(file, false), true);
-        } catch (IOException ignored) {
+        } catch (final IOException ignored) {
         }
     }
 
     public void writeStep(final String botClass, final String scoreWhiteWins,
-                          final String scoreBlackWins, final String wins) {
+                          final String scoreBlackWins, final String wins, final String enemyBotClass) {
         pw.print(botClass);
         pw.print(";");
         pw.print(scoreWhiteWins);
         pw.print(";");
         pw.print(scoreBlackWins);
         pw.print(";");
-        pw.println(wins);
+        pw.print(wins);
+        pw.print(";");
+        pw.println(enemyBotClass);
     }
 
-    private Map<String, Integer[]> getParseMap(List<String[]> allRows) {
-        Map<String, Integer[]> mapCSV = new HashMap<>();
+    private Map<String, String[]> getParseMap(List<String[]> allRows) {
+        Map<String, String[]> mapCSV = new HashMap<>();
         for (final String[] allRow : allRows) {
             if (!"".equals(allRow[0])) {
-                if (mapCSV.containsKey(allRow[0])) {
-                    mapCSV.put(allRow[0], new Integer[]{
-                            mapCSV.get(allRow[0])[0] + Integer.parseInt(allRow[1]),
-                            mapCSV.get(allRow[0])[1] + Integer.parseInt(allRow[2]),
-                            mapCSV.get(allRow[0])[2] + Integer.parseInt(allRow[3])});
+                if (mapCSV.containsKey(allRow[0] + allRow[4])) {
+                    mapCSV.put(allRow[0] + allRow[4], new String[]{
+                            allRow[0],
+                            Integer.toString(Integer.parseInt(mapCSV.get(allRow[0] + allRow[4])[1])
+                                    + Integer.parseInt(allRow[1])),
+                            Integer.toString(Integer.parseInt(mapCSV.get(allRow[0] + allRow[4])[2])
+                                    + Integer.parseInt(allRow[2])),
+                            Integer.toString(Integer.parseInt(mapCSV.get(allRow[0] + allRow[4])[3])
+                                    + Integer.parseInt(allRow[3])),
+                            allRow[4]});
                 } else {
-                    mapCSV.put(allRow[0], new Integer[]{Integer.parseInt(allRow[1]),
-                            Integer.parseInt(allRow[2]), Integer.parseInt(allRow[3])});
+                    mapCSV.put(allRow[0] + allRow[4], new String[]{allRow[0], allRow[1],
+                            allRow[2], allRow[3], allRow[4]});
                 }
             }
         }
@@ -55,7 +62,7 @@ public class ParseCSV {
         if (allRows.isEmpty()) {
             return;
         }
-        Map<String, Integer[]> mapCSV = parseCSV.getParseMap(allRows);
+        Map<String, String[]> mapCSV = parseCSV.getParseMap(allRows);
 
         Set<String> keySet = mapCSV.keySet();
         ArrayList<String> keyList = new ArrayList<>();
@@ -64,8 +71,9 @@ public class ParseCSV {
         }
 
         for (int i = 0; i < mapCSV.size(); i++) {
-            parseCSV.writeStep(keyList.get(i), mapCSV.get(keyList.get(i))[0].toString(),
-                    mapCSV.get(keyList.get(i))[1].toString(), mapCSV.get(keyList.get(i))[2].toString());
+            parseCSV.writeStep(mapCSV.get(keyList.get(i))[0],
+                    mapCSV.get(keyList.get(i))[1], mapCSV.get(keyList.get(i))[2],
+                    mapCSV.get(keyList.get(i))[3], mapCSV.get(keyList.get(i))[4]);
         }
     }
 }
