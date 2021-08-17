@@ -29,16 +29,7 @@ public class Server {
     private void startServer() throws IOException {
         System.out.printf("Сервер запущен [port: %d]%n", PORT);
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
-            for (int i = 0; i < 2; i++) {
-                final Socket socket = serverSocket.accept();
-                try {
-                    final BotClient bc = new BotClient(this, socket);
-                    service.addBot(bc);
-                    bc.start();
-                } catch (final IOException e) {
-                    socket.close();
-                }
-            }
+            service.awaitingBots(this, serverSocket);
 
             while (true) {
                 final Socket socket = serverSocket.accept();

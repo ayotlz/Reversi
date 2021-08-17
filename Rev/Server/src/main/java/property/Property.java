@@ -1,11 +1,5 @@
 package property;
 
-import Ayotlz.AyotlzBot;
-import Kirill.MiniMaxBot;
-import models.chip.Color;
-import player.Player;
-import player.RandomBot;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -26,6 +20,24 @@ public class Property {
                 final Properties property = new Properties();
                 property.load(fis);
                 return Integer.parseInt(property.getProperty("PORT"));
+            } catch (IOException | NumberFormatException ex) {
+                return -1;
+            }
+        }
+    }
+
+    public static int getCountOfBots() {
+        try {
+            final FileInputStream fis = new FileInputStream(propertyPath);
+            final Properties property = new Properties();
+            property.load(fis);
+            return Integer.parseInt(property.getProperty("bots"));
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(propertyPathReserved);
+                final Properties property = new Properties();
+                property.load(fis);
+                return Integer.parseInt(property.getProperty("bots"));
             } catch (IOException | NumberFormatException ex) {
                 return -1;
             }
