@@ -1,3 +1,5 @@
+import Ayotlz.AyotlzBot;
+import Kirill.MiniMaxBot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.board.Board;
 import models.board.Cell;
@@ -5,6 +7,7 @@ import models.chip.Color;
 import player.Player;
 import player.RandomBot;
 import property.Property;
+import requests.BotRequest;
 import requests.PlayerRequest;
 
 import java.io.*;
@@ -89,8 +92,8 @@ public class BotClient {
                 }
 
                 try {
-                    final Color color = parseColor(message);
-                    player = new RandomBot(color);
+                    final BotRequest botRequest = parseBotRequest(message);
+                    player = getBot(botRequest.getNameBot(), botRequest.getColor());
                     continue;
                 } catch (IOException ignored) {
                 }
@@ -106,10 +109,16 @@ public class BotClient {
         }
     }
 
-    private Color parseColor(final String message) throws IOException {
+    private BotRequest parseBotRequest(final String message) throws IOException {
         final StringReader reader = new StringReader(message);
         final ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(reader, Color.class);
+        return mapper.readValue(reader, BotRequest.class);
+    }
+
+    private PlayerRequest parsePlayerRequest(final String message) throws IOException {
+        final StringReader reader = new StringReader(message);
+        final ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(reader, PlayerRequest.class);
     }
 
     private void sendAnswer(final Board board, final Color turnOrder) throws IOException {
@@ -122,10 +131,13 @@ public class BotClient {
         }
     }
 
-    private PlayerRequest parsePlayerRequest(final String message) throws IOException {
-        final StringReader reader = new StringReader(message);
-        final ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(reader, PlayerRequest.class);
+    private Player getBot(final String nameBot, final Color color) {
+        return switch (nameBot) {
+            case "RandomBot" -> new RandomBot(color);
+            case "AyotlzBot" -> new AyotlzBot(color);
+            case "MiniMaxBot" -> new MiniMaxBot(color);
+            default -> null;
+        };
     }
 
     public static void main(final String[] args) {
