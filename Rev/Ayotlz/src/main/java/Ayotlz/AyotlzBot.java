@@ -7,11 +7,10 @@ import models.board.Board;
 import models.board.Cell;
 import models.chip.Color;
 import player.Player;
-
-import java.io.IOException;
+import property.Property;
 
 public final class AyotlzBot extends Player {
-    private int deep = 1;
+    private int deep = Property.getDeep();
 
     public AyotlzBot(final Color color) {
         super(color);
@@ -21,12 +20,12 @@ public final class AyotlzBot extends Player {
     @Override
     public final Cell getAnswer(final Board board) {
         final Handler handler = new Handler();
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 45) {
-            deep = 2;
+        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > Property.getStartSecondDeep()) {
+            deep = Property.getSecondDeep();
         }
 
-        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 55) {
-            deep = 10;
+        if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > Property.getStartFullTree()) {
+            deep = 64;
         }
 
         final MiniMax mm = new MiniMax(new MonteCarlo(), deep);

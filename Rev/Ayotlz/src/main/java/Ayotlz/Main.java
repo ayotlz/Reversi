@@ -51,7 +51,8 @@ public final class Main {
     public static int game() {
         final Handler handler = new Handler();
         final Board board = new Board();
-        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
+//        final Player[] players = new Player[]{new AyotlzBot(Color.BLACK), new RandomBot(Color.WHITE)};
+        final Player[] players = new Player[]{new RandomBot(Color.BLACK), new AyotlzBot(Color.WHITE)};
         int order = 4;
 
         final PrintWriter pw;
