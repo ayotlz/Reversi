@@ -1,7 +1,8 @@
-package Kirill;
+package Kirill.bots;
 
-import Kirill.UtilityFunctions.IFunction;
-import Kirill.UtilityFunctions.SimpleScoreFunction;
+import Kirill.utilityFunctions.IFunction;
+import Kirill.utilityFunctions.SimpleScoreFunction;
+import Kirill.property.Property;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -18,17 +19,24 @@ public final class ExpectiMaxBot extends Player {
 
     private IFunction utilityFunction = new SimpleScoreFunction();
     private final Handler handler = new Handler();
-    private static final int MAXRECLEVEL = 4;
+    private int maxRecLevel = Property.getMaxRecLevel();
 
     public ExpectiMaxBot(final Color color) {
         super(color);
-        setName("KirillExpectiMaxBot");
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
     }
 
     public ExpectiMaxBot(final Color color, final IFunction function) {
         super(color);
-        setName("KirillExpectiMaxBot "+function.toString());
         this.utilityFunction = function;
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
+    }
+
+    public ExpectiMaxBot(final Color color, final IFunction function, final int maxRecLevel) {
+        super(color);
+        this.maxRecLevel = maxRecLevel;
+        this.utilityFunction = function;
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
     }
 
     private static final class AnswerAndWin {
@@ -81,7 +89,7 @@ public final class ExpectiMaxBot extends Player {
             return computeWin(board);
         }
 
-        if (recLevel == MAXRECLEVEL) {
+        if (recLevel == maxRecLevel) {
             return getWinScore(board);
         }
 

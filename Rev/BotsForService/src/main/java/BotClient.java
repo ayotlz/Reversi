@@ -1,5 +1,5 @@
 import Ayotlz.AyotlzBot;
-import Kirill.MiniMaxBot;
+import Kirill.bots.MiniMaxBot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.board.Board;
 import models.board.Cell;

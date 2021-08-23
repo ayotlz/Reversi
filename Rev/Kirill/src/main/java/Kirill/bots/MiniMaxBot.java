@@ -1,7 +1,8 @@
-package Kirill;
+package Kirill.bots;
 
-import Kirill.UtilityFunctions.IFunction;
-import Kirill.UtilityFunctions.SimpleScoreFunction;
+import Kirill.property.Property;
+import Kirill.utilityFunctions.IFunction;
+import Kirill.utilityFunctions.SimpleScoreFunction;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -20,17 +21,24 @@ public final class MiniMaxBot extends Player {
     private final Handler handler = new Handler();
     private double alpha = Double.MIN_VALUE;
     private double beta = Double.MAX_VALUE;
-    private static final int MAXRECLEVEL = 5;
+    private int maxRecLevel = Property.getMaxRecLevel();
 
     public MiniMaxBot(final Color color) {
         super(color);
-        setName("KirillMiniMaxBot");
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
     }
 
     public MiniMaxBot(final Color color, final IFunction function) {
         super(color);
-        setName("KirillMiniMaxBot "+function.toString());
         this.utilityFunction = function;
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
+    }
+
+    public MiniMaxBot(final Color color, final IFunction function, final int maxRecLevel) {
+        super(color);
+        this.utilityFunction = function;
+        this.maxRecLevel = maxRecLevel;
+        setName("KirillMiniMaxBot " + utilityFunction.toString() + " " + maxRecLevel);
     }
 
     private static final class AnswerAndWin {
@@ -84,7 +92,7 @@ public final class MiniMaxBot extends Player {
             return computeWin(board);
         }
 
-        if (recLevel == MAXRECLEVEL) {
+        if (recLevel == maxRecLevel) {
             return getWinScore(board);
         }
 
@@ -98,7 +106,6 @@ public final class MiniMaxBot extends Player {
                 handler.makeStep(copyBoard, key, currentPlayer);
             } catch (final ReversiException ignored) {
             }
-
             final double win = getWinByGameTree(copyBoard, recLevel + 1);
             if (currentPlayer == getPlayerColor()) {
                 if (win >= beta) {

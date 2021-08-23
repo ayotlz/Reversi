@@ -1,4 +1,4 @@
-package Kirill.UtilityFunctions;
+package Kirill.utilityFunctions;
 
 import models.board.Board;
 import models.chip.Color;

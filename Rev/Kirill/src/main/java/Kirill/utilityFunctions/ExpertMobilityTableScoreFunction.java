@@ -1,9 +1,13 @@
-package Kirill.UtilityFunctions;
+package Kirill.utilityFunctions;
 
 import models.board.Board;
+import models.board.Cell;
 import models.chip.Color;
 
-public final class ExpertTableScoreFunction implements IFunction {
+import java.util.List;
+import java.util.Map;
+
+public final class ExpertMobilityTableScoreFunction implements IFunction {
     @Override
     public final double getScore(final Board board, final Color color) {
         double score = 0;
@@ -16,8 +20,15 @@ public final class ExpertTableScoreFunction implements IFunction {
                 }
             }
         }
+        score -= getMobilityScore(board, color.reverseColor());
         return score;
     }
+
+    public final double getMobilityScore(final Board board, final Color enemyColor) {
+        final Map<Cell, List<Cell>> scoreMap = board.getScoreMap(enemyColor);
+        return scoreMap.size();
+    }
+
 
     private double[][] getPriorityBoard(final Board board) {
         final double[][] priorityBoard = new double[board.getBoardSize()][board.getBoardSize()];
@@ -38,24 +49,26 @@ public final class ExpertTableScoreFunction implements IFunction {
             }
         }
 
-        priorityBoard[0][0] = 100;
-        priorityBoard[0][board.getBoardSize() - 1] = 100;
-        priorityBoard[board.getBoardSize() - 1][0] = 100;
-        priorityBoard[board.getBoardSize() - 1][board.getBoardSize() - 1] = 100;
+        priorityBoard[0][0] = 10;
+        priorityBoard[0][board.getBoardSize() - 1] = 10;
+        priorityBoard[board.getBoardSize() - 1][0] = 10;
+        priorityBoard[board.getBoardSize() - 1][board.getBoardSize() - 1] = 10;
 
         priorityBoard[1][0] = -2;
-        priorityBoard[1][1] = -2;
         priorityBoard[1][board.getBoardSize() - 1] = -2;
-        priorityBoard[1][board.getBoardSize() - 2] = -2;
         priorityBoard[0][1] = -2;
         priorityBoard[0][board.getBoardSize() - 1] = -2;
 
         priorityBoard[board.getBoardSize() - 2][0] = -2;
-        priorityBoard[board.getBoardSize() - 2][1] = -2;
-        priorityBoard[board.getBoardSize() - 1][1] = -2;
         priorityBoard[board.getBoardSize() - 2][board.getBoardSize() - 1] = -2;
-        priorityBoard[board.getBoardSize() - 2][board.getBoardSize() - 2] = -2;
+        priorityBoard[board.getBoardSize() - 1][1] = -2;
         priorityBoard[board.getBoardSize() - 1][board.getBoardSize() - 2] = -2;
+
+        priorityBoard[1][1] = -4;
+        priorityBoard[1][board.getBoardSize() - 2] = -4;
+        priorityBoard[board.getBoardSize() - 2][1] = -4;
+        priorityBoard[board.getBoardSize() - 2][board.getBoardSize() - 2] = -4;
+
 
         return priorityBoard;
     }

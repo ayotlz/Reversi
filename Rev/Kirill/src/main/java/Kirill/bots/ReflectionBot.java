@@ -1,4 +1,4 @@
-package Kirill;
+package Kirill.bots;
 
 import models.board.Board;
 import models.board.Cell;
