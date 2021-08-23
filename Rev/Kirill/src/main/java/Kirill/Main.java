@@ -28,8 +28,7 @@ public final class Main {
             Board board = new Board();
             handler.initializationBoard(board);
             final Random random = new Random();
-
-            Color playerColor;
+            final Color playerColor;
             int color = random.nextInt(2);
             if (color == 1) {
                 playerColor = Color.BLACK;
@@ -42,7 +41,7 @@ public final class Main {
 //            Player bot1 = new MiniMaxBot(playerColor, new ExpertMobilityTableScoreFunction(), 4);
 //            872:114:14, deep 4
 //            840:136:24, deep 2
-            Player bot1 = new MiniMaxBotFJP(playerColor, new MonteCarloFunction(), 1);
+            Player bot1 = new MiniMaxBot(playerColor, new ExpertTableScoreFunction());
 //            855:121:24, deep 4
 //            Player bot2 = new ReflectionBot(playerColor.reverseColor());
             Player bot2 = new RandomBot(playerColor.reverseColor());

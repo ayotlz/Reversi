@@ -21,7 +21,7 @@ public final class MiniMaxBot extends Player {
     private final Handler handler = new Handler();
     private double alpha = Double.MIN_VALUE;
     private double beta = Double.MAX_VALUE;
-    private int maxRecLevel = Property.getMaxRecLevel();
+    private int maxRecLevel = 4;
 
     public MiniMaxBot(final Color color) {
         super(color);

@@ -1,5 +1,6 @@
 import Ayotlz.AyotlzBot;
 import Kirill.bots.MiniMaxBot;
+import Kirill.utilityFunctions.ExpertTableScoreFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.board.Board;
 import models.board.Cell;
@@ -76,7 +77,7 @@ public final class BotClient {
 
     private class ProcessingMessage extends Thread {
         @Override
-        public void run() {
+        public final void run() {
             while (true) {
                 String message;
 
@@ -135,7 +136,7 @@ public final class BotClient {
         return switch (nameBot) {
             case "RandomBot" -> new RandomBot(color);
             case "AyotlzBot" -> new AyotlzBot(color);
-            case "MiniMaxBot" -> new MiniMaxBot(color);
+            case "MiniMaxBot" -> new MiniMaxBot(color, new ExpertTableScoreFunction());
             default -> null;
         };
     }

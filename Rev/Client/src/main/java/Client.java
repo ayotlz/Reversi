@@ -70,7 +70,7 @@ public final class Client {
     private void enterNickName() {
         System.out.println("Введите ваше имя");
         try {
-            final String nick = inputUser.readLine();
+            final String nick = Property.getNick();
             send(nick);
         } catch (final IOException e) {
             downService();
@@ -82,7 +82,7 @@ public final class Client {
         try {
             String choice = "0";
             while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3")) {
-                choice = inputUser.readLine();
+                choice = Property.getTypeOfRoom();
 
                 if (choice.equals("1") || choice.equals("2")) {
                     send(choice);
