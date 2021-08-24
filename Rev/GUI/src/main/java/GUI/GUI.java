@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public final class GUI extends JFrame {
 
-
+    private static final String path = "./GUI/src/main/";
     private static final String WHITE = "resources/White.png";
     private static final String BLACK = "resources/Black.png";
     private static final String ICON = "resources/icon.png";
@@ -35,7 +35,7 @@ public final class GUI extends JFrame {
         getContentPane().setBackground(new java.awt.Color(46, 139, 87));
         setLayout(new GridLayout(board.getBoardSize(), board.getBoardSize(), 3, 3));
         setTitle("REVERSI " + color);
-        ImageIcon image = new ImageIcon(ICON);
+        ImageIcon image = new ImageIcon(path + ICON);
         setIconImage(image.getImage());
         setSize(900, 900);
         setResizable(false);
@@ -65,9 +65,9 @@ public final class GUI extends JFrame {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (board.getChipColor(i, j) == Color.WHITE) {
-                    drawDisabledButtons(buttons[i][j], WHITE);
+                    drawDisabledButtons(buttons[i][j], path + WHITE);
                 } else if (board.getChipColor(i, j) == Color.BLACK) {
-                    drawDisabledButtons(buttons[i][j], BLACK);
+                    drawDisabledButtons(buttons[i][j], path + BLACK);
                 } else {
                     buttons[i][j].setEnabled(true);
                 }
@@ -128,7 +128,7 @@ public final class GUI extends JFrame {
         window.setLayout(new BorderLayout());
         window.add(new MenuPanel(scoreBlack, scoreWhite));
         window.pack();
-        final ImageIcon image = new ImageIcon(ICON);
+        final ImageIcon image = new ImageIcon(path + ICON);
         window.setIconImage(image.getImage());
         window.setSize(300, 100);
         window.setLocationRelativeTo(null);
