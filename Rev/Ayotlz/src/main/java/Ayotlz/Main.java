@@ -1,5 +1,6 @@
 package Ayotlz;
 
+import GUI.GUI;
 import exceptions.ReversiException;
 import handler.Handler;
 import models.board.Board;
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
 
 public final class Main {
     public static void main(final String[] args) {
-        final int numberOfGames = 200;
+        final int numberOfGames = 1;
         int wins = 0;
         int loss = 0;
         int draws = 0;

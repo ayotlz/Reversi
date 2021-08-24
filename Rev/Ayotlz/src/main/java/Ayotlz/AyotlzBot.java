@@ -19,6 +19,8 @@ public final class AyotlzBot extends Player {
     @Override
     public final Cell getAnswer(final Board board) {
         final Handler handler = new Handler();
+        deep = 1;
+
         if (handler.getScoreBlack(board) + handler.getScoreWhite(board) > 45) {
             deep = 2;
         }

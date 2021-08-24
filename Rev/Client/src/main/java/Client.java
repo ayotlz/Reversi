@@ -1,3 +1,5 @@
+import Ayotlz.AyotlzBot;
+import Kirill.bots.MiniMaxBot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import GUI.GUI;
 import handler.Handler;
@@ -30,7 +32,7 @@ public final class Client {
     private BufferedReader inputUser = null;
     private BufferedWriter out = null;
     private Player player;
-    private GUI gui;
+    private GUI gui = null;
 
     /**
      * для создания необходимо принять адрес и номер порта
@@ -86,7 +88,7 @@ public final class Client {
 
                 if (choice.equals("1") || choice.equals("2")) {
                     send(choice);
-                    player = new HumanPlayer(chooseColor());
+                    player = new AyotlzBot(chooseColor());
                     logger.debug("Клиент запущен в комнату");
                 } else if (choice.equals("3")) {
                     send(choice);
@@ -172,8 +174,8 @@ public final class Client {
         public void run() {
             while (true) {
                 String message;
-                if (player.getClass() == HumanPlayer.class) {
-                    gui = null;
+                if (gui == null) {
+                    gui = new GUI(player.getPlayerColor());
                 }
 
                 while (true) {
@@ -190,6 +192,7 @@ public final class Client {
 
                     try {
                         parseGameEnd(message);
+                        gui = null;
                         break;
                     } catch (final IOException ignored) {
                     } catch (final NullPointerException e) {
@@ -242,14 +245,14 @@ public final class Client {
                 final ObjectMapper mapper = new ObjectMapper();
                 final StringWriter writer = new StringWriter();
                 Cell cell;
-                if (player.getClass() != RandomBot.class && gui != null) {
-                    cell = gui.getAnswerCell(board);
-                    while (cell == null) {
-                        cell = gui.getAnswerCell(board);
-                    }
-                } else {
+//                if (player.getClass() != RandomBot.class && gui != null) {
+//                    cell = gui.getAnswerCell(board);
+//                    while (cell == null) {
+//                        cell = gui.getAnswerCell(board);
+//                    }
+//                } else {
                     cell = player.getAnswer(board);
-                }
+//                }
                 mapper.writeValue(writer, cell);
                 send(writer.toString());
             }
