@@ -62,6 +62,25 @@ public final class Property {
         }
     }
 
+    public static int getTime() {
+        try {
+            final FileInputStream fis = new FileInputStream(PROPERTY_PATH);
+            final Properties property = new Properties();
+            property.load(fis);
+            return Integer.parseInt(property.getProperty("time"));
+        } catch (final IOException | NumberFormatException e) {
+            try {
+                final FileInputStream fis = new FileInputStream(PROPERTY_PATH_RESERVED);
+                final Properties property = new Properties();
+                property.load(fis);
+                return Integer.parseInt(property.getProperty("time"));
+            } catch (final IOException | NumberFormatException ex) {
+                return -1;
+            }
+        }
+    }
+
+
     public static String getBot1() {
         try {
             final FileInputStream fis = new FileInputStream(PROPERTY_PATH);

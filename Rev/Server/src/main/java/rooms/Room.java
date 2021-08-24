@@ -84,6 +84,7 @@ public final class Room extends Thread {
                         sendMessageToAllPlayers("[" + playerColor + "] " + player.getNickName() + " ставит фишку на клетку: " + cell.toString() + "");
 
                         handler.makeStep(board, cell, playerColor);
+                        Thread.sleep((long)Property.getTime() * 1000);
                         break;
                     } catch (final ReversiException e) {
                         try {
@@ -91,6 +92,8 @@ public final class Room extends Thread {
                         } catch (final IOException ignored) {
                         }
                     } catch (final IOException ignored) {
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }

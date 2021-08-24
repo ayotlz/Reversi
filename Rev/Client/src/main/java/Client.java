@@ -231,6 +231,11 @@ public final class Client {
             final int scoreWhite = request.getScoreWhite();
             if (gui != null) {
                 gui.winLoseWindow(scoreBlack, scoreWhite);
+                try {
+                    Thread.sleep(200000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -251,7 +256,7 @@ public final class Client {
 //                        cell = gui.getAnswerCell(board);
 //                    }
 //                } else {
-                    cell = player.getAnswer(board);
+                cell = player.getAnswer(board);
 //                }
                 mapper.writeValue(writer, cell);
                 send(writer.toString());

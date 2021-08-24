@@ -13,7 +13,6 @@ import java.awt.*;
 public final class GUI extends JFrame {
 
 
-    private static final String path = "./GUI/src/main/";
     private static final String WHITE = "resources/White.png";
     private static final String BLACK = "resources/Black.png";
     private static final String ICON = "resources/icon.png";
@@ -36,7 +35,7 @@ public final class GUI extends JFrame {
         getContentPane().setBackground(new java.awt.Color(46, 139, 87));
         setLayout(new GridLayout(board.getBoardSize(), board.getBoardSize(), 3, 3));
         setTitle("REVERSI " + color);
-        ImageIcon image = new ImageIcon(path + ICON);
+        ImageIcon image = new ImageIcon(ICON);
         setIconImage(image.getImage());
         setSize(900, 900);
         setResizable(false);
@@ -66,9 +65,9 @@ public final class GUI extends JFrame {
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
                 if (board.getChipColor(i, j) == Color.WHITE) {
-                    drawDisabledButtons(buttons[i][j], path + WHITE);
+                    drawDisabledButtons(buttons[i][j], WHITE);
                 } else if (board.getChipColor(i, j) == Color.BLACK) {
-                    drawDisabledButtons(buttons[i][j], path + BLACK);
+                    drawDisabledButtons(buttons[i][j], BLACK);
                 } else {
                     buttons[i][j].setEnabled(true);
                 }
